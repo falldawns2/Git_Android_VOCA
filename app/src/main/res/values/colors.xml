@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#6200EE</color> <!-- #6200EE -->
+    <color name="colorPrimaryDark">#ffffff</color> <!-- 3700B3 -->
+    <color name="colorAccent">#ff4340</color> <!-- 03DAC5 -->
     <color name="Login_Background">#fff</color>
     <color name="White">#ffffff</color>
     <color name="Black">#000</color>
 
-    <color name="TitleBarLightColor">#fff9eb</color>
-    <color name="BodyLightColor">#fff9eb</color>
+    <color name="TitleBarLightColor">#ff4340</color> <!-- 맨 위 툴바 색상 (라이트 모드) -->
+    <color name="BodyLightColor">#fff</color> <!-- 뒷 배경 (라이트 모드 ) #fff9eb -->
 
-    <color name="BottomNavigationBar">#ffdd93</color>
+    <color name="BottomNavigationBar">#272b36</color> <!-- 바텀 메뉴 색상 (라이트 모드) --> <!-- #ffdd93 -->
 </resources>

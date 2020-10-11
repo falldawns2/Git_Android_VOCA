@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -22,7 +23,7 @@ import java.util.List;
 public class Fragment_VocaNote extends Fragment {
 
     RecyclerView recyclerView;
-    //NoteAdapter adapter;
+    VocaNoteAdapter adapter;
     //Note_MultiSelectionAdapter multi_adapter;
 
     ///
@@ -30,6 +31,7 @@ public class Fragment_VocaNote extends Fragment {
     public String Title;
     public String CreateDate;
     public String Memo;
+    //
 
     static boolean checked= false;
 
@@ -40,6 +42,17 @@ public class Fragment_VocaNote extends Fragment {
     public static String[] Arr_CONTENTS_MEMO = {};
     public static String[] Arr_isFAVORITE = {};
     public static String[] Arr_WHICH_FOLDER = {};
+    ///
+
+
+    // 카드뷰 내용 : 단어장 명 , 총 단어 수
+    public static String[] Arr_VocaNoteName = {};
+    public static int[] Arr_VocaCount = {};
+
+    // 카드 뷰 내용 //
+    public String VocaNoteName;
+    public String VocaCount;
+
 
     //public  String[] title;
 
@@ -82,142 +95,34 @@ public class Fragment_VocaNote extends Fragment {
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
 
         //QUERY_NOTE();
+        // 샘플로 예시 단어장 넣어본다 //
+        QUERY_VocaNote();
 
-        //List<Note> list = getList();
+        List<VocaNote> list = getList();
 
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,1);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.context_main);
         recyclerView.setLayoutManager(layoutManager);
 
-        //MainActivity.tag = "multi";
-
-        /*        switch (MainActivity.tag) {
-            case "single":
-                adapter = new NoteAdapter(this,list);
-
-                adapter.addItem(new Note("가나다라마바","2020-07-20","테스트 메모 1"));
-                adapter.addItem(new Note("가나다라마바사아자차카타파하","2020-07-20","테스트 메모 2, 수능완성 유니티 게임만들기"));
-                adapter.addItem(new Note("가나다라마","2020-07-20","테스트 메모 3, 가낟라ㅏ"));
-                adapter.addItem(new Note("test4","2020-07-20","테스트 메모 4,ㅓㄻㄴ아렁ㅁ니러아ㅣㅁ러ㅣ어ㅏ"));
-                adapter.addItem(new Note("test5","2020-07-20","테스트 메모 5걎ㄷ갣ㅈㄱㄷ쟈ㅐㄱㅈ뎌갲댝ㅈ뎌갸ㅐㅈㄷ겨ㅑㅐㅈㄷ겾ㄷ겾갲ㄷ겨ㅑㄷㅈ겨ㅐㅈ뎌갲"));
-                adapter.addItem(new Note("test6","2020-07-20","테스트 메모 6 jrtkweltj tkwejktlejqwl ejkwlq tjkleqwj tklewjkqt ljqweklt jkwqltj eklwtjkqwtjklweqtjwekltjkwelqtjqwekltjql"));
-
-                adapter.addItem(new Note("test1","2020-07-20","테스트 메모 1"));
-                adapter.addItem(new Note("test2","2020-07-20","테스트 메모 2, 수능완성 유니티 게임만들기"));
-                adapter.addItem(new Note("test3","2020-07-20","테스트 메모 3, 가낟라ㅏ"));
-                adapter.addItem(new Note("test4","2020-07-20","테스트 메모 4,ㅓㄻㄴ아렁ㅁ니러아ㅣㅁ러ㅣ어ㅏ"));
-                adapter.addItem(new Note("test5","2020-07-20","테스트 메모 5걎ㄷ갣ㅈㄱㄷ쟈ㅐㄱㅈ뎌갲댝ㅈ뎌갸ㅐㅈㄷ겨ㅑㅐㅈㄷ겾ㄷ겾갲ㄷ겨ㅑㄷㅈ겨ㅐㅈ뎌갲"));
-                adapter.addItem(new Note("test6","2020-07-20","테스트 메모 6 jrtkweltj tkwejktlejqwl ejkwlq tjkleqwj tklewjkqt ljqweklt jkwqltj eklwtjkqwtjklweqtjwekltjkwelqtjqwekltjql"));
-
-                adapter.addItem(new Note("test1","2020-07-20","테스트 메모 1"));
-                adapter.addItem(new Note("test2","2020-07-20","테스트 메모 2, 수능완성 유니티 게임만들기"));
-                adapter.addItem(new Note("test3","2020-07-20","테스트 메모 3, 가낟라ㅏ"));
-                adapter.addItem(new Note("test4","2020-07-20","테스트 메모 4,ㅓㄻㄴ아렁ㅁ니러아ㅣㅁ러ㅣ어ㅏ"));
-                adapter.addItem(new Note("test5","2020-07-20","테스트 메모 5걎ㄷ갣ㅈㄱㄷ쟈ㅐㄱㅈ뎌갲댝ㅈ뎌갸ㅐㅈㄷ겨ㅑㅐㅈㄷ겾ㄷ겾갲ㄷ겨ㅑㄷㅈ겨ㅐㅈ뎌갲"));
-                adapter.addItem(new Note("test6","2020-07-20","테스트 메모 6 jrtkweltj tkwejktlejqwl ejkwlq tjkleqwj tklewjkqt ljqweklt jkwqltj eklwtjkqwtjklweqtjwekltjkwelqtjqwekltjql"));
-
-                adapter.addItem(new Note("test1","2020-07-20","테스트 메모 1"));
-                adapter.addItem(new Note("test2","2020-07-20","테스트 메모 2, 수능완성 유니티 게임만들기"));
-                adapter.addItem(new Note("test3","2020-07-20","테스트 메모 3, 가낟라ㅏ"));
-                adapter.addItem(new Note("test4","2020-07-20","테스트 메모 4,ㅓㄻㄴ아렁ㅁ니러아ㅣㅁ러ㅣ어ㅏ"));
-                adapter.addItem(new Note("test5","2020-07-20","테스트 메모 5걎ㄷ갣ㅈㄱㄷ쟈ㅐㄱㅈ뎌갲댝ㅈ뎌갸ㅐㅈㄷ겨ㅑㅐㅈㄷ겾ㄷ겾갲ㄷ겨ㅑㄷㅈ겨ㅐㅈ뎌갲"));
-                adapter.addItem(new Note("test6","2020-07-20","테스트 메모 6 jrtkweltj tkwejktlejqwl ejkwlq tjkleqwj tklewjkqt ljqweklt jkwqltj eklwtjkqwtjklweqtjwekltjkwelqtjqwekltjql"));
-
-
-                recyclerView.setAdapter(adapter);
-
-                adapter.setOnItemClickListener(new OnNoteItemClickListener() {
-                    @Override
-                    public void onItemClick(NoteAdapter.ViewHolder holder, View view, int position) {
-                        Note item = adapter.getItem(position);
-                        Toast.makeText(getContext(), "아이템 선택됨: " + item.getTitle(), Toast.LENGTH_LONG).show();
-                        //CheckBox checkBox;
-                        //checkBox = view.findViewById(R.id.main_checkbox);
-                        //if(!checkBox.isChecked()) checkBox.setVisibility(View.VISIBLE);
-
-
-                        //checked = true;
-                    }
-                });
-
-                break;
-            case "multi":
-                multi_adapter = new Note_MultiSelectionAdapter(this,list);
-
-                multi_adapter.addItem(new Note("가나다라마바","2020-07-20","테스트 메모 1"));
-                multi_adapter.addItem(new Note("가나다라마바사아자차카타파하","2020-07-20","테스트 메모 2, 수능완성 유니티 게임만들기"));
-                multi_adapter.addItem(new Note("가나다라마","2020-07-20","테스트 메모 3, 가낟라ㅏ"));
-                multi_adapter.addItem(new Note("test4","2020-07-20","테스트 메모 4,ㅓㄻㄴ아렁ㅁ니러아ㅣㅁ러ㅣ어ㅏ"));
-                multi_adapter.addItem(new Note("test5","2020-07-20","테스트 메모 5걎ㄷ갣ㅈㄱㄷ쟈ㅐㄱㅈ뎌갲댝ㅈ뎌갸ㅐㅈㄷ겨ㅑㅐㅈㄷ겾ㄷ겾갲ㄷ겨ㅑㄷㅈ겨ㅐㅈ뎌갲"));
-                multi_adapter.addItem(new Note("test6","2020-07-20","테스트 메모 6 jrtkweltj tkwejktlejqwl ejkwlq tjkleqwj tklewjkqt ljqweklt jkwqltj eklwtjkqwtjklweqtjwekltjkwelqtjqwekltjql"));
-
-                multi_adapter.addItem(new Note("test1","2020-07-20","테스트 메모 1"));
-                multi_adapter.addItem(new Note("test2","2020-07-20","테스트 메모 2, 수능완성 유니티 게임만들기"));
-                multi_adapter.addItem(new Note("test3","2020-07-20","테스트 메모 3, 가낟라ㅏ"));
-                multi_adapter.addItem(new Note("test4","2020-07-20","테스트 메모 4,ㅓㄻㄴ아렁ㅁ니러아ㅣㅁ러ㅣ어ㅏ"));
-                multi_adapter.addItem(new Note("test5","2020-07-20","테스트 메모 5걎ㄷ갣ㅈㄱㄷ쟈ㅐㄱㅈ뎌갲댝ㅈ뎌갸ㅐㅈㄷ겨ㅑㅐㅈㄷ겾ㄷ겾갲ㄷ겨ㅑㄷㅈ겨ㅐㅈ뎌갲"));
-                multi_adapter.addItem(new Note("test6","2020-07-20","테스트 메모 6 jrtkweltj tkwejktlejqwl ejkwlq tjkleqwj tklewjkqt ljqweklt jkwqltj eklwtjkqwtjklweqtjwekltjkwelqtjqwekltjql"));
-
-                multi_adapter.addItem(new Note("test1","2020-07-20","테스트 메모 1"));
-                multi_adapter.addItem(new Note("test2","2020-07-20","테스트 메모 2, 수능완성 유니티 게임만들기"));
-                multi_adapter.addItem(new Note("test3","2020-07-20","테스트 메모 3, 가낟라ㅏ"));
-                multi_adapter.addItem(new Note("test4","2020-07-20","테스트 메모 4,ㅓㄻㄴ아렁ㅁ니러아ㅣㅁ러ㅣ어ㅏ"));
-                multi_adapter.addItem(new Note("test5","2020-07-20","테스트 메모 5걎ㄷ갣ㅈㄱㄷ쟈ㅐㄱㅈ뎌갲댝ㅈ뎌갸ㅐㅈㄷ겨ㅑㅐㅈㄷ겾ㄷ겾갲ㄷ겨ㅑㄷㅈ겨ㅐㅈ뎌갲"));
-                multi_adapter.addItem(new Note("test6","2020-07-20","테스트 메모 6 jrtkweltj tkwejktlejqwl ejkwlq tjkleqwj tklewjkqt ljqweklt jkwqltj eklwtjkqwtjklweqtjwekltjkwelqtjqwekltjql"));
-
-                multi_adapter.addItem(new Note("test1","2020-07-20","테스트 메모 1"));
-                multi_adapter.addItem(new Note("test2","2020-07-20","테스트 메모 2, 수능완성 유니티 게임만들기"));
-                multi_adapter.addItem(new Note("test3","2020-07-20","테스트 메모 3, 가낟라ㅏ"));
-                multi_adapter.addItem(new Note("test4","2020-07-20","테스트 메모 4,ㅓㄻㄴ아렁ㅁ니러아ㅣㅁ러ㅣ어ㅏ"));
-                multi_adapter.addItem(new Note("test5","2020-07-20","테스트 메모 5걎ㄷ갣ㅈㄱㄷ쟈ㅐㄱㅈ뎌갲댝ㅈ뎌갸ㅐㅈㄷ겨ㅑㅐㅈㄷ겾ㄷ겾갲ㄷ겨ㅑㄷㅈ겨ㅐㅈ뎌갲"));
-                multi_adapter.addItem(new Note("test6","2020-07-20","테스트 메모 6 jrtkweltj tkwejktlejqwl ejkwlq tjkleqwj tklewjkqt ljqweklt jkwqltj eklwtjkqwtjklweqtjwekltjkwelqtjqwekltjql"));
-
-                recyclerView.setAdapter(multi_adapter);
-
-                break;
-        }*/
-
-        /*if(MainActivity.tag == "multi") {
-            recyclerView.removeAllViewsInLayout();
-            recyclerView.removeAllViews();
-        }*/
-
-
-
-
-        /*//싱글 선택 어댑터
-        adapter = new NoteAdapter(this,list);
+        // 싱글 선택 어댑터 //
+        adapter = new VocaNoteAdapter(this, list);
 
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new OnNoteItemClickListener() {
+        adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
             @Override
-            public void onItemClick(NoteAdapter.ViewHolder holder, View view, int position) {
-                Note item = adapter.getItem(position);
-                Title = item.getTitle();
-                CreateDate = item.getCreateDate();
-                Memo = item.getMemo();
-                Toast.makeText(getContext(), "아이템 선택됨: " + item.getTitle(), Toast.LENGTH_LONG).show();
+            public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+                VocaNote item = adapter.getItem(position);
+                VocaNoteName = item.getVocaNoteName();
+                VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
 
-                Intent intent = new Intent(getContext(),NoteShowActivity.class);
+                Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName(), Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getContext(), VocaNoteShowActivity.class);
                 startActivity(intent);
-
-
-                //CheckBox checkBox;
-                //checkBox = view.findViewById(R.id.main_checkbox);
-                //if(!checkBox.isChecked()) checkBox.setVisibility(View.VISIBLE);
-
-
-                //checked = true;
             }
-        });*/
-
-
-
-
-        //return inflater.inflate(R.layout.fragment_main, container, false);
-
-        //checkbox , LongClick
+        });
 
         
         return v;
@@ -271,14 +176,82 @@ public class Fragment_VocaNote extends Fragment {
         }
     }
 
-    /*private List<Note> getList() {
-        List<Note> list = new ArrayList<>();
 
-        for(int i = 0; i< Arr_TITLE.length; i++) {
-            Note model = new Note();
-            model.setTitle(Arr_TITLE[i]);
-            model.setCreateDate(Arr_CREATE_DATE[i]);
-            model.setMemo(Arr_CONTENTS_MEMO[i]);
+    public void QUERY_VocaNote() {
+        // 일단 임시로 넣는다 나중에 DB에서 연동 //
+
+        Arr_VocaNoteName = new String[20];
+        Arr_VocaCount = new int[20];
+
+        Arr_VocaNoteName[19] = "단어장 1";
+        Arr_VocaCount[19] = 5;
+
+        Arr_VocaNoteName[18] = "단어장 2";
+        Arr_VocaCount[18] = 58;
+
+        Arr_VocaNoteName[17] = "단어장 3";
+        Arr_VocaCount[17] = 1;
+
+        Arr_VocaNoteName[16] = "단어장 4";
+        Arr_VocaCount[16] = 42;
+
+        Arr_VocaNoteName[15] = "단어장 5";
+        Arr_VocaCount[15] = 25;
+
+        Arr_VocaNoteName[14] = "단어장 6";
+        Arr_VocaCount[14] = 5;
+
+        Arr_VocaNoteName[13] = "단어장 7";
+        Arr_VocaCount[13] = 58;
+
+        Arr_VocaNoteName[12] = "단어장 8";
+        Arr_VocaCount[12] = 1;
+
+        Arr_VocaNoteName[11] = "단어장 9";
+        Arr_VocaCount[11] = 42;
+
+        Arr_VocaNoteName[10] = "단어장 10";
+        Arr_VocaCount[10] = 25;
+
+        Arr_VocaNoteName[9] = "단어장 11";
+        Arr_VocaCount[9] = 5;
+
+        Arr_VocaNoteName[8] = "단어장 12";
+        Arr_VocaCount[8] = 58;
+
+        Arr_VocaNoteName[7] = "단어장 13";
+        Arr_VocaCount[7] = 1;
+
+        Arr_VocaNoteName[6] = "단어장 14";
+        Arr_VocaCount[6] = 42;
+
+        Arr_VocaNoteName[5] = "단어장 15";
+        Arr_VocaCount[5] = 25;
+
+        Arr_VocaNoteName[4] = "단어장 16";
+        Arr_VocaCount[4] = 5;
+
+        Arr_VocaNoteName[3] = "단어장 17";
+        Arr_VocaCount[3] = 58;
+
+        Arr_VocaNoteName[2] = "단어장 18";
+        Arr_VocaCount[2] = 1;
+
+        Arr_VocaNoteName[1] = "단어장 19";
+        Arr_VocaCount[1] = 42;
+
+        Arr_VocaNoteName[0] = "단어장 20";
+        Arr_VocaCount[0] = 25;
+    }
+
+    private List<VocaNote> getList() {
+        List<VocaNote> list = new ArrayList<>();
+
+        for(int i = 0; i< Arr_VocaNoteName.length; i++) {
+            VocaNote model = new VocaNote();
+            model.setVocaNoteName(Arr_VocaNoteName[i]); // 단어장 명 //
+            //model.setCrDateNote(Arr_CREATE_DATE[i]);
+            model.setVocaCount(Arr_VocaCount[i]); // 총 단어 수 //
             list.add(model);
         }
 
@@ -286,21 +259,20 @@ public class Fragment_VocaNote extends Fragment {
     }
 
     public void selectedClick() {
-
         List list = adapter.getSelectedItem();
 
         if(list.size() > 0 ) {
             StringBuilder sb = new StringBuilder();
             for(int index = 0; index < list.size(); index++) {
-                Note model = (Note) list.get(index);
-                sb.append(model.getTitle()).append("\n");
+                VocaNote model = (VocaNote) list.get(index);
+                sb.append(model.getVocaNoteName()).append("\n");
             }
             showToast(sb.toString());
 
         } else {
             showToast("체크 안됨");
         }
-    }*/
+    }
 
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();

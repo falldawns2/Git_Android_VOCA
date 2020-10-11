@@ -9,9 +9,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Switch;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
@@ -74,35 +77,49 @@ public class MainActivity extends AppCompatActivity {
     public static Context context_main;
     public static Boolean Edit_Activation; //체크박스 활성화
 
+    public static String tag;
+
     public FloatingActionButton fab;
 
+    //VocaNote 추가 - > VocaNote 보기 액티비티
+    public static int save = 0;
+
+    SearchView searchView;
 
    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //tag = "multi";
+        tag = "single";
+
         context_main = MainActivity.this;
         Edit_Activation = false; //기본값 비활성화
 
-        Intent intent = getIntent(); //로그인 액티비티
+        final Intent intent = getIntent(); //로그인 액티비티
 
         //Session_ID = intent.getExtras().getString("Session_ID");
 
         AccountInfo accountInfo = (AccountInfo)intent.getSerializableExtra("accountInfo");
 
         //받아온 값을 여기서 닉네임을 찾아서 다시 뿌려야 한다. (DB 연결 시)
-        TextView test = findViewById(R.id.test);
-        test.setText(accountInfo.Session_ID + accountInfo.Name + accountInfo.Nickcname);
+        //TextView test = findViewById(R.id.test);
+        //test.setText(accountInfo.Session_ID + accountInfo.Name + accountInfo.Nickcname);
 
-       Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
        setSupportActionBar(toolbar);
 
        final CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
 
+       // 타이틀 컬러를 처음과 마지막 색상을 동일하게 했다. //
+       toolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+       toolbarLayout.setExpandedTitleColor(Color.WHITE);
+       // ----------------------------------------------//
+
        toolbarLayout.setTitle("단어장"); //단어장, 도전, 게시판, 그룹
-       getWindow().setStatusBarColor(Color.parseColor("#fff9eb"));
-       getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+       //getWindow().setStatusBarColor(Color.parseColor("#ffffff")); //#fff9eb 이 부분 최 생단 status 바  (액션 바 보다 더 위) (다크 모드일때 사용하자)
+       //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);
 
@@ -112,7 +129,10 @@ public class MainActivity extends AppCompatActivity {
            @Override
            public void onClick(View view) {
                //각각의 페이지 상태에 따라 fab 버튼의 할 일이 다르다.
-
+                //Intent intent = new Intent(getApplicationContext(), VocaNoteAddActivity.class);
+                save = 1;
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                //startActivity(intent);
            }
        });
 
@@ -159,18 +179,39 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         Position = position;
                         toolbarLayout.setTitle("단어장");
+                        toolbarLayout.setContentScrimColor(Color.parseColor("#ff4340")); // 스크롤 시 변하는 중인 색상 //
+                        toolbarLayout.setBackgroundColor(Color.parseColor("#ff4340")); // 스크롤 다 되고 변화된 색상 //
+                        toolbar.setBackgroundColor(Color.parseColor("#ff4340")); // 툴바 색상 //
+                        //fab.setColorFilter(getResources().getColor(R.color.Black)); //플러스 버튼 색상 변경됨//
+                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff4340"))); // 플로팅 버튼 뒷 색상 변경 //
+                        searchView.setQueryHint("단어 검색");
                         break;
                     case 1:
                         Position = position;
                         toolbarLayout.setTitle("도전");
+                        toolbarLayout.setContentScrimColor(Color.parseColor("#252526"));
+                        toolbarLayout.setBackgroundColor(Color.parseColor("#252526"));
+                        toolbar.setBackgroundColor(Color.parseColor("#252526"));
+                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff4340"))); // 단어장 추가 이므로 색상 그대로 //
+                        searchView.setQueryHint("단어 검색");
                         break;
                     case 2:
                         Position = position;
                         toolbarLayout.setTitle("게시판");
+                        toolbarLayout.setContentScrimColor(Color.parseColor("#31a3e4"));
+                        toolbarLayout.setBackgroundColor(Color.parseColor("#31a3e4"));
+                        toolbar.setBackgroundColor(Color.parseColor("#31a3e4"));
+                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#31a3e4")));
+                        searchView.setQueryHint("게시판 검색");
                         break;
                     case 3:
                         Position = position;
                         toolbarLayout.setTitle("그룹");
+                        toolbarLayout.setContentScrimColor(Color.parseColor("#a1e88b"));
+                        toolbarLayout.setBackgroundColor(Color.parseColor("#a1e88b"));
+                        toolbar.setBackgroundColor(Color.parseColor("#a1e88b"));
+                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#a1e88b")));
+                        searchView.setQueryHint("그룹 검색");
                         break;
                 }
            }
@@ -187,12 +228,22 @@ public class MainActivity extends AppCompatActivity {
                switch (view.getId()) {
                    case R.id.Linear_VocaNote:
                        pager.setCurrentItem(0, false);
+
+                       //tag = "single";
+                       //restart();
+
                        break;
                    case R.id.Linear_Challenge:
                        pager.setCurrentItem(1, false);
+                       //tag = "single";
+                       //restart();
+
                        break;
                    case R.id.Linear_Board:
                        pager.setCurrentItem(2, false);
+
+                       //fragment_vocanote.selectedClick();
+
                        break;
                    case R.id.Linear_Group:
                        pager.setCurrentItem(3, false);
@@ -271,6 +322,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //ActionBar Menu inflater // --> 검색 버튼
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.search_icon);
+        searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("단어 검색"); //상황에 따라 검색이 달라야한다.
+
+        searchView.setOnClickListener(new SearchView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                //글씨 들어가면 mainActivity 에서 메모지 불러옴.
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                return true;
+            }
+        });
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -330,4 +414,37 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    protected void restart() {
+        Edit_Activation = true;
+
+        //페이저 기능
+
+        Tab_PagerAdapter adapter = new Tab_PagerAdapter(getSupportFragmentManager());
+        adapter.notifyDataSetChanged();
+
+        final Fragment_VocaNote fragment_vocaNote = new Fragment_VocaNote();
+        adapter.addItem(fragment_vocaNote);
+
+        Fragment_Challenge fragment_favorites = new Fragment_Challenge();
+        adapter.addItem(fragment_favorites);
+
+        Fragment_Board fragment_board = new Fragment_Board();
+        adapter.addItem(fragment_board);
+
+        Fragment_Group fragment_group = new Fragment_Group();
+        adapter.addItem(fragment_group);
+
+        pager.setPageTransformer(true, new DepthPageTransformer());
+        pager.setAdapter(adapter);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(MainActivity.this, "testestestsetests", Toast.LENGTH_SHORT).show();
+                fragment_vocaNote.selectedClick();
+            }
+        });
+    }
+
 }

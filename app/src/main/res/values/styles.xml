@@ -6,8 +6,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item> <!--status bar -->
         <item name="colorAccent">@color/colorAccent</item>
 
+
+        <item name="android:windowLightStatusBar">true</item> <!--이 값을 true 로 해서 status 가 하안색이여도 글씨가 알아서 검정으로 바꿈 -->
+
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
     </style>
+
 
     <style name="OverFlow" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:src">@drawable/button_hamburger_size</item>
@@ -22,5 +26,6 @@
         <item name="colorPrimary">@color/TitleBarLightColor</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+    </style>
 </resources>
