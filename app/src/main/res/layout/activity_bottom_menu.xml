@@ -9,7 +9,7 @@
 
 
     <LinearLayout
-        android:id="@+id/Linear_ALL"
+        android:id="@+id/Linear_VocaNote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -32,7 +32,7 @@
 
 
     <LinearLayout
-        android:id="@+id/Linear_Favorites"
+        android:id="@+id/Linear_Challenge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -65,7 +65,7 @@
 
 
     <LinearLayout
-        android:id="@+id/Linear_Tag"
+        android:id="@+id/Linear_Board"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -88,7 +88,7 @@
 
 
     <LinearLayout
-        android:id="@+id/Linear_Lock"
+        android:id="@+id/Linear_Group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

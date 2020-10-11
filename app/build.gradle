@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.android_voca"
-        minSdkVersion 21 //14 setStatusBarColor
+        minSdkVersion 23 //21 //14 setStatusBarColor
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
