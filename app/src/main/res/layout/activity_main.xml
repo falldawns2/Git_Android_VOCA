@@ -88,7 +88,7 @@ android:orientation="vertical">
             <!--<include layout="@layout/content_scrolling" /> -->
 
             <!-- 현재 인텐트 값 넘기는거 확인용 나중에 지워야 한다 -->
-            
+
             <TextView
                 android:id="@+id/test"
                 android:layout_width="wrap_content"
