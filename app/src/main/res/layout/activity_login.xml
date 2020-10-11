@@ -8,6 +8,8 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="82dp">
 
+    <!-- 로고 -->
+
     <ImageView
         android:id="@+id/image_Logo"
         android:layout_width="0dp"
@@ -18,11 +20,13 @@
         android:layout_marginEnd="54dp"
         android:layout_marginRight="54dp"
         android:layout_marginBottom="110dp"
-        android:src="@drawable/logo_white_login"
+        android:src="@drawable/logo_black_login"
         app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 아이디 -->
 
     <EditText
         android:id="@+id/textView"
@@ -30,11 +34,31 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:hint="ID"
-        android:textColorHint="@color/White"
-        android:textColor="@color/White"
+        android:textColorHint="@color/Black"
+        android:textColor="@color/Black"
         app:layout_constraintBottom_toBottomOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView2" />
+
+    <!-- 비밀번호 -->
+
+    <EditText
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginRight="13dp"
+        android:hint="Password"
+        android:textColorHint="@color/Black"
+        android:textColor="@color/Black"
+        app:layout_constraintEnd_toStartOf="@+id/btnLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <!-- 로그인 버튼 -->
 
     <Button
         android:id="@+id/btnLogin"
@@ -48,21 +72,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/image_Logo" />
-
-    <EditText
-        android:id="@+id/textView2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginRight="13dp"
-        android:hint="Password"
-        android:textColorHint="@color/White"
-        android:textColor="@color/White"
-        app:layout_constraintEnd_toStartOf="@+id/btnLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

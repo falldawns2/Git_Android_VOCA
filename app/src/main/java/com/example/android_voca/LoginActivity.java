@@ -1,12 +1,18 @@
 package com.example.android_voca;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class LoginActivity extends AppCompatActivity {
     @Override
@@ -14,7 +20,24 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // 로그인 버튼 Button //
         Button btnLogin = findViewById(R.id.btnLogin);
+        // 로고 ImageView //
+        ImageView image_Logo = findViewById(R.id.image_Logo);
+
+        // Display 해상도, 밀도, 스케일링 정보 객체 //
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+
+        //ImageView 크기 폰의 화면에 따라 조절 //
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) image_Logo.getLayoutParams();
+        params.width = metrics.widthPixels ;
+        params.height = metrics.heightPixels / 4;
+
+        image_Logo.setLayoutParams(params);
+
+
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
