@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Android_VOCA</string>
+
+
+    <string name="Permission">메모 위젯</string>
+    <string name="DarkMode">다크모드</string>
+    <string name="Settings">설정</string>
+    <string name="Recycle_bin">휴지통</string>
+    <string name="Enquire">문의하기</string>
 </resources>

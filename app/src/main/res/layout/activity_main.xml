@@ -31,16 +31,6 @@ android:orientation="vertical">
     android:gravity="left"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -97,6 +87,20 @@ android:orientation="vertical">
 
             <!--<include layout="@layout/content_scrolling" /> -->
 
+            <!-- 현재 인텐트 값 넘기는거 확인용 나중에 지워야 한다 -->
+            
+            <TextView
+                android:id="@+id/test"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello World!"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
@@ -135,7 +139,7 @@ android:orientation="vertical">
                 android:layout_height="wrap_content"
                 app:fabSize="normal"
                 app:layout_anchor="@id/bottom_bar"
-                android:tint="@color/white"
+                android:tint="@color/White"
                 android:src="@drawable/ic_vector_add_64px"/>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

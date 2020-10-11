@@ -6,4 +6,9 @@
     <color name="Login_Background">#fff</color>
     <color name="White">#ffffff</color>
     <color name="Black">#000</color>
+
+    <color name="TitleBarLightColor">#fff9eb</color>
+    <color name="BodyLightColor">#fff9eb</color>
+
+    <color name="BottomNavigationBar">#ffdd93</color>
 </resources>
