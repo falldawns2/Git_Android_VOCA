@@ -46,7 +46,7 @@ namespace WcfService1
             while (reader.Read())
             {
                 Members members = new Members();
-                members.Userid = reader["userid"].ToString();
+                members.Userid = reader["nickname"].ToString();
 
                 MemberList.Add(members);
             }
@@ -65,7 +65,7 @@ namespace WcfService1
                     connection.Open();
 
                 cmd = new SqlCommand("Insert into Members (userid, passwd, name, nickname, email, mygroup, profileimage, filesize, joindate, [status], ugrade)" +
-                    " values (@userid,'FBADE9E36A3F36D3D676C1B808451DD7','테스트','닉네임','t@t.t','Group_none','SampleImage.PNG',0,'2020-09-06 23:12:00',0,'일반')", connection);
+                    " values (@userid,'FBADE9E36A3F36D3D676C1B808451DD7','테스트','닉네임','ft@t.ft','Group_none','SampleImage.PNG',0,'2020-09-06 23:12:00',0,'일반')", connection);
                 cmd.CommandType = CommandType.Text;
                 cmd.Parameters.AddWithValue("@userid", userid);
                 cmd.ExecuteReader();
