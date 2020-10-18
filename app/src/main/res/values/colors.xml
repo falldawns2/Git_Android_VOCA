@@ -11,4 +11,8 @@
     <color name="BodyLightColor">#fff</color> <!-- 뒷 배경 (라이트 모드 ) #fff9eb -->
 
     <color name="BottomNavigationBar">#272b36</color> <!-- 바텀 메뉴 색상 (라이트 모드) --> <!-- #ffdd93 -->
+
+    <!--Challenge -->
+
+    <color name="SubTitle">#0E79FA</color>
 </resources>

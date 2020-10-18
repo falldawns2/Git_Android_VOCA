@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +86,7 @@ public class Fragment_VocaNote extends Fragment {
             "테스트 입니다16","테스트입니다17","테스트입니다18"
     };
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -119,12 +120,11 @@ public class Fragment_VocaNote extends Fragment {
 
                 Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName(), Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(getContext(), VocaNoteShowActivity.class);
+                Intent intent = new Intent(getContext(), ChapterActivity.class);
                 startActivity(intent);
             }
         });
 
-        
         return v;
     }
 

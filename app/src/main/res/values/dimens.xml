@@ -4,4 +4,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="memo_margin">10dp</dimen>
     <dimen name="star_margin">50dp</dimen>
+    <dimen name="Challenge_margin">30dp</dimen>
 </resources>

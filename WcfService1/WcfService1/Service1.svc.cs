@@ -32,7 +32,7 @@ namespace WcfService1
             return composite;
         }*/
         //Connection string //
-        private string conn = "Data Source =.; Initial Catalog=VOCA_KTH; uid=User; pwd=1";
+        private string conn = "Data Source = .; Initial Catalog=VOCA_KTH; uid=User; pwd=1";
 
         public List<Members> GetMembers()
         {
