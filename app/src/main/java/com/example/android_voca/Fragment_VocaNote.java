@@ -118,8 +118,9 @@ public class Fragment_VocaNote extends Fragment {
                 VocaNoteName = item.getVocaNoteName();
                 VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
 
-                Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getVocaCount(), Toast.LENGTH_SHORT).show();
 
+                
                 Intent intent = new Intent(getContext(), ChapterActivity.class);
                 startActivity(intent);
             }
