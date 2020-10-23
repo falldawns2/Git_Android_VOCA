@@ -92,7 +92,7 @@ public class Fragment_VocaNote extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         context_Frag_Main = Fragment_VocaNote.this;
-        View v = inflater.inflate(R.layout.fragment_vocanote, container, false);
+        final View v = inflater.inflate(R.layout.fragment_vocanote, container, false);
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
 
         //QUERY_NOTE();
@@ -100,6 +100,7 @@ public class Fragment_VocaNote extends Fragment {
         QUERY_VocaNote();
 
         List<VocaNote> list = getList();
+
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.context_main);
@@ -120,7 +121,8 @@ public class Fragment_VocaNote extends Fragment {
 
                 Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getVocaCount(), Toast.LENGTH_SHORT).show();
 
-                
+
+                ///ChapterActivity
                 Intent intent = new Intent(getContext(), ChapterActivity.class);
                 startActivity(intent);
             }

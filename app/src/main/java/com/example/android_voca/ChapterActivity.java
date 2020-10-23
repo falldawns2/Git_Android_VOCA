@@ -1,9 +1,12 @@
 package com.example.android_voca;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,8 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +42,19 @@ public class ChapterActivity extends AppCompatActivity {
 
     ///
     int save;
+
+    ////////
+    RecyclerView recyclerView;
+    VocaNoteAdapter adapter;
+    //Note_MultiSelectionAdapter multi_adapter;
+
+    ///
+    public static Fragment_VocaNote context_Frag_Main;
+
+    // 카드뷰 내용 : 단어장 명 , 총 단어 수
+    public static String[] Arr_VocaNoteName = {};
+    public static int[] Arr_VocaCount = {};
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,8 +90,16 @@ public class ChapterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(true);
+
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+
+        // 타이틀 컬러를 처음과 마지막 색상을 동일하게 했다. //
+        toolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+        toolbarLayout.setExpandedTitleColor(Color.WHITE);
+
 
         //toolbar.setNavigationIcon(R.drawable.button_hamburger_size);
 
@@ -94,8 +124,44 @@ public class ChapterActivity extends AppCompatActivity {
             textView_VocaNoteName.setText(VocaNoteName);
             //Note_CreateDate.setText(CreateDate);
             textView_VocaCount.setText(VocaCount);
+
+            //단어장 프래그먼트에서 단어장명 가져옴.
+            toolbarLayout.setTitle(VocaNoteName);
         }
 
+        /////////////
+        context_Frag_Main = Fragment_VocaNote.context_Frag_Main;
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+        QUERY_VocaNote();
+
+        List<VocaNote> list = getList();
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.context_main);
+        recyclerView.setLayoutManager(layoutManager);
+
+        // 싱글 선택 어댑터 //
+        adapter = new VocaNoteAdapter(context_Frag_Main, list);
+
+        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
+            @Override
+            public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+                VocaNote item = adapter.getItem(position);
+                VocaNoteName = item.getVocaNoteName();
+                VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
+
+                Toast.makeText(getApplicationContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getVocaCount(), Toast.LENGTH_SHORT).show();
+
+
+                ///ChapterActivity
+                Intent intent = new Intent(getApplicationContext(), VocaActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -103,4 +169,108 @@ public class ChapterActivity extends AppCompatActivity {
         super.onBackPressed();
         MainActivity.save = 0;
     }
+
+    ///////////
+    public void QUERY_VocaNote() {
+        // 일단 임시로 넣는다 나중에 DB에서 연동 //
+
+        Arr_VocaNoteName = new String[20];
+        Arr_VocaCount = new int[20];
+
+        Arr_VocaNoteName[19] = "챕터 1";
+        Arr_VocaCount[19] = 5;
+
+        Arr_VocaNoteName[18] = "챕터 2";
+        Arr_VocaCount[18] = 58;
+
+        Arr_VocaNoteName[17] = "챕터 3";
+        Arr_VocaCount[17] = 1;
+
+        Arr_VocaNoteName[16] = "챕터 4";
+        Arr_VocaCount[16] = 42;
+
+        Arr_VocaNoteName[15] = "챕터 5";
+        Arr_VocaCount[15] = 25;
+
+        Arr_VocaNoteName[14] = "챕터 6";
+        Arr_VocaCount[14] = 5;
+
+        Arr_VocaNoteName[13] = "챕터 7";
+        Arr_VocaCount[13] = 58;
+
+        Arr_VocaNoteName[12] = "챕터 8";
+        Arr_VocaCount[12] = 1;
+
+        Arr_VocaNoteName[11] = "챕터 9";
+        Arr_VocaCount[11] = 42;
+
+        Arr_VocaNoteName[10] = "챕터 10";
+        Arr_VocaCount[10] = 25;
+
+        Arr_VocaNoteName[9] = "챕터 11";
+        Arr_VocaCount[9] = 5;
+
+        Arr_VocaNoteName[8] = "챕터 12";
+        Arr_VocaCount[8] = 58;
+
+        Arr_VocaNoteName[7] = "챕터 13";
+        Arr_VocaCount[7] = 1;
+
+        Arr_VocaNoteName[6] = "챕터 14";
+        Arr_VocaCount[6] = 42;
+
+        Arr_VocaNoteName[5] = "챕터 15";
+        Arr_VocaCount[5] = 25;
+
+        Arr_VocaNoteName[4] = "챕터 16";
+        Arr_VocaCount[4] = 5;
+
+        Arr_VocaNoteName[3] = "챕터 17";
+        Arr_VocaCount[3] = 58;
+
+        Arr_VocaNoteName[2] = "챕터 18";
+        Arr_VocaCount[2] = 1;
+
+        Arr_VocaNoteName[1] = "챕터 19";
+        Arr_VocaCount[1] = 42;
+
+        Arr_VocaNoteName[0] = "챕터 20";
+        Arr_VocaCount[0] = 25;
+    }
+
+    private List<VocaNote> getList() {
+        List<VocaNote> list = new ArrayList<>();
+
+        for(int i = 0; i< Arr_VocaNoteName.length; i++) {
+            VocaNote model = new VocaNote();
+            model.setVocaNoteName(Arr_VocaNoteName[i]); // 단어장 명 //
+            //model.setCrDateNote(Arr_CREATE_DATE[i]);
+            model.setVocaCount(Arr_VocaCount[i]); // 총 단어 수 //
+            list.add(model);
+        }
+
+        return list;
+    }
+
+    public void selectedClick() {
+        List list = adapter.getSelectedItem();
+
+        if(list.size() > 0 ) {
+            StringBuilder sb = new StringBuilder();
+            for(int index = 0; index < list.size(); index++) {
+                VocaNote model = (VocaNote) list.get(index);
+                sb.append(model.getVocaNoteName()).append("\n");
+            }
+            showToast(sb.toString());
+
+        } else {
+            showToast("체크 안됨");
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+
 }

@@ -150,7 +150,7 @@ android:orientation="vertical">
 
                 android:tint="@color/White"
                 android:src="@drawable/ic_vector_add_64px"/>
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <LinearLayout
             android:id="@+id/Frame_Empty_LinearLayout"
