@@ -494,6 +494,8 @@ public class MainActivity extends AppCompatActivity {
         Fragment_Group fragment_group = new Fragment_Group();
         adapter.addItem(fragment_group);
 
+        final ChapterActivity chapterActivity = new ChapterActivity();
+
         pager.setPageTransformer(true, new DepthPageTransformer());
         pager.setAdapter(adapter);
 

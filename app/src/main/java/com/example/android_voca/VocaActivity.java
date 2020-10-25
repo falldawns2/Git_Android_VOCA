@@ -58,6 +58,11 @@ public class VocaActivity extends AppCompatActivity {
         textView_VocaNoteName.setText("단어장 명 : " + intent.getExtras().getString("VocaNoteName"));
         textView_ChapterName.setText("챕터 명 : " + intent.getExtras().getString("ChapterNoteName"));
 
+        //단어장명
+        VocaNoteName = intent.getExtras().getString("VocaNoteName");
+        //챕터명
+        ChapterNoteName = intent.getExtras().getString("ChapterNoteName");
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
@@ -77,7 +82,15 @@ public class VocaActivity extends AppCompatActivity {
         if(save == 1) {
 
         } else {
-            toolbarLayout.setTitle(intent.getExtras().getString("ChapterNoteName"));
+            toolbarLayout.setTitle(VocaNoteName  + " (" + ChapterNoteName + ")");
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        MainActivity.save = 0;
+        MainActivity.tag = "single";
+        MainActivity.PageNum = 1;
     }
 }

@@ -198,7 +198,11 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
                         if(main_checkbox.getVisibility() == View.INVISIBLE) {
                             MainActivity.tag = "multi";
                             main_checkbox.setChecked(true);
-                            ((MainActivity)MainActivity.context_main).restart();
+                            if (MainActivity.PageNum == 0) {
+                                ((MainActivity)MainActivity.context_main).restart();
+                            } else if (MainActivity.PageNum == 1) {
+                                ((ChapterActivity)ChapterActivity.context_Chapter).restart();
+                            }
                             //Edit_Activation = true;
                         }
                         return true;

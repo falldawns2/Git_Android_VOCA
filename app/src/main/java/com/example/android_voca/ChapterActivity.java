@@ -1,5 +1,6 @@
 package com.example.android_voca;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -64,6 +65,9 @@ public class ChapterActivity extends AppCompatActivity {
 
     //커스텀 다이얼로그
     CustomDialog_VocaNote CustomDialog;
+
+    public static Context context_Chapter;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //MenuInflater menuInflater = getMenuInflater();
@@ -93,6 +97,8 @@ public class ChapterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter);
+
+        context_Chapter = ChapterActivity.this;
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -166,7 +172,7 @@ public class ChapterActivity extends AppCompatActivity {
                 ChapterNoteName = item.getChapterName();
                 VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
 
-                Toast.makeText(getApplicationContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getChapterName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "선택된 단어장 : " + VocaNoteName + ", " + item.getChapterName(), Toast.LENGTH_SHORT).show();
 
 
                 ///
@@ -209,6 +215,8 @@ public class ChapterActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         MainActivity.save = 0;
+        MainActivity.tag = "single";
+        MainActivity.PageNum = 0;
     }
 
     ///////////
@@ -313,5 +321,8 @@ public class ChapterActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
+    protected void restart() {
+        Toast.makeText(context_Chapter, "test", Toast.LENGTH_SHORT).show();
+    }
 
 }
