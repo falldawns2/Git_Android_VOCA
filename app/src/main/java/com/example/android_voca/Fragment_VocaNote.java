@@ -127,6 +127,11 @@ public class Fragment_VocaNote extends Fragment {
                 Intent intent = new Intent(getContext(), ChapterActivity.class);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
+
+            }
         });
 
         return v;

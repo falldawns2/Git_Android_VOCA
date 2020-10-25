@@ -181,6 +181,11 @@ public class ChapterActivity extends AppCompatActivity {
                 intent.putExtra("ChapterNoteName",item.getChapterName());
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
+
+            }
         });
 
 

@@ -5,15 +5,22 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VocaActivity extends AppCompatActivity {
 
@@ -26,6 +33,16 @@ public class VocaActivity extends AppCompatActivity {
     public String ChapterNoteName; //챕터
 
     int save;
+
+    ////////
+    RecyclerView recyclerView;
+    VocaAdapter adapter;
+
+    //카드뷰 내용 : 단어, 뜻, 예문, 해석
+    public static String[] Arr_Voca = {};
+    public static String[] Arr_Mean = {};
+    public static String[] Arr_Sentence = {};
+    public static String[] Arr_Interpritation = {};
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,6 +101,82 @@ public class VocaActivity extends AppCompatActivity {
         } else {
             toolbarLayout.setTitle(VocaNoteName  + " (" + ChapterNoteName + ")");
         }
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+        QUERY_VOCA();
+
+        List<Voca> list = getList();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.context_main);
+        recyclerView.setLayoutManager(layoutManager);
+
+        //싱글 선택 어댑터 //
+        adapter = new VocaAdapter(VocaActivity.this, list);
+
+        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
+            @Override
+            public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+                Voca item = adapter.getItem(position);
+
+                String voca = item.getVoca();
+                String mean = item.getMean();
+                String Sen = item.getSentence();
+                String Inter = item.getInterpretation();
+
+                Toast.makeText(VocaActivity.this, voca + ", " + mean + ", "
+                        + Sen + ", " + Inter, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
+
+            }
+        });
+    }
+
+    public void QUERY_VOCA() {
+        //일단 임시로 단어 내용 넣는다. //
+
+        Arr_Voca = new String[20];
+        Arr_Mean = new String[20];
+        Arr_Sentence = new String[20];
+        Arr_Interpritation = new String[20];
+
+        for (int i = 0; i< 20; i++) {
+            Arr_Voca[i] = "단어 " + i;
+            Arr_Mean[i] = "뜻 " + i;
+            Arr_Sentence[i] = "예문 " + i;
+            Arr_Interpritation[i] = "해석 " + i;
+        }
+
+        Arr_Voca[0] = "Speech";
+        Arr_Mean[0] = "연설, 말, 언어";
+        Arr_Sentence[0] = "man alone has the gift of speech";
+        Arr_Interpritation[0] = "인간만이 말할 줄 안다";
+    }
+
+    private List<Voca> getList() {
+        List<Voca> list = new ArrayList<>();
+
+        for(int i = 0; i < Arr_Voca.length; i++) {
+            Voca model = new Voca();
+
+            model.setVoca(Arr_Voca[i]);
+            model.setMean(Arr_Mean[i]);
+            model.setSentence(Arr_Sentence[i]);
+            model.setInterpretation(Arr_Interpritation[i]);
+
+            list.add(model);
+        }
+        return list;
+    }
+
+    public void showToast(String message) {
+        Toast.makeText(VocaActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -70,7 +70,14 @@ tools:context=".ChapterActivity">
 
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="정렬 순서"/>
+
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/test"
@@ -98,6 +105,7 @@ tools:context=".ChapterActivity">
     app:layout_constraintTop_toTopOf="parent" /> -->
 
 
+            <!-- 위의 내용물 -->
 
             <TextView
                 android:id="@+id/textView_VocaNoteName"

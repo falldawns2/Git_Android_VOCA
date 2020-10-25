@@ -73,6 +73,11 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
     }
 
     @Override
+    public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
+
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         VocaNote item = items.get(position);
         /*if(MainActivity.tag == "single")
