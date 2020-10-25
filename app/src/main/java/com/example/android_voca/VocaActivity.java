@@ -102,7 +102,7 @@ public class VocaActivity extends AppCompatActivity {
             toolbarLayout.setTitle(VocaNoteName  + " (" + ChapterNoteName + ")");
         }
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView_Voca);
 
         QUERY_VOCA();
 
@@ -112,7 +112,7 @@ public class VocaActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         //싱글 선택 어댑터 //
-        adapter = new VocaAdapter(VocaActivity.this, list);
+        adapter = new VocaAdapter(getApplicationContext(), list);
 
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
@@ -120,6 +120,11 @@ public class VocaActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
             @Override
             public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+
+            }
+
+            @Override
+            public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
                 Voca item = adapter.getItem(position);
 
                 String voca = item.getVoca();
@@ -130,16 +135,11 @@ public class VocaActivity extends AppCompatActivity {
                 Toast.makeText(VocaActivity.this, voca + ", " + mean + ", "
                         + Sen + ", " + Inter, Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
-
-            }
         });
     }
 
     public void QUERY_VOCA() {
-        //일단 임시로 단어 내용 넣는다. //
+        // 일단 임시로 단어 내용 넣는다. //
 
         Arr_Voca = new String[20];
         Arr_Mean = new String[20];
@@ -157,6 +157,12 @@ public class VocaActivity extends AppCompatActivity {
         Arr_Mean[0] = "연설, 말, 언어";
         Arr_Sentence[0] = "man alone has the gift of speech";
         Arr_Interpritation[0] = "인간만이 말할 줄 안다";
+
+        Arr_Voca[1] = "test1";
+        Arr_Mean[1] = "테스트1";
+        Arr_Sentence[1] = null;
+        Arr_Interpritation[1] = null;
+
     }
 
     private List<Voca> getList() {

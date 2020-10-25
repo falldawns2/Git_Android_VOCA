@@ -126,7 +126,7 @@ tools:context=".ChapterActivity">
                 app:layout_constraintTop_toBottomOf="@+id/toolbar" />
             <!-- app:layout_constraintTop_toBottomOf="@+id/Note_CreateDate" -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/recyclerView_Voca"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
             </androidx.recyclerview.widget.RecyclerView>

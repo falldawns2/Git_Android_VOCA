@@ -43,6 +43,8 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
         this.context = context;
     }
 
+
+    // cardView Voca 적용 //
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -52,22 +54,24 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
         return new ViewHolder(itemView, this);
     }
 
+    // 클릭 리스너 //
     public void setOnItemClickListener(OnVocaNoteItemClickListener listener) {
         this.listener = listener;
     }
 
     @Override
     public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
-
+        //여기선 사용하지 않음
     }
 
     @Override
     public void onItemVocaClick(ViewHolder holder, View view, int position) {
         if(listener != null) {
-            listener.onItemVocaClick(holder, view, position);
+            listener.onItemVocaClick(holder, view, position); //클릭 포지션 값
         }
     }
 
+    //값 반복적으로 바인딩
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Voca item = items.get(position);
@@ -81,10 +85,21 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
     }
 
     private void initializeView(final Voca item, final VocaAdapter.ViewHolder holder, int position) {
+        //바인딩할 data
+        holder.Word.setText(item.getVoca());
+        holder.Mean.setText(item.getMean());
+        holder.Sentence.setText(item.getSentence());
+        holder.Interpretation.setText(item.getInterpretation());
 
-
+        // 예문 해석이 없을 때 안보이게 설정
+        if(item.getSentence() == null) {
+            holder.Sentence.setVisibility(View.GONE);
+        } else {
+            holder.Sentence.setVisibility(View.VISIBLE);
+        }
     }
 
+    //체크박스 관련
     public List<Voca> getSelectedItem() {
         List<Voca> itemModelList = new ArrayList<>();
 
@@ -132,9 +147,12 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
                 }
             });
         }
-    }
 
-    public void setItem(Voca item) {
-
+        public void setItem(Voca item) {
+            Word.setText(item.getVoca());
+            Mean.setText(item.getMean());
+            Sentence.setText(item.getSentence());
+            Interpretation.setText(item.getInterpretation());
+        }
     }
 }
