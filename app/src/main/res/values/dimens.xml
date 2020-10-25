@@ -5,4 +5,5 @@
     <dimen name="memo_margin">10dp</dimen>
     <dimen name="star_margin">50dp</dimen>
     <dimen name="Challenge_margin">30dp</dimen>
+    <dimen name="Voca_margin">5dp</dimen>
 </resources>

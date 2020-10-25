@@ -53,7 +53,6 @@ public class Fragment_VocaNote extends Fragment {
     public String VocaNoteName;
     public String VocaCount;
 
-
     //public  String[] title;
 
     public  int i = 0;
@@ -115,6 +114,8 @@ public class Fragment_VocaNote extends Fragment {
         adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
             @Override
             public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+
+                MainActivity.PageNum = 1; //챕터 페이지로 이동
                 VocaNote item = adapter.getItem(position);
                 VocaNoteName = item.getVocaNoteName();
                 VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());

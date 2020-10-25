@@ -3,9 +3,11 @@ package com.example.android_voca;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,7 @@ public class ChapterActivity extends AppCompatActivity {
     ActionBar actionBar;
 
     public String VocaNoteName;
-    //public String CreateDate;
+    public String ChapterNoteName;
     public String VocaCount;
 
     //
@@ -56,6 +59,11 @@ public class ChapterActivity extends AppCompatActivity {
     public static int[] Arr_VocaCount = {};
 
 
+    //플로팅 버튼
+    FloatingActionButton fab;
+
+    //커스텀 다이얼로그
+    CustomDialog_VocaNote CustomDialog;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //MenuInflater menuInflater = getMenuInflater();
@@ -150,16 +158,49 @@ public class ChapterActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
             @Override
             public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+
+                MainActivity.PageNum = 2; //단어 페이지로 이동
+
                 VocaNote item = adapter.getItem(position);
-                VocaNoteName = item.getVocaNoteName();
+                //VocaNoteName = item.getVocaNoteName();
+                ChapterNoteName = item.getChapterName();
                 VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
 
-                Toast.makeText(getApplicationContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getVocaCount(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getChapterName(), Toast.LENGTH_SHORT).show();
 
 
-                ///ChapterActivity
+                ///
                 Intent intent = new Intent(getApplicationContext(), VocaActivity.class);
+                intent.putExtra("VocaNoteName",VocaNoteName);
+                intent.putExtra("ChapterNoteName",item.getChapterName());
                 startActivity(intent);
+            }
+        });
+
+
+        //플로팅 버튼 테스트
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ChapterActivity.this, "챕터 추가 이벤트", Toast.LENGTH_SHORT).show();
+                CustomDialog = new CustomDialog_VocaNote(ChapterActivity.this,
+                        new CustomDialogSelectClickListener() {
+                            @Override
+                            public void onPositiveClick() {
+                                Log.e("test","OK");
+                            }
+
+                            @Override
+                            public void onNegativeClick() {
+                                Log.e("test","cancel");
+                            }
+                        });
+                CustomDialog.setCanceledOnTouchOutside(true);
+                CustomDialog.setCancelable(true);
+                CustomDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.MATCH_PARENT);
+                CustomDialog.show();
             }
         });
     }
@@ -243,7 +284,7 @@ public class ChapterActivity extends AppCompatActivity {
 
         for(int i = 0; i< Arr_VocaNoteName.length; i++) {
             VocaNote model = new VocaNote();
-            model.setVocaNoteName(Arr_VocaNoteName[i]); // 단어장 명 //
+            model.setChapterName(Arr_VocaNoteName[i]); // 챕터명 //
             //model.setCrDateNote(Arr_CREATE_DATE[i]);
             model.setVocaCount(Arr_VocaCount[i]); // 총 단어 수 //
             list.add(model);
@@ -259,7 +300,7 @@ public class ChapterActivity extends AppCompatActivity {
             StringBuilder sb = new StringBuilder();
             for(int index = 0; index < list.size(); index++) {
                 VocaNote model = (VocaNote) list.get(index);
-                sb.append(model.getVocaNoteName()).append("\n");
+                sb.append(model.getChapterName()).append("\n");
             }
             showToast(sb.toString());
 

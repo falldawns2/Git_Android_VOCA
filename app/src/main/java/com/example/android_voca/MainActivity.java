@@ -13,17 +13,21 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -82,9 +86,13 @@ public class MainActivity extends AppCompatActivity {
     public FloatingActionButton fab;
 
     //VocaNote 추가 - > VocaNote 보기 액티비티
-    public static int save = 0;
+    public static int save = 0;  //이 값은 편집 모드 판단한다.
+    public static int PageNum = 0; //단어장 : 0, 챕터 : 1, 단어 : 2;
 
     SearchView searchView;
+
+    //커스텀 다이얼로그
+    CustomDialog_VocaNote CustomDialog;
 
    @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,18 +131,6 @@ public class MainActivity extends AppCompatActivity {
        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);
 
-       //FloatingActionButton fab
-       fab = (FloatingActionButton) findViewById(R.id.fab);
-       fab.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               //각각의 페이지 상태에 따라 fab 버튼의 할 일이 다르다.
-                //Intent intent = new Intent(getApplicationContext(), VocaNoteAddActivity.class);
-                save = 1;
-                //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                //startActivity(intent);
-           }
-       });
 
        //페이저 기능
        pager = findViewById(R.id.pager);
@@ -167,6 +163,15 @@ public class MainActivity extends AppCompatActivity {
        Linear_Board = findViewById(R.id.Linear_Board);
        Linear_Group = findViewById(R.id.Linear_Group);
 
+       //FloatingActionButton fab
+       fab = (FloatingActionButton) findViewById(R.id.fab);
+       fab.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Fab_Click();
+           }
+       });
+
        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
            @Override
            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -185,6 +190,12 @@ public class MainActivity extends AppCompatActivity {
                         //fab.setColorFilter(getResources().getColor(R.color.Black)); //플러스 버튼 색상 변경됨//
                         fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff4340"))); // 플로팅 버튼 뒷 색상 변경 //
                         searchView.setQueryHint("단어 검색");
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Fab_Click();
+                            }
+                        });
                         break;
                     case 1:
                         Position = position;
@@ -194,6 +205,12 @@ public class MainActivity extends AppCompatActivity {
                         toolbar.setBackgroundColor(Color.parseColor("#252526"));
                         fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff4340"))); // 단어장 추가 이므로 색상 그대로 //
                         searchView.setQueryHint("단어 검색");
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(MainActivity.this, "플로팅 : 도전", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         break;
                     case 2:
                         Position = position;
@@ -203,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
                         toolbar.setBackgroundColor(Color.parseColor("#31a3e4"));
                         fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#31a3e4")));
                         searchView.setQueryHint("게시판 검색");
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(MainActivity.this, "플로팅 : 게시판", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         break;
                     case 3:
                         Position = position;
@@ -212,6 +235,12 @@ public class MainActivity extends AppCompatActivity {
                         toolbar.setBackgroundColor(Color.parseColor("#a1e88b"));
                         fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#a1e88b")));
                         searchView.setQueryHint("그룹 검색");
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(MainActivity.this, "플로팅 : 그룹", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         break;
                 }
            }
@@ -248,6 +277,8 @@ public class MainActivity extends AppCompatActivity {
                    case R.id.Linear_Group:
                        pager.setCurrentItem(3, false);
                        break;
+
+
                }
            }
        };
@@ -256,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
        Linear_Challenge.setOnClickListener(onClickListener);
        Linear_Board.setOnClickListener(onClickListener);
        Linear_Group.setOnClickListener(onClickListener);
+       //fab.setOnClickListener(onClickListener);
 
        Frag_VocaNote = getLayoutInflater().inflate(R.layout.fragment_vocanote, null, false);
 
@@ -278,6 +310,33 @@ public class MainActivity extends AppCompatActivity {
        MenuPanel.setLayoutParams(MenuPanelParameters);
 
        // 메뉴 패널 터치 이벤트 일단 보류 //
+    }
+
+    public void Fab_Click() {
+        //각각의 페이지 상태에 따라 fab 버튼의 할 일이 다르다.
+        //Intent intent = new Intent(getApplicationContext(), VocaNoteAddActivity.class);
+        save = 0; // save = 1;
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //startActivity(intent);
+        Toast.makeText(MainActivity.this, "save=0, 단어장 추가 이벤트", Toast.LENGTH_SHORT).show();
+
+        CustomDialog = new CustomDialog_VocaNote(MainActivity.this,
+                new CustomDialogSelectClickListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        Log.e("test","OK");
+                    }
+
+                    @Override
+                    public void onNegativeClick() {
+                        Log.e("test","cancel");
+                    }
+                });
+        CustomDialog.setCanceledOnTouchOutside(true);
+        CustomDialog.setCancelable(true);
+        CustomDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT);
+        CustomDialog.show();
     }
 
     // child 뷰들이 활성화 비활성화 한다. //

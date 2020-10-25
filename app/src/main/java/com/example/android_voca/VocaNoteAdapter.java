@@ -88,8 +88,15 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
     }
 
     private void initializeViews(final VocaNote item, final VocaNoteAdapter.ViewHolder holder, int position) {
-        holder.textview_VocaNote.setText(item.getVocaNoteName());
+
+        if(MainActivity.PageNum == 0) {
+            holder.textview_VocaNote.setText(item.getVocaNoteName()); //단어장명 뿌림 //단어장 페이지
+        } else if (MainActivity.PageNum == 1) {
+            holder.textview_VocaNote.setText(item.getChapterName()); //챕터명 뿌림 //챕터 페이지
+        }
+
         //holder.textView_CreateDate.setText(item.getCreateDate());
+
         holder.textview_VocaCount.setText(String.valueOf(item.getVocaCount()));
 
         holder.main_checkbox.setChecked(item.isSelected());
