@@ -32,8 +32,8 @@ namespace WcfService1
             return composite;
         }*/
         //Connection string //
-        private string conn = "Data Source = .; Initial Catalog=VOCA_KTH; uid=User; pwd=1";
-
+        //private string conn = "Data Source = .; Initial Catalog=VOCA_KTH; uid=User; pwd=1";DESKTOP-DS7MIT5\KTH2019
+        private string conn = "Data Source = DESKTOP-DS7MIT5\\KTH2019; Initial Catalog=VOCA_KTH; uid=User; pwd=1"; 
         public List<Members> GetMembers()
         {
             List<Members> MemberList = new List<Members>();

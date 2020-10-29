@@ -55,7 +55,7 @@ namespace WcfService1
 
         // Post Method // 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "AddMembers", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "AddMembers", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Xml, ResponseFormat = WebMessageFormat.Xml)]
         int AddMembers(string userid);
 
     }
