@@ -5,7 +5,8 @@ import java.io.Serializable;
 public class AccountInfo implements Serializable {
 
     //Members 테이블
-    String Session_ID; //userid
+    String Userid; //userid
+    String Passwd;
     String Name; //name
     String Nickcname; //nickname
 
@@ -14,19 +15,19 @@ public class AccountInfo implements Serializable {
 
     }
 
-    public AccountInfo(String Session_ID, String Name, String Nickname)
+    public AccountInfo(String Userid, String Name, String Nickcname)
     {
-        this.Session_ID = Session_ID;
+        this.Userid = Userid;
         this.Name = Name;
-        this.Nickcname = Nickname;
+        this.Nickcname = Nickcname;
     }
 
     public String getSession_ID() {
-        return Session_ID;
+        return Userid;
     }
 
-    public void setSession_ID(String session_ID) {
-        Session_ID = session_ID;
+    public void setSession_ID(String userid) {
+        Userid = userid;
     }
 
     public String getName() {

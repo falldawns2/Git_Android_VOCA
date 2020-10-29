@@ -55,13 +55,12 @@ namespace WcfService1
 
         // Post Method // 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "AddMembers", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Xml, ResponseFormat = WebMessageFormat.Xml)]
+        [WebInvoke(Method = "POST", UriTemplate = "AddMembers", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         int AddMembers(string userid);
-
     }
 
     [DataContract]
-    public class Members
+    public class Members //json/xml 형식으로 가져올 값을 정한다.
     {
         string userid;
 
