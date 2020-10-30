@@ -90,5 +90,22 @@ namespace WcfService1.Class
             //결과를 반환
             return isAuthen;
         }
+
+        //프로필 이미지를 가져옴
+        public string GetImage(string uid)
+        {
+            string profileimage = null;
+
+            string mySql = "SELECT profileimage From members WHERE userid = '" + uid + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(mySql);
+
+            if (myReader.Read())
+            {
+                profileimage = myReader["profileimage"].ToString().TrimEnd();
+            }
+            myReader.Close();
+            return profileimage;
+        }
     }
 }

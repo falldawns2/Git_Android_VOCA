@@ -19,7 +19,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
@@ -28,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText Passwd;
 
     private POSTApi postApi;
+
+    private final String svcName = "Service_Account.svc/";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,26 +56,14 @@ public class LoginActivity extends AppCompatActivity {
         image_Logo.setLayoutParams(params);
 
 
-        //Retrofit 2
-        //log 기록 확인
-        OkHttpClient.Builder ClientBuilder = new OkHttpClient.Builder();
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        ClientBuilder.addInterceptor(loggingInterceptor);
-
-        //Retrofit2  빌드
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.2/WCF_Android/Service_Account.svc/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(ClientBuilder.build()) //log 기록 확인용
-                .build();
-
-        postApi = retrofit.create(POSTApi.class);
+        //Retrofit
+        Retrofit retrofit = new Retrofit(postApi);
+        postApi = retrofit.setRetrofitInit(svcName); //반환된 인터페이스 받음
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //로그인 체크 Authenticate
                 LoginCheck loginCheck = new LoginCheck(Userid.getText().toString(), Passwd.getText().toString());
                 Call<LoginCheck> call = postApi.Authenticate(loginCheck);
                 call.enqueue(new Callback<LoginCheck>() {
@@ -106,7 +95,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
-
                 /*//메인 액티비티로 이동. (로그인 성공 시) 임시로 그냥 넘어감.
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 

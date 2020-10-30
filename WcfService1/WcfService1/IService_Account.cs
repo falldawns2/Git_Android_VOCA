@@ -16,6 +16,11 @@ namespace WcfService1
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "Authenticate", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         LoginCheck Authenticate(string id, string pwd);
+
+        //POST 프로필 이미지 보내기
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "GetProfileImage", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Image ProfileImage(string id); //base64
     }
 
     [DataContract]
@@ -28,6 +33,18 @@ namespace WcfService1
         {
             get { return check; }
             set { check = value; }
+        }
+    }
+
+    public class Image
+    {
+        string profileImage; //프로필이미지
+
+        [DataMember] //base64 형태
+        public string ProfileImage
+        {
+            get { return profileImage; }
+            set { profileImage = value; }
         }
     }
            

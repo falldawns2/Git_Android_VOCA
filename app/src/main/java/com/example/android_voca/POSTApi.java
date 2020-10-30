@@ -12,6 +12,4 @@ public interface POSTApi {
     @POST("Authenticate") //주소 경로
     Call<LoginCheck> Authenticate(@Body LoginCheck loginCheck); //Body에 담을 값
     //Call<LoginCheck> Authenticate(@FieldMap Map<String, STring> fields);
-
-
 }

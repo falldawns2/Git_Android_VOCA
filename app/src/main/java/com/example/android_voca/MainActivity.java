@@ -25,6 +25,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -92,6 +93,20 @@ public class MainActivity extends AppCompatActivity {
 
     //커스텀 다이얼로그
     CustomDialog_VocaNote CustomDialog;
+
+
+    //보조 메뉴//
+    View cardview_activity_menu; //프로필 카드
+
+    View cardview_activity_menu_Panel; //번역기
+    View cardview_activity_menu_Panel2; //다크 모드
+    View cardview_activity_menu_Panel3; //설정
+    View cardview_activity_menu_Panel4; //별점 주기
+
+    TextView txt_CardView_Menu_Panel;
+    TextView txt_CardView_Menu_Panel2;
+    TextView txt_CardView_Menu_Panel3;
+    TextView txt_CardView_Menu_Panel4;
 
    @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -309,6 +324,50 @@ public class MainActivity extends AppCompatActivity {
        MenuPanel.setLayoutParams(MenuPanelParameters);
 
        // 메뉴 패널 터치 이벤트 일단 보류 //
+
+
+       //보조 메뉴 //
+       cardview_activity_menu = findViewById(R.id.cardview_activity_menu);
+
+       cardview_activity_menu_Panel = findViewById(R.id.cardview_activity_menu_panel);
+       cardview_activity_menu_Panel2 = findViewById(R.id.cardview_activity_menu_panel2);
+       cardview_activity_menu_Panel3 = findViewById(R.id.cardview_activity_menu_panel3);
+       cardview_activity_menu_Panel4 = findViewById(R.id.cardview_activity_menu_panel4);
+
+       txt_CardView_Menu_Panel = cardview_activity_menu_Panel.findViewById(R.id.txt_cardValue);
+       txt_CardView_Menu_Panel2 = cardview_activity_menu_Panel2.findViewById(R.id.txt_cardValue);
+       txt_CardView_Menu_Panel3 = cardview_activity_menu_Panel3.findViewById(R.id.txt_cardValue);
+       txt_CardView_Menu_Panel4 = cardview_activity_menu_Panel4.findViewById(R.id.txt_cardValue);
+
+       txt_CardView_Menu_Panel.setText("번역기");
+       txt_CardView_Menu_Panel2.setText("다크모드");
+       txt_CardView_Menu_Panel3.setText("설정");
+       txt_CardView_Menu_Panel4.setText("별점 주기");
+
+       cardview_activity_menu_Panel.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Toast.makeText(MainActivity.this, "번역기", Toast.LENGTH_SHORT).show();
+           }
+       });
+       cardview_activity_menu_Panel2.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Toast.makeText(MainActivity.this, "다크 모드", Toast.LENGTH_SHORT).show();
+           }
+       });
+       cardview_activity_menu_Panel3.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Toast.makeText(MainActivity.this, "설정", Toast.LENGTH_SHORT).show();
+           }
+       });
+       cardview_activity_menu_Panel4.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Toast.makeText(MainActivity.this, "별점 주기", Toast.LENGTH_SHORT).show();
+           }
+       });
     }
 
     public void Fab_Click() {

@@ -32,6 +32,7 @@ android:text="문의하기"/>
 
  </RelativeLayout> -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/Layout_menu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,48 +40,64 @@ android:text="문의하기"/>
     android:orientation="vertical"
     android:background="@drawable/menu_background">
 <!-- -android:background="@color/White" -->
-    <Button
-        android:id="@+id/tt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/DarkMode"
-        android:visibility="invisible"/>
 
-    <Switch
-        android:id="@+id/switch_Permission"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/Permission" />
+    <!-- 카드 뷰 계정 정보 (로그아웃 버튼) -->
 
-    <Button
-        android:id="@+id/Btn_DarkMode"
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/cardview_activity_menu"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/DarkMode" />
+        android:layout_marginTop="20dp"
+        layout="@layout/cardview_activity_menu"/>
 
-    <Button
-        android:id="@+id/Btn_Settings"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Settings" />
+        app:cardBackgroundColor="#FFFFFFFF"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="2dp"
+        app:cardUseCompatPadding="true">
 
-    <Button
-        android:id="@+id/Btn_Recycle_bin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/Recycle_bin" />
+        <Switch
+            android:id="@+id/switch_Permission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/Permission" />
 
-    <Button
-        android:id="@+id/Btn_Enquire"
+    </androidx.cardview.widget.CardView>
+
+
+
+    <include
+        android:id="@+id/cardview_activity_menu_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Enquire" />
+        layout="@layout/cardview_activity_menu_panel"/>
+
+    <include
+        android:id="@+id/cardview_activity_menu_panel2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/cardview_activity_menu_panel"/>
+
+    <include
+        android:id="@+id/cardview_activity_menu_panel3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/cardview_activity_menu_panel"/>
+
+    <include
+        android:id="@+id/cardview_activity_menu_panel4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/cardview_activity_menu_panel"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="150dp"
         android:layout_gravity="center"
         android:textSize="30sp"
         android:text="Das Wort" />
