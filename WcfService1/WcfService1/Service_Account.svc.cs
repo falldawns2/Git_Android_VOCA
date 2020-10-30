@@ -15,7 +15,7 @@ namespace WcfService1
         private string conn = "Data Source = DESKTOP-DS7MIT5\\KTH2019; Initial Catalog=VOCA_KTH; uid=User; pwd=1";
         DB_Session dB_Session;
 
-        public bool Authenticate(string id, string pwd)
+        public LoginCheck Authenticate(string id, string pwd)
         {
             dB_Session = new DB_Session();
 
@@ -25,11 +25,15 @@ namespace WcfService1
 
             if (IsAuthenticated)
             {
-                return true; //로그인 일치
+                LoginCheck loginCheck = new LoginCheck();
+                loginCheck.Check = true;
+                return loginCheck; //로그인 일치
             } 
             else
             {
-                return false; //불일치
+                LoginCheck loginCheck = new LoginCheck();
+                loginCheck.Check = false;
+                return loginCheck; //불일치
             }
             
         }

@@ -15,26 +15,19 @@ namespace WcfService1
         //POST 로그인
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "Authenticate", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
-        bool Authenticate(string id, string pwd);
+        LoginCheck Authenticate(string id, string pwd);
     }
 
     [DataContract]
-    public class LoginCheck //json //xml 형식
+    public class LoginCheck //json //xml
     {
-        string userid;
-        string passwd;
+        bool check; //결과값을 반환한다.
 
         [DataMember]
-        public string Userid
+        public bool Check
         {
-            get { return userid; }
-            set { userid = value; }
-        }
-
-        public string Passwd
-        {
-            get { return passwd; }
-            set { passwd = value; }
+            get { return check; }
+            set { check = value; }
         }
     }
            
