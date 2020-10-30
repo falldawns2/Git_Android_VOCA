@@ -4,6 +4,8 @@
 
     <!--임시 트레픽 true 허용 -->
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"

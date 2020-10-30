@@ -10,11 +10,6 @@ public class AccountInfo implements Serializable {
     String Name; //name
     String Nickcname; //nickname
 
-    public AccountInfo()
-    {
-
-    }
-
     public AccountInfo(String Userid, String Name, String Nickcname)
     {
         this.Userid = Userid;
