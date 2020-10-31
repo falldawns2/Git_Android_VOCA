@@ -16,4 +16,8 @@ public interface POSTApi {
     //프로필 이미지 가져오기
     @POST("GetProfileImage")
     Call<AccountInfo> ProfileImage(@Body AccountInfo accountInfo);
+
+    //닉네임 가져오기
+    @POST("GetNickName")
+    Call<AccountInfo> NickName(@Body AccountInfo accountInfo);
 }

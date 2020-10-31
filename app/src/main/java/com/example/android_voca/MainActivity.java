@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     static String Session_ID; //유저 ID 세션 저장
     private POSTApi postApi;
     private final String svcName = "Service_Account.svc/";
+    Retrofit retrofit;
+    AccountInfo accountInfo; //member 테이블 정보
+    Call<AccountInfo> accountInfo_Call;
 
     private static final int REQ_CODE_OVERLAY_PERMISSION = 1;
     Intent foregroundServiceIntent;
@@ -120,8 +123,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView ImageView_Menu_ProfileImage;
 
     //보조 메뉴 로그아웃 버튼 (x 모양) //
-
     ImageView ImageView_Menu_Logout;
+
+    //보조 메뉴 닉네임 //
+    TextView TextView_Menu_NickName;
 
    @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         Session_ID = intent.getExtras().getString("Session_ID");
 
-        AccountInfo accountInfo1 = (AccountInfo)intent.getSerializableExtra("accountInfo");
+        //AccountInfo accountInfo1 = (AccountInfo)intent.getSerializableExtra("accountInfo");
 
         //받아온 값을 여기서 닉네임을 찾아서 다시 뿌려야 한다. (DB 연결 시)
         //TextView test = findViewById(R.id.test);
@@ -391,12 +396,12 @@ public class MainActivity extends AppCompatActivity {
        //retrofit DB에서 가져온 이미지
 
        //Retrofit
-       Retrofit retrofit = new Retrofit(postApi);
+       retrofit = new Retrofit(postApi);
        postApi = retrofit.setRetrofitInit(svcName); //반환된 인터페이스 받음
 
-       AccountInfo accountInfo = new AccountInfo(Session_ID);
-       Call<AccountInfo> call = postApi.ProfileImage(accountInfo);
-       call.enqueue(new Callback<AccountInfo>() {
+       accountInfo = new AccountInfo(Session_ID);
+       accountInfo_Call = postApi.ProfileImage(accountInfo);
+       accountInfo_Call.enqueue(new Callback<AccountInfo>() {
            @Override
            public void onResponse(Call<AccountInfo> call, Response<AccountInfo> response) {
                if(!response.isSuccessful()) {
@@ -432,6 +437,35 @@ public class MainActivity extends AppCompatActivity {
                startActivity(intent);
            }
        });
+
+       //보조 메뉴 --> 닉네임 가져오기
+       TextView_Menu_NickName = (TextView) findViewById(R.id.TextView_Menu_NickName);
+
+       //Retrofit
+       retrofit = new Retrofit(postApi);
+       postApi = retrofit.setRetrofitInit(svcName);
+
+       accountInfo = new AccountInfo(Session_ID);
+       accountInfo_Call = postApi.NickName(accountInfo);
+       accountInfo_Call.enqueue(new Callback<AccountInfo>() {
+           @Override
+           public void onResponse(Call<AccountInfo> call, Response<AccountInfo> response) {
+               if(!response.isSuccessful()) {
+                   Log.e("onResponse not", response.code() + "");
+                   return;
+               }
+
+               AccountInfo postResponse = response.body();
+               TextView_Menu_NickName.setText(postResponse.getNickcname());
+           }
+
+           @Override
+           public void onFailure(Call<AccountInfo> call, Throwable t) {
+               Log.e("Onfailure", t.getMessage() + "");
+           }
+       });
+
+
 
     }
 
