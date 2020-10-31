@@ -107,5 +107,24 @@ namespace WcfService1.Class
             myReader.Close();
             return profileimage;
         }
+
+        //userid를 이용하여, members 테이블에서 nickname을 읽어옴
+        //메인 마스터 페이지에서 환영인사 표시하기 위함
+        public string GetNickname(string uid)
+        {
+            string nickname = null; //리턴값 초기화
+
+            string sQuery = "SELECT nickname FROM members WHERE userid = '" + uid + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(sQuery);
+            //userid 존재 여부 확인 후, nickname 지정
+
+            if (myReader.Read())
+            {
+                nickname = myReader["nickname"].ToString().TrimEnd();
+            }
+            myReader.Close(); // 오류 낫던 부분 실수로 myReader를 close 안했음
+            return nickname;
+        }
     }
 }

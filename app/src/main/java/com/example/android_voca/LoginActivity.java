@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                             //로그인하면 로그인 액티비티 스택삭제.
                             //메인 액티비티에서 뒤로가면 알림창 띄우고 앱 종료.
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.putExtra("Session_ID",Userid.getText().toString()); //유저아이디 세션 저장
                             startActivity(intent);
                         } else { //실패
                             Userid.setHint("로그인 실패");

@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Switch;
@@ -30,15 +31,22 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
-    //String Session_ID;
+    static String Session_ID; //유저 ID 세션 저장
+    private POSTApi postApi;
+    private final String svcName = "Service_Account.svc/";
 
     private static final int REQ_CODE_OVERLAY_PERMISSION = 1;
     Intent foregroundServiceIntent;
@@ -108,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
     TextView txt_CardView_Menu_Panel3;
     TextView txt_CardView_Menu_Panel4;
 
+    //보조 메뉴 프로필 이미지 //
+    ImageView ImageView_Menu_ProfileImage;
+
+    //보조 메뉴 로그아웃 버튼 (x 모양) //
+
+    ImageView ImageView_Menu_Logout;
+
    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
 
         final Intent intent = getIntent(); //로그인 액티비티
 
-        //Session_ID = intent.getExtras().getString("Session_ID");
+        Session_ID = intent.getExtras().getString("Session_ID");
 
-        AccountInfo accountInfo = (AccountInfo)intent.getSerializableExtra("accountInfo");
+        AccountInfo accountInfo1 = (AccountInfo)intent.getSerializableExtra("accountInfo");
 
         //받아온 값을 여기서 닉네임을 찾아서 다시 뿌려야 한다. (DB 연결 시)
         //TextView test = findViewById(R.id.test);
@@ -368,6 +383,56 @@ public class MainActivity extends AppCompatActivity {
                Toast.makeText(MainActivity.this, "별점 주기", Toast.LENGTH_SHORT).show();
            }
        });
+
+       //보조 메뉴 -> 프로필 이미지 //
+
+       ImageView_Menu_ProfileImage = (ImageView) findViewById(R.id.ImageView_Menu_ProfileImage);
+
+       //retrofit DB에서 가져온 이미지
+
+       //Retrofit
+       Retrofit retrofit = new Retrofit(postApi);
+       postApi = retrofit.setRetrofitInit(svcName); //반환된 인터페이스 받음
+
+       AccountInfo accountInfo = new AccountInfo(Session_ID);
+       Call<AccountInfo> call = postApi.ProfileImage(accountInfo);
+       call.enqueue(new Callback<AccountInfo>() {
+           @Override
+           public void onResponse(Call<AccountInfo> call, Response<AccountInfo> response) {
+               if(!response.isSuccessful()) {
+                   Log.e("onResponse not", response.code()+"");
+                   return;
+               }
+
+               AccountInfo postResponse = response.body();
+
+               //glide 이미지 가져오기
+               Glide.with(MainActivity.this)
+                       .load("http://192.168.0.2/WCF_Android/ProfileImage/" + postResponse.getProfileImageName())
+                       .override(150,150)
+                       .into(ImageView_Menu_ProfileImage);
+           }
+
+           @Override
+           public void onFailure(Call<AccountInfo> call, Throwable t) {
+               Log.e("OnFailure",t.getMessage()+"");
+           }
+       });
+
+       //보조 메뉴 --> 로그아웃 버튼
+
+       ImageView_Menu_Logout = (ImageView) findViewById(R.id.ImageView_Menu_Logout);
+
+       ImageView_Menu_Logout.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+               intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+               Session_ID = null; //로그아웃
+               startActivity(intent);
+           }
+       });
+
     }
 
     public void Fab_Click() {

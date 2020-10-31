@@ -48,7 +48,7 @@ namespace WcfService1
             
         }
 
-        public Image ProfileImage(string id) //base64 형태로 반환
+        public Image Base64(string id)
         {
             dB_Session = new DB_Session();
 
@@ -67,7 +67,7 @@ namespace WcfService1
                 .GetValue(ImageName, null);*/
 
             imageFormat = new ImageFormat(Guid.NewGuid());
-            switch(ImageName.ToLower())
+            switch (ImageName.ToLower())
             {
                 case "jpg":
                 case "jpeg":
@@ -104,6 +104,27 @@ namespace WcfService1
             base64.ProfileImage = base64ProfileImage;
 
             return base64;
+        }
+        public Image ProfileImage(string id) //base64 형태로 반환
+        {
+            //return Base64(id);
+            dB_Session = new DB_Session();
+            string ProfileImageName = dB_Session.GetImage(id);
+
+            Image returnImageName = new Image();
+            returnImageName.ProfileImage = ProfileImageName;
+
+            return returnImageName;
+        }
+
+        public GetNickName NickName(string id)
+        {
+            dB_Session = new DB_Session();
+
+            GetNickName getNickName = new GetNickName();
+            getNickName.NickName = dB_Session.GetNickname(id);
+
+            return getNickName;
         }
     }
 }
