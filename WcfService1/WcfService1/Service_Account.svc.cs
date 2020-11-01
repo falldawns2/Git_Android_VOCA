@@ -48,7 +48,7 @@ namespace WcfService1
             
         }
 
-        public Image Base64(string id)
+        public Image Base64(string id)//
         {
             dB_Session = new DB_Session();
 
