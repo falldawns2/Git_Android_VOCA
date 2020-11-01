@@ -1,5 +1,7 @@
 package com.example.android_voca;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
@@ -20,4 +22,12 @@ public interface POSTApi {
     //닉네임 가져오기
     @POST("GetNickName")
     Call<AccountInfo> NickName(@Body AccountInfo accountInfo);
+
+    //단어장
+    @POST("GetVocaNote")
+    Call<List<VocaNote>> GetVocaNote(@Body VocaNote vocaNote);
+
+    //단어장 20개씩 받아오는
+    @POST("GetVocaNote")
+    Call<List<VocaNote2>> GetVocaNote(@Body VocaNote2 vocaNote2);
 }

@@ -23,6 +23,11 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
+
 public class Fragment_VocaNote extends Fragment {
 
     RecyclerView recyclerView;
@@ -31,11 +36,21 @@ public class Fragment_VocaNote extends Fragment {
 
     boolean isLoading = false; //핸들러
 
+    Retrofit retrofit;
+    POSTApi postApi;
+    String svcName = "Service_VocaNote.svc/";
     //ArrayList<String> allList = new ArrayList<>(); //단어장 전체 가져오기 (서비스에서 가져옴)
     //ArrayList<String> list = new ArrayList<>(); //단어장 20개씩 가져옴 (배열에 20개씩 담을 예정)
 
     List<VocaNote> allList; //전체 담음.
     List<VocaNote> list; // 10개씩
+    List<VocaNote> list_20;
+
+    //postResponse 크기 구하기
+    int POST_Response;
+
+    //noSearch == 20보다 작다 이제 더이상 없다는 뜻
+    boolean noSearch = false;
 
     ///
     public static Fragment_VocaNote context_Frag_Main;
@@ -75,6 +90,8 @@ public class Fragment_VocaNote extends Fragment {
 
     int adapter_size = 0;
 
+    //핸들러 반복 횟수
+    static int handler_count;
 
 
     int LastPosition; //dy;
@@ -89,12 +106,18 @@ public class Fragment_VocaNote extends Fragment {
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.context_main));
 
-
+        retrofit = new Retrofit(postApi);
+        postApi = retrofit.setRetrofitInit(svcName);
         //QUERY_NOTE();
         // 샘플로 예시 단어장 넣어본다 //
 
+        handler_count = 1;
         list = new ArrayList<>();
-        QUERY(0);
+        list_20 = new ArrayList<>();
+
+        //QUERY(handler_count,MainActivity.Session_ID,0, postApi);
+        testQQQQ(handler_count,MainActivity.Session_ID,0, postApi);
+
         //QUERY_VocaNote(); //처음에 담아둘 배열 데이터
         //allList = getList(); //전체 단어장 가져옴.
         //list =  getList_Part(); //일부 단어장 가져옴.
@@ -140,18 +163,25 @@ public class Fragment_VocaNote extends Fragment {
     //부분 배열에 새로운 값 20개 담아온다.
     private void GetAddData() {
         Log.d("Fragment_VocaNote", "GetAddData :");
-        list.add(null);
-        adapter.notifyItemInserted(list.size() - 1);
-        recyclerView.scrollToPosition(list.size() - 1); //이걸 이용해서 프로그레스바 까지 자동으로 나타난다.
+        list.add(null); //빈 공간 추가
+
+        recyclerView.scrollToPosition(list.size() - 1); //그 위치로 자동으로 스크롤 내려줌.
+
+        //list_20.clear();
+        //list_20 = new ArrayList<>();
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                list.remove(list.size() - 1);
-                int scrollPosition = list.size();
-                adapter.notifyItemRemoved(scrollPosition);
+
+                Log.e("handler_count", "" + handler_count );
+
+                list.remove(list.size() - 1); //2초 뒤 프로그레스바 배열에서 지움.
+                int scrollPosition = list.size(); //현재 위치 저장
+                adapter.notifyItemRemoved(scrollPosition); //프로그레스바 그림 사라짐
                 int currentSize = scrollPosition; //현재 위치 = 스크롤 위치 = 마지막 값 0 ~ 9면 9
-                int nextLimit = currentSize + 20; //9에서 가져올 값 더해 19
+                int nextLimit = currentSize + POST_Response; //9에서 가져올 값 더해 19
 
                 //현재 값 9에서 ~ 19까지 반복해서 전체 배열에서 현재 배열에 10개 담는다
                 /*for(int i = currentSize; i<nextLimit; i++) {
@@ -161,11 +191,148 @@ public class Fragment_VocaNote extends Fragment {
                     list.add(allList.get(i));
                 }*/
 
-                QUERY(currentSize);
-                adapter.notifyDataSetChanged(); //새로고침
+                //testQuery(currentSize);
+                //testQQQQ(handler_count, MainActivity.Session_ID, 0, postApi);
+                //QUERY(handler_count,MainActivity.Session_ID,currentSize, postApi);
+
+                TTTTT(currentSize ,nextLimit);
+                adapter.notifyDataSetChanged(); //새로고침;
+
                 isLoading = false; //쓰레드
             }
         }, 2000);
+    }
+
+    public void QUERY(int Page_NO, String userid, int currentSize, POSTApi postApi) {
+
+
+        //List<VocaNote> vocaNote = new VocaNote(Page_NO,20,userid,"CrDateNote desc");
+        Call<List<VocaNote2>> call = postApi.GetVocaNote(new VocaNote2(Page_NO, 20, userid, "CrDateNote desc"));
+        call.enqueue(new Callback<List<VocaNote2>>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<List<VocaNote2>> call, Response<List<VocaNote2>> response) {
+                if(!response.isSuccessful()) {
+                    Log.e("Fragment_VocaNote","not success");
+                    return;
+                }
+
+                List<VocaNote2> postResponse = response.body();
+                POST_Response = postResponse.size();
+
+                if(POST_Response < 20) { //20 불러왔는데 더 적은 수가 왔다면 다음엔 없다 = 서버 요청 x
+                    noSearch = true;
+                }
+                if (postResponse != null) {
+
+                   /* int j = currentSize + 20;
+                    for (int a = currentSize; a < j; a++) {
+
+                        list_20.add(new VocaNote(
+                                postResponse.get(a).getVocaNoteName(),
+                                postResponse.get(a).getNickname(),
+                                postResponse.get(a).getCrDateNote(),
+                                postResponse.get(a).getTotalVocaCount()
+                        ));
+                    }
+
+                    for (int s = currentSize; s < j; s++) {
+                        list.add(list_20.get(s));
+                    }*/
+
+                    for (VocaNote2 vocaNote2 : postResponse) {
+
+                        list_20.add(new VocaNote(
+                                vocaNote2.getVocaNoteName(),
+                                vocaNote2.getTotalVocaCount()));
+
+                        //list.add(new VocaNote(
+                                //vocaNote.getVocaNoteName(),
+                                /*vocaNote.getNickname(),
+                                vocaNote.getCrDateNote(),*/
+                                //vocaNote.getTotalVocaCount()));
+
+                        /*list_20.add(new VocaNote(
+                                vocaNote.getVocaNoteName(),
+                                vocaNote.getNickname(),
+                                vocaNote.getCrDateNote(),
+                                vocaNote.getTotalVocaCount()));*/
+                    }
+
+                    //list.add(list_20.get(postResponse.size() - 1));
+                    //testQuery(currentSize, postResponse);
+                }
+            }
+
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<List<VocaNote2>>  call, Throwable t) {
+                Log.e("Fragment_VocaNote" , t.getMessage() +"");
+            }
+        });
+    }
+
+    public void testQuery(int i) {
+        int j = i + 20;
+        for (int a = i; a<j; a++) {
+            list.add(new VocaNote("VocaNoteName"));
+            /*list.add(new VocaNote(
+                    postResponse.get(a).getVocaNoteName(),
+                    postResponse.get(a).getTotalVocaCount()
+            ));*/
+        }
+    }
+
+    public void TTTTT(int i, int j) {
+
+        //for (int a = i; a<j; a++) {
+        for (int a = i; a< j; a++) {
+            if (a == list_20.size()) {
+                return;
+            }
+            list.add(new VocaNote(
+                    list_20.get(a).getVocaNoteName(),
+                    list_20.get(a).getTotalVocaCount()
+            ));
+        }
+    }
+
+    public void testQQQQ(int Page_NO, String userid, int currentSize, POSTApi postApi) {
+        Call<List<VocaNote>> call = postApi.GetVocaNote(new VocaNote(Page_NO, 20, userid, "CrDateNote desc"));
+        call.enqueue(new Callback<List<VocaNote>>() {
+            @Override
+            public void onResponse(Call<List<VocaNote>> call, Response<List<VocaNote>> response) {
+                if(!response.isSuccessful()) {
+                    Log.e("frag", "not success");
+                    return;
+                }
+
+                List<VocaNote> postResponse = response.body();
+
+                if (postResponse != null) {
+                    for (VocaNote vocaNote : postResponse) {
+
+                        list.add(new VocaNote(
+                                vocaNote.getVocaNoteName(),
+                                /*vocaNote.getNickname(),
+                                vocaNote.getCrDateNote(),*/
+                                vocaNote.getTotalVocaCount()));
+
+                        list_20.add(new VocaNote(
+                                vocaNote.getVocaNoteName(),
+                                /*vocaNote.getNickname(),
+                                vocaNote.getCrDateNote(),*/
+                                vocaNote.getTotalVocaCount()));
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<VocaNote>> call, Throwable t) {
+
+            }
+        });
     }
 
     //리싸이클러뷰 이벤트
@@ -177,6 +344,13 @@ public class Fragment_VocaNote extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
                 Log.d("Fragment_VocaNote","onScrollStateChanged: ");
 
+                MainActivity.fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //QUERY(2,MainActivity.Session_ID,0, postApi);
+                        //GetAddData();
+                    }
+                });
 
                 if(recyclerView.getScrollY() > LastPosition)
                     MainActivity.bottom_bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
@@ -197,13 +371,20 @@ public class Fragment_VocaNote extends Fragment {
                     //리니어 레이아웃 매니저가 null이거나 마지막 아이템 포지션이 부분배열 사이즈 - 1 값과 동일하면
                     //GetAddData()을 통해 list(부분 배열) 에다가 새로운 값 20개를 받아온다.
                     //isLoading 은 쓰레드 관련
-                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                        == list.size() - 1) {
 
-                        GetAddData(); // 새 데이터 받아온다. (전체 배열에서 20개씩)
+                    if(!noSearch) { //더 이상 20개 이상 값이 없다. = 서버에서 요청하지 말아라.
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                                == list.size() - 1) { //list.size() - 1
 
-                        isLoading = true;
-                        Toast.makeText(LoginActivity.context_Login, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                            adapter.notifyItemInserted(list.size() - 1); //그 공간에 프로그레스바 넣는다.
+                            ++handler_count;
+
+                            QUERY(handler_count,MainActivity.Session_ID,0, postApi);
+                            GetAddData(); // 새 데이터 받아온다. (전체 배열에서 20개씩)
+
+                            isLoading = true;
+                            Toast.makeText(LoginActivity.context_Login, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -258,11 +439,6 @@ public class Fragment_VocaNote extends Fragment {
         }
     }
 
-    public void QUERY(int i) {
-        for (int j = i; j<i+20; j++)
-            list.add(new VocaNote("test" + j));
-    }
-
     public void QUERY_VocaNote() {
         // 일단 임시로 넣는다 나중에 DB에서 연동 //
 
@@ -290,7 +466,7 @@ public class Fragment_VocaNote extends Fragment {
         List<VocaNote> list = new ArrayList<>();
 
         for(int i = 0; i< Arr_VocaNoteName.length; i++) {
-            VocaNote model = new VocaNote("a");
+            VocaNote model = new VocaNote(1,2,"a","a");
             model.setVocaNoteName(Arr_VocaNoteName[i]); // 단어장 명 //
             //model.setCrDateNote(Arr_CREATE_DATE[i]);
             model.setVocaCount(Arr_VocaCount[i]); // 총 단어 수 //
@@ -305,7 +481,7 @@ public class Fragment_VocaNote extends Fragment {
         List<VocaNote> list = new ArrayList<>();
 
         for(int i = 0; i< Arr_VocaNoteName_Part.length; i++) {
-            VocaNote model = new VocaNote("a");
+            VocaNote model = new VocaNote(1,2,"a","a");
             model.setVocaNoteName(Arr_VocaNoteName_Part[i]); //단어장 명 (일부)
             model.setVocaCount(Arr_VocaCount_Part[i]); //총 단어 수 (일부)
             list.add(model);

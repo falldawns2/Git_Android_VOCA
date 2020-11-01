@@ -291,7 +291,7 @@ public class ChapterActivity extends AppCompatActivity {
         List<VocaNote> list = new ArrayList<>();
 
         for(int i = 0; i< Arr_VocaNoteName.length; i++) {
-            VocaNote model = new VocaNote("0");
+            VocaNote model = new VocaNote(1,2,"0","t");
             model.setChapterName(Arr_VocaNoteName[i]); // 챕터명 //
             //model.setCrDateNote(Arr_CREATE_DATE[i]);
             model.setVocaCount(Arr_VocaCount[i]); // 총 단어 수 //

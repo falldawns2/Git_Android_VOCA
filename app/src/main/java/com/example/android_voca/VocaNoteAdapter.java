@@ -129,7 +129,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         //holder.textView_CreateDate.setText(item.getCreateDate());
 
-        holder.textview_VocaCount.setText(String.valueOf(item.getVocaCount()));
+        holder.textview_VocaCount.setText(String.valueOf(item.getTotalVocaCount()));
 
         holder.main_checkbox.setChecked(item.isSelected());
         holder.main_checkbox.setTag(position);
@@ -294,7 +294,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void setItem(VocaNote item) {
             textview_VocaNote.setText(item.getVocaNoteName());
             //textView_CreateDate.setText(item.getCreateDate());
-            textview_VocaCount.setText(item.getVocaCount());
+            textview_VocaCount.setText(item.getTotalVocaCount());
         }
     }
 

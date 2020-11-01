@@ -15,7 +15,7 @@ namespace WcfService1
         //POST 단어장 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GetVocaNote", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
-        DataSet_VocaNote GetVocaNote(int Page_NO, int Page_SIZE, string userid, string OrderBy);
+        List<DataSet_VocaNote> GetVocaNote(int Page_NO, int Page_SIZE, string userid, string OrderBy);
     }
 
     [DataContract]
@@ -35,19 +35,19 @@ namespace WcfService1
             get { return vocaNote; }
             set { vocaNote = value; }
         }
-
+        /*[DataMember]
         public string NickName
         {
             get { return nickName; }
             set { nickName = value; }
         }
-
+        [DataMember]
         public string CrDateNote
         {
             get { return crDateNote; }
             set { crDateNote = value; }
-        }
-
+        }*/
+        [DataMember]
         public string TotalVocaCount
         {
             get { return totalVocaCount; }
