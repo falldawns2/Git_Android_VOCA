@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="WcfService1.Service_VocaNote" CodeBehind="Service_VocaNote.svc.cs" %>

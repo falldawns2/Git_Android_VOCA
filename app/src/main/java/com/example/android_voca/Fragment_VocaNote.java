@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomappbar.BottomAppBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,14 @@ public class Fragment_VocaNote extends Fragment {
     RecyclerView recyclerView;
     VocaNoteAdapter adapter;
     //Note_MultiSelectionAdapter multi_adapter;
+
+    boolean isLoading = false; //핸들러
+
+    //ArrayList<String> allList = new ArrayList<>(); //단어장 전체 가져오기 (서비스에서 가져옴)
+    //ArrayList<String> list = new ArrayList<>(); //단어장 20개씩 가져옴 (배열에 20개씩 담을 예정)
+
+    List<VocaNote> allList; //전체 담음.
+    List<VocaNote> list; // 10개씩
 
     ///
     public static Fragment_VocaNote context_Frag_Main;
@@ -48,6 +60,10 @@ public class Fragment_VocaNote extends Fragment {
     public static String[] Arr_VocaNoteName = {};
     public static int[] Arr_VocaCount = {};
 
+    //카드 뷰 내용 : 단어장 명, 총 단어 수 일부만 저장. //무한 스크롤
+    public static String[] Arr_VocaNoteName_Part = {};
+    public static int[] Arr_VocaCount_Part = {};
+
     // 카드 뷰 내용 //
     public String VocaNoteName;
     public String VocaCount;
@@ -60,34 +76,46 @@ public class Fragment_VocaNote extends Fragment {
     int adapter_size = 0;
 
 
+
+    int LastPosition; //dy;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         context_Frag_Main = Fragment_VocaNote.this;
         final View v = inflater.inflate(R.layout.fragment_vocanote, container, false);
+
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.context_main));
+
 
         //QUERY_NOTE();
         // 샘플로 예시 단어장 넣어본다 //
-        QUERY_VocaNote();
 
-        List<VocaNote> list = getList();
+        list = new ArrayList<>();
+        QUERY(0);
+        //QUERY_VocaNote(); //처음에 담아둘 배열 데이터
+        //allList = getList(); //전체 단어장 가져옴.
+        //list =  getList_Part(); //일부 단어장 가져옴.
+        initAdapter(); //리싸이클러 뷰 어댑터 생성
 
+        initScrollListener(); //리싸이클러뷰 이벤트 발생
 
+        return v;
+    }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.context_main);
-        recyclerView.setLayoutManager(layoutManager);
+    private void initAdapter() {
 
         // 싱글 선택 어댑터 //
-        adapter = new VocaNoteAdapter(this, list);
 
+        adapter = new VocaNoteAdapter(this, list);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
             @Override
-            public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+            public void onItemClick(VocaNoteAdapter.ItemViewHolder holder, View view, int position) {
 
                 MainActivity.PageNum = 1; //챕터 페이지로 이동
                 VocaNote item = adapter.getItem(position);
@@ -107,8 +135,79 @@ public class Fragment_VocaNote extends Fragment {
 
             }
         });
+    }
 
-        return v;
+    //부분 배열에 새로운 값 20개 담아온다.
+    private void GetAddData() {
+        Log.d("Fragment_VocaNote", "GetAddData :");
+        list.add(null);
+        adapter.notifyItemInserted(list.size() - 1);
+        recyclerView.scrollToPosition(list.size() - 1); //이걸 이용해서 프로그레스바 까지 자동으로 나타난다.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                list.remove(list.size() - 1);
+                int scrollPosition = list.size();
+                adapter.notifyItemRemoved(scrollPosition);
+                int currentSize = scrollPosition; //현재 위치 = 스크롤 위치 = 마지막 값 0 ~ 9면 9
+                int nextLimit = currentSize + 20; //9에서 가져올 값 더해 19
+
+                //현재 값 9에서 ~ 19까지 반복해서 전체 배열에서 현재 배열에 10개 담는다
+                /*for(int i = currentSize; i<nextLimit; i++) {
+                    if (i == list.size()) { //마지막에 도달하면 리턴
+                        return;
+                    }
+                    list.add(allList.get(i));
+                }*/
+
+                QUERY(currentSize);
+                adapter.notifyDataSetChanged(); //새로고침
+                isLoading = false; //쓰레드
+            }
+        }, 2000);
+    }
+
+    //리싸이클러뷰 이벤트
+    private void initScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.d("Fragment_VocaNote","onScrollStateChanged: ");
+
+
+                if(recyclerView.getScrollY() > LastPosition)
+                    MainActivity.bottom_bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
+                else
+                    MainActivity.bottom_bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LastPosition = dy;
+
+                Log.d("Fragment_VocaNote", "onScrolled :");
+
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                if(!isLoading) {
+                    //리니어 레이아웃 매니저가 null이거나 마지막 아이템 포지션이 부분배열 사이즈 - 1 값과 동일하면
+                    //GetAddData()을 통해 list(부분 배열) 에다가 새로운 값 20개를 받아온다.
+                    //isLoading 은 쓰레드 관련
+                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                        == list.size() - 1) {
+
+                        GetAddData(); // 새 데이터 받아온다. (전체 배열에서 20개씩)
+
+                        isLoading = true;
+                        Toast.makeText(LoginActivity.context_Login, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 
     public void QUERY_NOTE() {
@@ -159,6 +258,10 @@ public class Fragment_VocaNote extends Fragment {
         }
     }
 
+    public void QUERY(int i) {
+        for (int j = i; j<i+20; j++)
+            list.add(new VocaNote("test" + j));
+    }
 
     public void QUERY_VocaNote() {
         // 일단 임시로 넣는다 나중에 DB에서 연동 //
@@ -166,75 +269,45 @@ public class Fragment_VocaNote extends Fragment {
         Arr_VocaNoteName = new String[20];
         Arr_VocaCount = new int[20];
 
-        Arr_VocaNoteName[19] = "단어장 1";
-        Arr_VocaCount[19] = 5;
+        Arr_VocaNoteName_Part = new String[20];
+        Arr_VocaCount_Part = new int[20];
 
-        Arr_VocaNoteName[18] = "단어장 2";
-        Arr_VocaCount[18] = 58;
+        //WCF 서비스에서 가져온 전체 단어장 배열에 담는다. (테스트 50개)
+        for (int a = 0; a<Arr_VocaNoteName.length; a++) {
+            Arr_VocaNoteName[a] = "단어장 " + a;
+            Arr_VocaCount[a] = a;
+        }
 
-        Arr_VocaNoteName[17] = "단어장 3";
-        Arr_VocaCount[17] = 1;
-
-        Arr_VocaNoteName[16] = "단어장 4";
-        Arr_VocaCount[16] = 42;
-
-        Arr_VocaNoteName[15] = "단어장 5";
-        Arr_VocaCount[15] = 25;
-
-        Arr_VocaNoteName[14] = "단어장 6";
-        Arr_VocaCount[14] = 5;
-
-        Arr_VocaNoteName[13] = "단어장 7";
-        Arr_VocaCount[13] = 58;
-
-        Arr_VocaNoteName[12] = "단어장 8";
-        Arr_VocaCount[12] = 1;
-
-        Arr_VocaNoteName[11] = "단어장 9";
-        Arr_VocaCount[11] = 42;
-
-        Arr_VocaNoteName[10] = "단어장 10";
-        Arr_VocaCount[10] = 25;
-
-        Arr_VocaNoteName[9] = "단어장 11";
-        Arr_VocaCount[9] = 5;
-
-        Arr_VocaNoteName[8] = "단어장 12";
-        Arr_VocaCount[8] = 58;
-
-        Arr_VocaNoteName[7] = "단어장 13";
-        Arr_VocaCount[7] = 1;
-
-        Arr_VocaNoteName[6] = "단어장 14";
-        Arr_VocaCount[6] = 42;
-
-        Arr_VocaNoteName[5] = "단어장 15";
-        Arr_VocaCount[5] = 25;
-
-        Arr_VocaNoteName[4] = "단어장 16";
-        Arr_VocaCount[4] = 5;
-
-        Arr_VocaNoteName[3] = "단어장 17";
-        Arr_VocaCount[3] = 58;
-
-        Arr_VocaNoteName[2] = "단어장 18";
-        Arr_VocaCount[2] = 1;
-
-        Arr_VocaNoteName[1] = "단어장 19";
-        Arr_VocaCount[1] = 42;
-
-        Arr_VocaNoteName[0] = "단어장 20";
-        Arr_VocaCount[0] = 25;
+        //다 가져온 배열에서 일부만 보여준다 (테스트 10개)
+        for(int i = 0; i<20; i++) {
+            Arr_VocaNoteName_Part[i] = Arr_VocaNoteName[i];
+            Arr_VocaCount_Part[i] = Arr_VocaCount[i];
+        }
     }
 
+    //전체 단어장 (WCF)
     private List<VocaNote> getList() {
         List<VocaNote> list = new ArrayList<>();
 
         for(int i = 0; i< Arr_VocaNoteName.length; i++) {
-            VocaNote model = new VocaNote();
+            VocaNote model = new VocaNote("a");
             model.setVocaNoteName(Arr_VocaNoteName[i]); // 단어장 명 //
             //model.setCrDateNote(Arr_CREATE_DATE[i]);
             model.setVocaCount(Arr_VocaCount[i]); // 총 단어 수 //
+            list.add(model);
+        }
+
+        return list;
+    }
+
+    //일부 단어장 (배열에서 담기)
+    private List<VocaNote> getList_Part() {
+        List<VocaNote> list = new ArrayList<>();
+
+        for(int i = 0; i< Arr_VocaNoteName_Part.length; i++) {
+            VocaNote model = new VocaNote("a");
+            model.setVocaNoteName(Arr_VocaNoteName_Part[i]); //단어장 명 (일부)
+            model.setVocaCount(Arr_VocaCount_Part[i]); //총 단어 수 (일부)
             list.add(model);
         }
 

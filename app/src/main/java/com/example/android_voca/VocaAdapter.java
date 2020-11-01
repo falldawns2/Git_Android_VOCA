@@ -59,7 +59,7 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
     }
 
     @Override
-    public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+    public void onItemClick(VocaNoteAdapter.ItemViewHolder holder, View view, int position) {
         //여기선 사용하지 않음
     }
 

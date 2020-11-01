@@ -30,10 +30,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private final String svcName = "Service_Account.svc/";
 
+    public static Context context_Login;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        context_Login = LoginActivity.this;
 
         Userid = (EditText)findViewById(R.id.Userid);
         Passwd = (EditText)findViewById(R.id.PassWd);

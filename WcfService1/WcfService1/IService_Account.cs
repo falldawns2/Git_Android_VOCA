@@ -25,7 +25,8 @@ namespace WcfService1
         //POST 계정 닉네임
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GetNickName", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
-        GetNickName NickName(string id); 
+        GetNickName NickName(string id);
+
     }
 
     [DataContract]
@@ -63,6 +64,5 @@ namespace WcfService1
             get { return nickName; }
             set { nickName = value; }
         }
-    }
-           
+    }          
 }

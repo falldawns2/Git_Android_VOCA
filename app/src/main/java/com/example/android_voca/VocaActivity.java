@@ -119,7 +119,7 @@ public class VocaActivity extends AppCompatActivity {
 
         adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
             @Override
-            public void onItemClick(VocaNoteAdapter.ViewHolder holder, View view, int position) {
+            public void onItemClick(VocaNoteAdapter.ItemViewHolder holder, View view, int position) {
 
             }
 

@@ -2,6 +2,7 @@ package com.example.android_voca;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -32,6 +33,8 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
@@ -94,7 +97,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static String tag;
 
-    public FloatingActionButton fab;
+    public static FloatingActionButton fab;
+
+    public static BottomAppBar bottom_bar;
 
     //VocaNote 추가 - > VocaNote 보기 액티비티
     public static int save = 0;  //이 값은 편집 모드 판단한다.
@@ -149,6 +154,18 @@ public class MainActivity extends AppCompatActivity {
         //TextView test = findViewById(R.id.test);
         //test.setText(accountInfo.Session_ID + accountInfo.Name + accountInfo.Nickcname);
 
+       /*CoordinatorLayout coordinator = (CoordinatorLayout)findViewById(R.id.coordinator);
+       AppBarLayout app_Bar = findViewById(R.id.app_bar);
+       CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) app_Bar.getLayoutParams();
+       AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+       if (behavior != null) {
+           behavior.onNestedFling(coordinator, app_Bar, null, 0, params.height, true);
+       }*/
+
+       //AppBarLayout app_Bar = findViewById(R.id.app_bar);
+       //app_Bar.setExpanded(true, true);
+
+
        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
        setSupportActionBar(toolbar);
 
@@ -196,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
        Linear_Challenge = findViewById(R.id.Linear_Challenge);
        Linear_Board = findViewById(R.id.Linear_Board);
        Linear_Group = findViewById(R.id.Linear_Group);
+
+       bottom_bar = (BottomAppBar) findViewById(R.id.bottom_bar);
 
        //FloatingActionButton fab
        fab = (FloatingActionButton) findViewById(R.id.fab);

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHolder> implements OnVocaNoteItemClickListener {
+public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener { //VocaNoteAdapter.ViewHolder
+
+    private final int VIEW_TYPE_ITEM = 0; //단어장
+    private final int VIEW_TYPE_LOADING = 1; //로딩
 
     //ArrayList<Note> items = new ArrayList<>();
     private List<VocaNote> items;
@@ -50,15 +54,21 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.cardview_vocanote,parent,false);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_ITEM) { //단어장 카드뷰
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View itemView = inflater.inflate(R.layout.cardview_vocanote,parent,false);
+
+            return new ItemViewHolder(itemView, this);
+        } else { //로딩 카드뷰
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_loading,parent,false);
+            return new LoadingViewHolder(view);
+        }
+
         /*ViewHolder viewHolder = new ViewHolder(itemView,this);
         viewHolder.main_checkbox.setVisibility(View.VISIBLE);
         viewHolder.main_checkbox.setChecked(true);
         return  viewHolder;*/
-
-        return new ViewHolder(itemView, this);
     }
 
     public void setOnItemClickListener(OnVocaNoteItemClickListener listener) {
@@ -66,7 +76,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
     }
 
     @Override
-    public void onItemClick(ViewHolder holder, View view, int position) {
+    public void onItemClick(ItemViewHolder holder, View view, int position) {
         if(listener != null) {
             listener.onItemClick(holder, view, position);
         }
@@ -78,21 +88,38 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        VocaNote item = items.get(position);
-        /*if(MainActivity.tag == "single")
-            holder.setItem(item);
-        else if (MainActivity.tag == "multi")
-            initializeViews(item,holder,position);*/
-        initializeViews(item,holder,position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) { //ViewHolder
+
+        if(holder instanceof ItemViewHolder) { //단어장 관련 뷰홀더
+            VocaNote item = items.get(position);
+            /*if(MainActivity.tag == "single")
+                holder.setItem(item);
+                else if (MainActivity.tag == "multi")
+                initializeViews(item,holder,position);*/
+            initializeViews(item,(ItemViewHolder) holder,position);
+        } else if (holder instanceof LoadingViewHolder) {
+            showLoadingView((LoadingViewHolder) holder, position);
+        }
+
+
+
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        //return items.size();
+        return items == null ? 0 : items.size();
     }
 
-    private void initializeViews(final VocaNote item, final VocaNoteAdapter.ViewHolder holder, int position) {
+    //새로 추가한거
+
+
+    @Override
+    public int getItemViewType(int position) {
+        return items.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM; //로딩, 단어장
+    }
+
+    private void initializeViews(final VocaNote item, final VocaNoteAdapter.ItemViewHolder holder, int position) {
 
         if(MainActivity.PageNum == 0) {
             holder.textview_VocaNote.setText(item.getVocaNoteName()); //단어장명 뿌림 //단어장 페이지
@@ -139,6 +166,10 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
         }
     }
 
+    private void showLoadingView(LoadingViewHolder viewHolder, int position) {
+        //로딩 뷰 관련 디자인 구성
+    }
+
     public List<VocaNote> getSelectedItem() {
         List<VocaNote> itemModelList = new ArrayList<>();
         int i;
@@ -152,7 +183,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
         return itemModelList;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+     public class ItemViewHolder extends RecyclerView.ViewHolder {//static , private 없음
         TextView textview_VocaNote;
         //TextView textView_CreateDate;
         TextView textview_VocaCount;
@@ -160,7 +191,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
         CheckBox main_checkbox;
         CardView Main_CardView;
 
-        public ViewHolder(View itemView, final OnVocaNoteItemClickListener listener) {
+        public ItemViewHolder(View itemView, final OnVocaNoteItemClickListener listener) {
             super(itemView);
 
             textview_VocaNote = itemView.findViewById(R.id.textview_VocaNote);
@@ -185,7 +216,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
                         int position = getAdapterPosition();
 
                         if(listener != null) {
-                            listener.onItemClick(ViewHolder.this, view, position);
+                            listener.onItemClick(ItemViewHolder.this, view, position);
 
                             if(main_checkbox.isChecked()) {
                                 main_checkbox.setChecked(false);
@@ -266,4 +297,15 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<VocaNoteAdapter.ViewHo
             textview_VocaCount.setText(item.getVocaCount());
         }
     }
+
+    //로딩 홀더
+    private class LoadingViewHolder extends RecyclerView.ViewHolder {
+        ProgressBar progressBar;
+
+        public LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+            progressBar = itemView.findViewById(R.id.progressBar);
+        }
+    }
+
 }
