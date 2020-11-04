@@ -23,6 +23,12 @@ public class VocaNote2 {
 
     String CrDateNote; // 단어장 생성 날짜 //
 
+    @SerializedName("ChapterName")
+    String ChapterName;
+
+    @SerializedName("VocaCount")
+    String VocaCount;
+
 
     //보낼 값
     public VocaNote2(int Page_NO, int Page_SIZE, String userid, String OrderBy) {
@@ -32,12 +38,35 @@ public class VocaNote2 {
         this.OrderBy = OrderBy;
     }
 
+    //단어장//
+    //챕터//
+    //받는 값//
+    public VocaNote2(int VocaNote_Chapter, String VocaNote_ChapterName, String TotalVoca_VocaCount) {
+        if(VocaNote_Chapter == 0) {
+            this.VocaNoteName = VocaNote_ChapterName;
+            this.TotalVocaCount = TotalVoca_VocaCount;
+        } else {
+            this.ChapterName = VocaNote_ChapterName;
+            this.VocaCount = TotalVoca_VocaCount;
+        }
+    }
     //받는 값
     public VocaNote2(String VocaNoteName, String NickName, String CrDateNote, String TotalVocaCount) {
         this.VocaNoteName = VocaNoteName;
         this.NickName = NickName;
         this.CrDateNote = CrDateNote;
         this.TotalVocaCount = TotalVocaCount;
+    }
+
+    //챕터
+
+    //보낼 값
+    public VocaNote2(int Page_No, int Page_Size, String userid, String VocaNoteName, String Orderby) {
+        this.Page_NO = Page_No;
+        this.Page_SIZE = Page_Size;
+        this.userid = userid;
+        this.VocaNoteName= VocaNoteName;
+        this.OrderBy = Orderby;
     }
 
     public VocaNote2(String VocaNoteName, String TotalVocaCount) {
@@ -107,5 +136,21 @@ public class VocaNote2 {
 
     public void setCrDateNote(String crDateNote) {
         CrDateNote = crDateNote;
+    }
+
+    public String getChapterName() {
+        return ChapterName;
+    }
+
+    public void setChapterName(String chapterName) {
+        ChapterName = chapterName;
+    }
+
+    public String getVocaCount() {
+        return VocaCount;
+    }
+
+    public void setVocaCount(String vocaCount) {
+        VocaCount = vocaCount;
     }
 }

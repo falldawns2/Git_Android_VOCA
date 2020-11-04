@@ -22,9 +22,14 @@ public class VocaNote {
 
     String VocaNoteName_Part; //단어장 명 일부만
 
+/*    //챕터 //
+    @SerializedName("ChapterName")
     String ChapterName; // 챕터 명 //
 
-    int VocaCount; // 총 단어 수 // // 전체
+    //챕터 //
+    @SerializedName("VocaCount")
+    String VocaCount; // 총 단어 수 // // 전체*/
+
     int VocaCount_Part; //총 단어 수 일부만
 
     String CrDateNote; // 단어장 생성 날짜 //
@@ -60,14 +65,34 @@ public class VocaNote {
         this.TotalVocaCount = TotalVocaCount;
     }
 
-    public VocaNote(String VocaNoteName, String TotalVocaCount) {
-        this.VocaNoteName = VocaNoteName;
-        this.TotalVocaCount = TotalVocaCount;
+    //단어장//
+    //챕터//
+    //받는 값//
+    public VocaNote(String VocaNote_ChapterName, String TotalVoca_VocaCount) {
+        this.VocaNoteName = VocaNote_ChapterName;
+        this.TotalVocaCount = TotalVoca_VocaCount;
     }
 
     public VocaNote(String VocaNoteName) {
         this.VocaNoteName = VocaNoteName;
     }
+
+    //챕터//
+    //보낼 값//
+    public VocaNote(int Page_NO, int PAge_SIZE, String userid, String VocaNoteName, String OrderBy) {
+        this.Page_NO = Page_NO;
+        this.Page_SIZE = PAge_SIZE;
+        this.userid = userid;
+        this.VocaNoteName = VocaNoteName;
+        this.OrderBy = OrderBy;
+    }
+
+    //챕터//
+    //받는 값//
+    /*public VocaNote(String ChapterName, String VocaCount ) {
+        this.ChapterName = ChapterName;
+        this.VocaCount = VocaCount;
+    }*/
 
     public int getNo() {
         return no;
@@ -107,22 +132,6 @@ public class VocaNote {
 
     public void setVocaNoteName(String vocaNoteName) {
         VocaNoteName = vocaNoteName;
-    }
-
-    public String getChapterName() {
-        return ChapterName;
-    }
-
-    public void setChapterName(String chapterName) {
-        ChapterName = chapterName;
-    }
-
-    public int getVocaCount() {
-        return VocaCount;
-    }
-
-    public void setVocaCount(int vocaCount) {
-        VocaCount = vocaCount;
     }
 
     public String getCrDateNote() {
@@ -205,5 +214,13 @@ public class VocaNote {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getNickName() {
+        return NickName;
+    }
+
+    public void setNickName(String nickName) {
+        NickName = nickName;
     }
 }

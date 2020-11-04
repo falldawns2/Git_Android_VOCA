@@ -70,6 +70,11 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
         }
     }
 
+    @Override
+    public void onItemChapterClick(ChapterAdapter.ItemViewHolder holder, View view, int position) {
+
+    }
+
     //값 반복적으로 바인딩
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {

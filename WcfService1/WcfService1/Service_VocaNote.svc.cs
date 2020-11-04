@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -16,6 +17,8 @@ namespace WcfService1
         DB_VocaForm DB_VOCAFORM = new DB_VocaForm();
         DataTable dataTable = new DataTable();
         List<DataSet_VocaNote> dataSet_VocaNote;
+        List<DataSet_Chapter> dataSet_Chapter;
+
         public List<DataSet_VocaNote> GetVocaNote(int Page_NO, int Page_SIZE, string userid, string OrderBy)
         {
 
@@ -41,9 +44,24 @@ namespace WcfService1
                     });
                 //i++;
             }
-
-
             return dataSet_VocaNote;
+        }
+        public List<DataSet_Chapter> GetChapter(int Page_NO, int Page_SIZE, string userid, string VocaNoteName, string OrderBy)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            dataTable = DB_VOCAFORM.Chapter(Page_NO, Page_SIZE, userid, VocaNoteName, OrderBy).Tables[0];
+            dataSet_Chapter = new List<DataSet_Chapter>();
+
+            foreach (DataRow dr in dataTable.Rows) //0 : ChapterName, 1 : NickName, 2 : CrDateChapter, 3 : CrDateNote, 4 : VocaCount
+            {
+                dataSet_Chapter
+                    .Add(new DataSet_Chapter
+                    {
+                        ChapterName = dr[0].ToString().TrimEnd(),
+                        VocaCount = dr[4].ToString().TrimEnd()
+                    });
+            }
+            return dataSet_Chapter;
         }
     }
 }

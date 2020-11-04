@@ -29,6 +29,7 @@ public class Retrofit {
                 .client(ClientBuilder.build()) //로그 기록
                 .build();
 
+
         postApi = retrofit.create(POSTApi.class);
 
         return postApi; //인터페이스 반환

@@ -1,7 +1,6 @@
 package com.example.android_voca;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener { //VocaNoteAdapter.ViewHolder
+public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener { //VocaNoteAdapter.ViewHolder
 
     private final int VIEW_TYPE_ITEM = 0; //단어장
     private final int VIEW_TYPE_LOADING = 1; //로딩
 
     //ArrayList<Note> items = new ArrayList<>();
-    private List<VocaNote> items;
+    private List<Chapter> items;
     private Fragment fragment;
 
     private Context context;
@@ -35,25 +34,26 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static Boolean Edit_Activation;
 
 
-    public void addItem(VocaNote item) {
+    public void addItem(Chapter item) {
         items.add(item);
     }
 
-    public void setItems(ArrayList<VocaNote> items) {
+    public void setItems(ArrayList<Chapter> items) {
         this.items = items;
     }
 
-    public VocaNote getItem(int position) {
+    public Chapter getItem(int position) {
         return items.get(position);
     }
 
-    public void setItem(int position, VocaNote item) {
+    public void setItem(int position, Chapter item) {
         items.set(position,item);
     }
 
-    public VocaNoteAdapter(Fragment fragment, List<VocaNote> itemModels) {
+
+    public ChapterAdapter(Context context, List<Chapter> itemModels) {
+        this.context = context;
         this.items = itemModels;
-        this.fragment = fragment;
     }
     
     /*public VocaNoteAdapter(Context context, List<VocaNote> itemModels) {
@@ -85,27 +85,29 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onItemClick(ItemViewHolder holder, View view, int position) {
+    public void onItemClick(VocaNoteAdapter.ItemViewHolder holder, View view, int position) {
+        //단어장
+    }
+
+    @Override
+    public void onItemChapterClick(ItemViewHolder holder, View view, int position) {
+
+        ///챕터
         if(listener != null) {
-            listener.onItemClick(holder, view, position);
+            listener.onItemChapterClick(holder, view, position);
         }
     }
 
     @Override
     public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
-
-    }
-
-    @Override
-    public void onItemChapterClick(ChapterAdapter.ItemViewHolder holder, View view, int position) {
-
+        //단어
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) { //ViewHolder
 
         if(holder instanceof ItemViewHolder) { //단어장 관련 뷰홀더
-            VocaNote item = items.get(position);
+            Chapter item = items.get(position);
             /*if(MainActivity.tag == "single")
                 holder.setItem(item);
                 else if (MainActivity.tag == "multi")
@@ -133,17 +135,13 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return items.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM; //로딩, 단어장
     }
 
-    private void initializeViews(final VocaNote item, final VocaNoteAdapter.ItemViewHolder holder, int position) {
+    private void initializeViews(final Chapter item, final ChapterAdapter.ItemViewHolder holder, int position) {
 
-        if(MainActivity.PageNum == 0) {
-            holder.textview_VocaNote.setText(item.getVocaNoteName()); //단어장명 뿌림 //단어장 페이지
-        } else if (MainActivity.PageNum == 1) {
-            //holder.textview_VocaNote.setText(item.getChapterName()); //챕터명 뿌림 //챕터 페이지
-        }
+        holder.textview_VocaNote.setText(item.getChapterName()); //챕터명 뿌림 //챕터 페이지
 
         //holder.textView_CreateDate.setText(item.getCreateDate());
 
-        holder.textview_VocaCount.setText(String.valueOf(item.getTotalVocaCount()));
+        holder.textview_VocaCount.setText(String.valueOf(item.getVocaCount()));
 
         holder.main_checkbox.setChecked(item.isSelected());
         holder.main_checkbox.setTag(position);
@@ -184,11 +182,11 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         //로딩 뷰 관련 디자인 구성
     }
 
-    public List<VocaNote> getSelectedItem() {
-        List<VocaNote> itemModelList = new ArrayList<>();
+    public List<Chapter> getSelectedItem() {
+        List<Chapter> itemModelList = new ArrayList<>();
         int i;
         for (i = 0; i< items.size(); i++) {
-            VocaNote item = items.get(i);
+            Chapter item = items.get(i);
 
             if(item.isSelected()) {
                 itemModelList.add(item);
@@ -230,7 +228,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         int position = getAdapterPosition();
 
                         if(listener != null) {
-                            listener.onItemClick(ItemViewHolder.this, view, position);
+                            listener.onItemChapterClick(ItemViewHolder.this, view, position);
 
                             if(main_checkbox.isChecked()) {
                                 main_checkbox.setChecked(false);
@@ -305,10 +303,10 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }
 
-        public void setItem(VocaNote item) {
-            textview_VocaNote.setText(item.getVocaNoteName());
+        public void setItem(Chapter item) {
+            textview_VocaNote.setText(item.getChapterName());
             //textView_CreateDate.setText(item.getCreateDate());
-            textview_VocaCount.setText(item.getTotalVocaCount());
+            textview_VocaCount.setText(item.getVocaCount());
         }
     }
 

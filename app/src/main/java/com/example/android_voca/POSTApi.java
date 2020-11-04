@@ -30,4 +30,12 @@ public interface POSTApi {
     //단어장 20개씩 받아오는
     @POST("GetVocaNote")
     Call<List<VocaNote2>> GetVocaNote(@Body VocaNote2 vocaNote2);
+
+    //챕터
+    @POST("GetChapter")
+    Call<List<Chapter>> GetChapter(@Body Chapter chapter);
+
+    //챕터 20개씩 받아오는
+    @POST("GetChapter")
+    Call<List<Chapter2>> GetChapter(@Body Chapter2 chapter2);
 }

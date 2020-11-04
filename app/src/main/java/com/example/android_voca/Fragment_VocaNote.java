@@ -38,7 +38,7 @@ public class Fragment_VocaNote extends Fragment {
 
     Retrofit retrofit;
     POSTApi postApi;
-    String svcName = "Service_VocaNote.svc/";
+    final String svcName = "Service_VocaNote.svc/";
     //ArrayList<String> allList = new ArrayList<>(); //단어장 전체 가져오기 (서비스에서 가져옴)
     //ArrayList<String> list = new ArrayList<>(); //단어장 20개씩 가져옴 (배열에 20개씩 담을 예정)
 
@@ -143,9 +143,9 @@ public class Fragment_VocaNote extends Fragment {
                 MainActivity.PageNum = 1; //챕터 페이지로 이동
                 VocaNote item = adapter.getItem(position);
                 VocaNoteName = item.getVocaNoteName();
-                VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
+                VocaCount = "총 단어 수 :" + String.valueOf(item.getTotalVocaCount());
 
-                Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getVocaCount(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getTotalVocaCount(), Toast.LENGTH_SHORT).show();
 
 
                 ///ChapterActivity
@@ -155,6 +155,11 @@ public class Fragment_VocaNote extends Fragment {
 
             @Override
             public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
+
+            }
+
+            @Override
+            public void onItemChapterClick(ChapterAdapter.ItemViewHolder holder, View view, int position) {
 
             }
         });
@@ -243,6 +248,7 @@ public class Fragment_VocaNote extends Fragment {
                     for (VocaNote2 vocaNote2 : postResponse) {
 
                         list_20.add(new VocaNote(
+
                                 vocaNote2.getVocaNoteName(),
                                 vocaNote2.getTotalVocaCount()));
 
@@ -291,6 +297,7 @@ public class Fragment_VocaNote extends Fragment {
                 return;
             }
             list.add(new VocaNote(
+
                     list_20.get(a).getVocaNoteName(),
                     list_20.get(a).getTotalVocaCount()
             ));
@@ -307,18 +314,21 @@ public class Fragment_VocaNote extends Fragment {
                     return;
                 }
 
+
                 List<VocaNote> postResponse = response.body();
 
                 if (postResponse != null) {
                     for (VocaNote vocaNote : postResponse) {
 
                         list.add(new VocaNote(
+
                                 vocaNote.getVocaNoteName(),
                                 /*vocaNote.getNickname(),
                                 vocaNote.getCrDateNote(),*/
                                 vocaNote.getTotalVocaCount()));
 
                         list_20.add(new VocaNote(
+
                                 vocaNote.getVocaNoteName(),
                                 /*vocaNote.getNickname(),
                                 vocaNote.getCrDateNote(),*/
@@ -326,6 +336,8 @@ public class Fragment_VocaNote extends Fragment {
 
                     }
                 }
+
+                response.body().clear();
             }
 
             @Override
@@ -352,6 +364,8 @@ public class Fragment_VocaNote extends Fragment {
                     }
                 });
 
+                //만약 스크롤을 내리고 있다면 fab 버튼을 오른쪽으로 이동시킴
+                //아니라면 다시 가운데로 이동시킴
                 if(recyclerView.getScrollY() > LastPosition)
                     MainActivity.bottom_bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
                 else
@@ -462,7 +476,7 @@ public class Fragment_VocaNote extends Fragment {
     }
 
     //전체 단어장 (WCF)
-    private List<VocaNote> getList() {
+    /*private List<VocaNote> getList() {
         List<VocaNote> list = new ArrayList<>();
 
         for(int i = 0; i< Arr_VocaNoteName.length; i++) {
@@ -474,10 +488,10 @@ public class Fragment_VocaNote extends Fragment {
         }
 
         return list;
-    }
+    }*/
 
     //일부 단어장 (배열에서 담기)
-    private List<VocaNote> getList_Part() {
+    /*private List<VocaNote> getList_Part() {
         List<VocaNote> list = new ArrayList<>();
 
         for(int i = 0; i< Arr_VocaNoteName_Part.length; i++) {
@@ -488,7 +502,7 @@ public class Fragment_VocaNote extends Fragment {
         }
 
         return list;
-    }
+    }*/
 
     public void selectedClick() {
         List list = adapter.getSelectedItem();

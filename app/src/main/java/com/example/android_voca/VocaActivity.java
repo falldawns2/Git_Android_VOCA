@@ -124,6 +124,11 @@ public class VocaActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onItemChapterClick(ChapterAdapter.ItemViewHolder holder, View view, int position) {
+
+            }
+
+            @Override
             public void onItemVocaClick(VocaAdapter.ViewHolder holder, View view, int position) {
                 Voca item = adapter.getItem(position);
 
