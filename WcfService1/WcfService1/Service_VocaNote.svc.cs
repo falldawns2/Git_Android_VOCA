@@ -19,6 +19,7 @@ namespace WcfService1
         List<DataSet_VocaNote> dataSet_VocaNote;
         List<DataSet_Chapter> dataSet_Chapter;
         List<DataSet_VocaNoteList> dataSet_VocaNoteList;
+        List<DataSet_ChapterList> dataSet_ChapterList;
 
         public List<DataSet_VocaNote> GetVocaNote(int Page_NO, int Page_SIZE, string userid, string OrderBy)
         {
@@ -68,7 +69,6 @@ namespace WcfService1
             DB_VOCAFORM.Close();
             return dataSet_Chapter;
         }
-
         public List<DataSet_VocaNoteList> GetVocaNoteList(string userid, string OrderBy)
         {
             DB_VOCAFORM = new DB_VocaForm();
@@ -86,6 +86,24 @@ namespace WcfService1
 
             DB_VOCAFORM.Close();
             return dataSet_VocaNoteList;
+        }
+        public List<DataSet_ChapterList> GetChapterList(string userid, string VocaNoteName, string OrderBy)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            dataTable = DB_VOCAFORM.Chapter(userid, VocaNoteName, OrderBy).Tables[0];
+            dataSet_ChapterList = new List<DataSet_ChapterList>();
+
+            foreach (DataRow dr in dataTable.Rows)
+            {
+                dataSet_ChapterList
+                    .Add(new DataSet_ChapterList
+                    {
+                        ChapterName = dr[0].ToString()
+                    });
+            }
+
+            DB_VOCAFORM.Close();
+            return dataSet_ChapterList;
         }
     }
 }

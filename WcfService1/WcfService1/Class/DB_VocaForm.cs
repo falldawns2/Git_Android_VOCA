@@ -101,5 +101,14 @@ namespace WcfService1
             //실행 및 결과 반환
             return this.AdapterFill(mySql, "VocaNote");
         }
+        public DataSet Chapter(string uid, string VocaNoteName, string OrderBy) // **단어장 챕터 목록을 가져온다** 단어장과 따로 두는 이유 : sum 함수에서 문제 생김.
+        {
+            //쿼리문 작성
+            string mySql = "SELECT ChapterName,NickName,CrDateChapter,CrDateNote,VocaCount FROM VocaNote WHERE userid ='" + uid + "'" +
+                " and VocaNoteName = '" + VocaNoteName + "' ORDER BY " + OrderBy + "";
+
+            //실행 및 결과 반환
+            return this.AdapterFill(mySql, "Chapter");
+        }
     }
 }

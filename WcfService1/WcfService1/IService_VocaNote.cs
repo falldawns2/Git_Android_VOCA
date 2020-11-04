@@ -26,6 +26,11 @@ namespace WcfService1
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GetVocaNoteList", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         List<DataSet_VocaNoteList> GetVocaNoteList(string userid, string OrderBy);
+
+        //POST 스피너 추가용  (챕터 목록을 가져온다)
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "GetChapterList", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        List<DataSet_ChapterList> GetChapterList(string userid, string VocaNoteName, string OrderBy);
     }
 
     [DataContract]
@@ -86,7 +91,6 @@ namespace WcfService1
             set { vocaCount = value; }
         }
     }
-
     public class DataSet_VocaNoteList
     {
         // 0 : VocaNoteName, 1 : NickName, 2 : CrDateNote, 3 : TotalVocaCount
@@ -98,6 +102,19 @@ namespace WcfService1
         {
             get { return vocaNoteName;}
             set { vocaNoteName = value; }
+        }
+    }
+    public class DataSet_ChapterList
+    {
+        // 0 : ChapterName, 1 : NickName, 2 : CrDateChapter, 3 : CrDateNote, 4 : VocaCount
+
+        string chapterName;
+
+        [DataMember]
+        public string ChapterName
+        {
+            get { return chapterName; }
+            set { chapterName = value; }
         }
     }
 }

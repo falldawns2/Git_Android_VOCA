@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,11 +32,16 @@ public class Fragment_Challenge extends Fragment {
 
     Retrofit retrofit;
     POSTApi postApi;
+
     final String svcName = "Service_VocaNote.svc/";
     final String TAG = "Fragment_Challenge";
+
     int POST_Response;
 
+    String VocaNoteName; //스피너 단어장 명 담기
+
     List<String> arrayVocaNoteSpinner;
+    List<String> arrayChapterSpinner;
 
     class BtnOnClickListener implements View.OnClickListener {
         @Override
@@ -60,11 +67,31 @@ public class Fragment_Challenge extends Fragment {
 
                     VocaNote_Spinner = (AppCompatSpinner) CustomDialog.findViewById(R.id.VocaNote_Spinner);
                     Chapter_Spinner = (AppCompatSpinner) CustomDialog.findViewById(R.id.Chapter_Spinner);
+
+                    //Spinner Selected
+                    OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener();
+                    VocaNote_Spinner.setOnItemSelectedListener(onItemSelectedListener);
+
+                    //Retrofit 비동기 호출 (단어장 목록 스피너)
                     VocaNote_Spinner_Insert(MainActivity.Session_ID, "CrDateNote desc");
-
-
                     break;
             }
+        }
+    }
+
+    class OnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            Chapter_Spinner.setAdapter(null); //들어있는 값 초기화
+
+            //선택된 값을 포함 Retrofit 비동기 호출 (챕터 목록 스피너)
+            Chapter_Spinner_Insert(MainActivity.Session_ID,adapterView.getItemAtPosition(i).toString(),"CrDateNote desc");
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
         }
     }
 
@@ -96,7 +123,39 @@ public class Fragment_Challenge extends Fragment {
 
             @Override
             public void onFailure(Call<List<VocaNote_Chapter_List>> call, Throwable t) {
-                Log.e(TAG, "onFailure: 네트워크 연결 실패");
+                Log.e(TAG, "onFailure: 네트워크 연결 실패" + t.getMessage());
+            }
+        });
+    }
+
+    public void Chapter_Spinner_Insert(String userid, String VocaNoteName, String OrderBy) {
+        Call<List<VocaNote_Chapter_List>> call = postApi.GetChapterList(new VocaNote_Chapter_List(userid,VocaNoteName,OrderBy));
+        call.enqueue(new Callback<List<VocaNote_Chapter_List>>() {
+            @Override
+            public void onResponse(Call<List<VocaNote_Chapter_List>> call, Response<List<VocaNote_Chapter_List>> response) {
+                if(!response.isSuccessful()) {
+                    Log.e(TAG, "onResponse: not success");
+                    return;
+                }
+
+                List<VocaNote_Chapter_List> postResponse = response.body();
+                POST_Response = postResponse.size();
+
+                arrayChapterSpinner = new ArrayList<String>();
+
+                for(VocaNote_Chapter_List vocaNote_chapter_list : postResponse) {
+                    arrayChapterSpinner.add(vocaNote_chapter_list.getChapterName());
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.context_main,
+                        android.R.layout.simple_spinner_item,arrayChapterSpinner);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+                Chapter_Spinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<VocaNote_Chapter_List>> call, Throwable t) {
+                Log.e(TAG, "onFailure:network fail" + t.getMessage());
             }
         });
     }
@@ -109,6 +168,7 @@ public class Fragment_Challenge extends Fragment {
         retrofit = new Retrofit(postApi);
         postApi = retrofit.setRetrofitInit(svcName);
 
+        //CardView Click
         BtnOnClickListener onClickListener = new BtnOnClickListener();
 
         CardView_VocaCard = (CardView) v.findViewById(R.id.CardView_VocaCard);
@@ -118,6 +178,7 @@ public class Fragment_Challenge extends Fragment {
         CardView_VocaCard.setOnClickListener(onClickListener);
         CardView_Quiz.setOnClickListener(onClickListener);
         CardView_Spelling.setOnClickListener(onClickListener);
+
         return v;
     }
 }

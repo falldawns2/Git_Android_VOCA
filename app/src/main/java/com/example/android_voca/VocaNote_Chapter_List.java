@@ -14,9 +14,20 @@ public class VocaNote_Chapter_List {
     @SerializedName("VocaNoteName")
     String VocaNoteName;
 
+    @SerializedName("ChapterName")
+    String ChapterName;
+
+    //단어장 목록을 가져옴 (스피너)
     public VocaNote_Chapter_List(String userid, String OrderBy) {
         this.userid = userid;
         this.OrderBy = OrderBy;
+    }
+
+    //챕터 목록을 가져옴 (스피너)
+    public VocaNote_Chapter_List(String userid, String VocaNoteName, String OrderBy) {
+        this.userid = userid;
+        this.VocaNoteName = VocaNoteName;
+        this.OrderBy= OrderBy;
     }
 
     public String getUserid() {
@@ -41,5 +52,13 @@ public class VocaNote_Chapter_List {
 
     public void setVocaNoteName(String vocaNoteName) {
         VocaNoteName = vocaNoteName;
+    }
+
+    public String getChapterName() {
+        return ChapterName;
+    }
+
+    public void setChapterName(String chapterName) {
+        ChapterName = chapterName;
     }
 }

@@ -42,4 +42,8 @@ public interface POSTApi {
     //단어장 리스트 (스피너 담기)
     @POST("GetVocaNoteList")
     Call<List<VocaNote_Chapter_List>> GetVocaNoteList(@Body VocaNote_Chapter_List vocaNote_chapter_list);
+
+    //챕터 리스트 (스피너 담기)
+    @POST("GetChapterList")
+    Call<List<VocaNote_Chapter_List>> GetChapterList(@Body VocaNote_Chapter_List vocaNote_chapter_list);
 }
