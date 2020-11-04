@@ -38,4 +38,8 @@ public interface POSTApi {
     //챕터 20개씩 받아오는
     @POST("GetChapter")
     Call<List<Chapter2>> GetChapter(@Body Chapter2 chapter2);
+
+    //단어장 리스트 (스피너 담기)
+    @POST("GetVocaNoteList")
+    Call<List<VocaNote_Chapter_List>> GetVocaNoteList(@Body VocaNote_Chapter_List vocaNote_chapter_list);
 }

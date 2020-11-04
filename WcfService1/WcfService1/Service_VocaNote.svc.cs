@@ -18,6 +18,7 @@ namespace WcfService1
         DataTable dataTable = new DataTable();
         List<DataSet_VocaNote> dataSet_VocaNote;
         List<DataSet_Chapter> dataSet_Chapter;
+        List<DataSet_VocaNoteList> dataSet_VocaNoteList;
 
         public List<DataSet_VocaNote> GetVocaNote(int Page_NO, int Page_SIZE, string userid, string OrderBy)
         {
@@ -44,6 +45,8 @@ namespace WcfService1
                     });
                 //i++;
             }
+
+            DB_VOCAFORM.Close();
             return dataSet_VocaNote;
         }
         public List<DataSet_Chapter> GetChapter(int Page_NO, int Page_SIZE, string userid, string VocaNoteName, string OrderBy)
@@ -61,7 +64,28 @@ namespace WcfService1
                         VocaCount = dr[4].ToString().TrimEnd()
                     });
             }
+
+            DB_VOCAFORM.Close();
             return dataSet_Chapter;
+        }
+
+        public List<DataSet_VocaNoteList> GetVocaNoteList(string userid, string OrderBy)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            dataTable = DB_VOCAFORM.VocaNote(userid, OrderBy).Tables[0];
+            dataSet_VocaNoteList = new List<DataSet_VocaNoteList>();
+
+            foreach (DataRow dr in dataTable.Rows)
+            {
+                dataSet_VocaNoteList
+                    .Add(new DataSet_VocaNoteList
+                    {
+                        VocaNoteName = dr[0].ToString()
+                    });
+            }
+
+            DB_VOCAFORM.Close();
+            return dataSet_VocaNoteList;
         }
     }
 }

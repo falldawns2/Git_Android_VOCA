@@ -89,5 +89,17 @@ namespace WcfService1
             //실행 및 결과 반환
             return this.AdapterFill(mySql, "Chapter");
         }
+        //단어장 목록을 가져온다
+        public DataSet VocaNote(string uid, string OrderBy) // **단어장 목록을 가져온다** 단어장 테이블 이름 : WordBook, 챕터 : VocaNote , 단어 : Voca ,수정 2019-01-28
+        {
+
+            //쿼리문 작성
+            //string mySql = "SELECT * FROM VocaNote WHERE userid = '" + uid + "' order by CrDateNote desc";
+            string mySql = "SELECT VocaNoteName,NickName,CrDateNote,sum(VocaCount) 'TotalVocaCount' FROM VocaNote" +
+                " WHERE userid ='" + uid + "' and VocaNoteName NOT LIKE ('%Group_" + uid + "%') GROUP BY NickName,VocaNoteName,CrDateNote ORDER BY  " + OrderBy + "";
+
+            //실행 및 결과 반환
+            return this.AdapterFill(mySql, "VocaNote");
+        }
     }
 }
