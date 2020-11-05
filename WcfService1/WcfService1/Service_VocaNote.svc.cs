@@ -20,6 +20,7 @@ namespace WcfService1
         List<DataSet_Chapter> dataSet_Chapter;
         List<DataSet_VocaNoteList> dataSet_VocaNoteList;
         List<DataSet_ChapterList> dataSet_ChapterList;
+        List<DataSet_Voca_Mean> dataSet_Voca_Mean;
 
         public List<DataSet_VocaNote> GetVocaNote(int Page_NO, int Page_SIZE, string userid, string OrderBy)
         {
@@ -104,6 +105,25 @@ namespace WcfService1
 
             DB_VOCAFORM.Close();
             return dataSet_ChapterList;
+        }
+        public List<DataSet_Voca_Mean> GetVocaMean(string userid, string VocaNoteName, string ChapterName, string OrderBy)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            dataTable = DB_VOCAFORM.Word(userid, VocaNoteName, ChapterName, OrderBy).Tables[0];
+            dataSet_Voca_Mean = new List<DataSet_Voca_Mean>();
+
+            foreach (DataRow dr in dataTable.Rows)
+            {
+                dataSet_Voca_Mean
+                    .Add(new DataSet_Voca_Mean
+                    {
+                        Voca = dr[5].ToString(),
+                        Mean = dr[6].ToString()
+                    });
+            }
+
+            DB_VOCAFORM.Close();
+            return dataSet_Voca_Mean;
         }
     }
 }

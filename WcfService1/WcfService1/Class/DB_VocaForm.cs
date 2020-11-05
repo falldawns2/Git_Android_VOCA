@@ -110,5 +110,14 @@ namespace WcfService1
             //실행 및 결과 반환
             return this.AdapterFill(mySql, "Chapter");
         }
+        //단어장 + 챕터 (단어 카드)
+        public DataSet Word(string uid, string VocaNoteName, string ChapterName, string OrderBy) // **단어 목록을 가져온다**
+        {
+            //쿼리문 작성
+            string mySql = "SELECT * FROM Voca WHERE userid= '" + uid + "' and VocaNoteName = '" + VocaNoteName + "' and ChapterName = '" + ChapterName + "' Order by  " + OrderBy + "";
+
+            //실행 및 결과 반환
+            return this.AdapterFill(mySql, "Word");
+        }
     }
 }

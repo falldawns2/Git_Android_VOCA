@@ -31,6 +31,7 @@ public interface POSTApi {
     @POST("GetVocaNote")
     Call<List<VocaNote2>> GetVocaNote(@Body VocaNote2 vocaNote2);
 
+    //동기 호출
     //챕터
     @POST("GetChapter")
     Call<List<Chapter>> GetChapter(@Body Chapter chapter);
@@ -46,4 +47,9 @@ public interface POSTApi {
     //챕터 리스트 (스피너 담기)
     @POST("GetChapterList")
     Call<List<VocaNote_Chapter_List>> GetChapterList(@Body VocaNote_Chapter_List vocaNote_chapter_list);
+
+    //동기 호출
+    //단어,뜻 (단어 카드)
+    @POST("GetVocaMean")
+    Call<List<VocaCard>> GetVocaMean(@Body VocaCard vocaCard);
 }
