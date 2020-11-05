@@ -1,5 +1,6 @@
 package com.example.android_voca;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ public class Fragment_Challenge extends Fragment {
 
     CardView CardView_VocaCard, CardView_Quiz, CardView_Spelling;
     AppCompatSpinner VocaNote_Spinner, Chapter_Spinner;
+    CheckBox Shuffle_CheckBox;
 
     Retrofit retrofit;
     POSTApi postApi;
@@ -39,6 +42,7 @@ public class Fragment_Challenge extends Fragment {
     int POST_Response;
 
     String VocaNoteName; //스피너 단어장 명 담기
+    String ChapterName; //스피너 챕터 명 담기
 
     List<String> arrayVocaNoteSpinner;
     List<String> arrayChapterSpinner;
@@ -53,6 +57,12 @@ public class Fragment_Challenge extends Fragment {
                         @Override
                         public void onPositiveClick() {
                             Log.e("test","OK");
+                            //단어 카드 액티비티로 이동한다.
+                            Intent intent = new Intent(MainActivity.context_main,Challenge_VocaCardActivity.class);
+                            intent.putExtra("VocaNoteName",VocaNoteName); //단어장
+                            intent.putExtra("ChapterName",ChapterName); //챕터
+                            intent.putExtra("Shuffle",Shuffle_CheckBox.isChecked()); //단어 섞기
+                            startActivity(intent);
                         }
 
                         @Override
@@ -65,12 +75,17 @@ public class Fragment_Challenge extends Fragment {
                     CustomDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
                     CustomDialog.show();
 
+                    //커스텀 다이얼로그 스피너
                     VocaNote_Spinner = (AppCompatSpinner) CustomDialog.findViewById(R.id.VocaNote_Spinner);
                     Chapter_Spinner = (AppCompatSpinner) CustomDialog.findViewById(R.id.Chapter_Spinner);
+
+                    //커스텀 다이얼로그 체크박스
+                    Shuffle_CheckBox = (CheckBox) CustomDialog.findViewById(R.id.Shuffle_CheckBox);
 
                     //Spinner Selected
                     OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener();
                     VocaNote_Spinner.setOnItemSelectedListener(onItemSelectedListener);
+                    Chapter_Spinner.setOnItemSelectedListener(onItemSelectedListener);
 
                     //Retrofit 비동기 호출 (단어장 목록 스피너)
                     VocaNote_Spinner_Insert(MainActivity.Session_ID, "CrDateNote desc");
@@ -83,10 +98,19 @@ public class Fragment_Challenge extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-            Chapter_Spinner.setAdapter(null); //들어있는 값 초기화
+            switch (adapterView.getId()) {
+                case R.id.VocaNote_Spinner:
+                    Chapter_Spinner.setAdapter(null); //들어있는 값 초기화
 
-            //선택된 값을 포함 Retrofit 비동기 호출 (챕터 목록 스피너)
-            Chapter_Spinner_Insert(MainActivity.Session_ID,adapterView.getItemAtPosition(i).toString(),"CrDateNote desc");
+                    VocaNoteName = adapterView.getItemAtPosition(i).toString(); //스피너 단어장명
+
+                    //선택된 값을 포함 Retrofit 비동기 호출 (챕터 목록 스피너)
+                    Chapter_Spinner_Insert(MainActivity.Session_ID,adapterView.getItemAtPosition(i).toString(),"CrDateNote desc");
+                    break;
+                case R.id.Chapter_Spinner:
+                    ChapterName = adapterView.getItemAtPosition(i).toString(); //스피너 챕터 명
+                    break;
+            }
         }
 
         @Override
