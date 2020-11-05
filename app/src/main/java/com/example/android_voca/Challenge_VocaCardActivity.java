@@ -1,9 +1,14 @@
 package com.example.android_voca;
 
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
+import android.view.View;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.animation.ArgbEvaluator;
@@ -50,6 +55,9 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
     TextView textView_title;
     RelativeLayout Relative_layout;
 
+    Button arrowBtn;
+    ConstraintLayout expandableView;
+
     //랜덤 객체
     private static Random random = new Random();
 
@@ -87,6 +95,12 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
 
         CardView_Title = (CardView) findViewById(R.id.CardView_Title);
         textView_title = (TextView) findViewById(R.id.textView_title);
+        expandableView = (ConstraintLayout) findViewById(R.id.expandableView);
+
+        arrowBtn = (Button) findViewById(R.id.arrowBtn);
+        BtnOnCLickListener btnOnCLickListener = new BtnOnCLickListener();
+        arrowBtn.setOnClickListener(btnOnCLickListener);
+
         Get_Voca_Mean();
         textView_title.setText(VocaNoteName + "(" + 1 + "/" +cards.size() + ")");
         SetAdapter();
@@ -120,7 +134,6 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });*/
-
 
         new Thread(new Runnable() {
             @Override
@@ -225,5 +238,23 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    class BtnOnCLickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.arrowBtn:
+                  if(expandableView.getVisibility() == View.GONE) {
+                      TransitionManager.beginDelayedTransition(CardView_Title, new AutoTransition());;
+                      expandableView.setVisibility(View.VISIBLE);
+                      arrowBtn.setBackgroundResource(R.drawable.ic_baseline_keyboard_arrow_up_24);
+                  } else {
+                      TransitionManager.beginDelayedTransition(CardView_Title, new AutoTransition());
+                      expandableView.setVisibility(View.GONE);
+                      arrowBtn.setBackgroundResource(R.drawable.ic_baseline_keyboard_arrow_down_24);
+                  }
+            }
+        }
     }
 }
