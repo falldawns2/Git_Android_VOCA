@@ -3,18 +3,22 @@ package com.example.android_voca;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Adapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +33,8 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
     final String svcName = "Service_VocaNote.svc/" ;
     final String TAG = "Chall_VocaCardActivity";
 
+    int POST_Response;
+
     ViewPager viewPager;
 
     VocaCardAdapter vocaCardAdapter;
@@ -39,6 +45,15 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
 
     String VocaNoteName, ChapterName, OrderBy;
     Boolean Shuffle;
+
+    CardView CardView_Title;
+    TextView textView_title;
+    RelativeLayout Relative_layout;
+
+    //랜덤 객체
+    private static Random random = new Random();
+
+    int color;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +84,11 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
 
         //Retrofit을 이용하여 단어 뜻을 받아와 뿌린다.
         cards = new ArrayList<>();
+
+        CardView_Title = (CardView) findViewById(R.id.CardView_Title);
+        textView_title = (TextView) findViewById(R.id.textView_title);
         Get_Voca_Mean();
+        textView_title.setText(VocaNoteName + "(" + 1 + "/" +cards.size() + ")");
         SetAdapter();
     }
 
@@ -101,6 +120,8 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });*/
+
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -122,6 +143,7 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
     public void SetAdapter() {
         vocaCardAdapter = new VocaCardAdapter(cards, this);
@@ -137,12 +159,30 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
                 getResources().getColor(R.color.color4)
         };
 
-        colors = colors_temp;
+
+        Integer[] Random_Color_temp = {
+            Color.argb(255,random.nextInt(256),random.nextInt(256),random.nextInt(256))
+        };
+
+
+        Integer[] RandomTemp = new Integer[cards.size()];
+
+        int i;
+        for (i = 0; i < cards.size(); i++) {
+            RandomTemp[i] = Color.argb(255,random.nextInt(256),random.nextInt(256),random.nextInt(256));
+        }
+
+
+
+
+        //colors = colors_temp;
+
+        //colors = Random_Color_temp;
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position < (vocaCardAdapter.getCount() - 1) && position < (colors.length - 1)) {
+                /*if (position < (vocaCardAdapter.getCount() - 1) && position < (colors.length - 1)) {
 
                     viewPager.setBackgroundColor(
                             (Integer) argbEvaluator
@@ -152,12 +192,32 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
                                         colors[position + 1]));
                 } else {
                     viewPager.setBackgroundColor(colors[colors.length - 1]);
+                }*/
+
+                if (position < (vocaCardAdapter.getCount() - 1) && position < (RandomTemp.length - 1)) {
+                    viewPager.setBackgroundColor(
+                            (Integer) argbEvaluator
+                                    .evaluate(
+                                            positionOffset,
+                                            RandomTemp[position],
+                                            RandomTemp[position + 1]
+
+                                    )
+                    );
+                } else {
+                    viewPager.setBackgroundColor(RandomTemp[RandomTemp.length - 1]);
                 }
+
             }
 
             @Override
             public void onPageSelected(int position) {
+                /*
+                * viewPager.setBackgroundColor(
+                        Color.argb(255,random.nextInt(256),random.nextInt(256),random.nextInt(256))
+                );*/
 
+                textView_title.setText(VocaNoteName + "(" + (position + 1) + "/" + cards.size() + ")");
             }
 
             @Override

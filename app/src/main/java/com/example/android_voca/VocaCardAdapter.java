@@ -48,6 +48,8 @@ public class VocaCardAdapter  extends PagerAdapter {
         Voca.setText(cards.get(position).getVoca());
         Mean.setText(cards.get(position).getMean());
 
+
+
         container.addView(view, 0);
 
         return view;
