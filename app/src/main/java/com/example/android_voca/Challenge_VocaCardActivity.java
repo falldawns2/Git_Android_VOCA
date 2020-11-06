@@ -2,7 +2,9 @@ package com.example.android_voca;
 
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,6 +60,14 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
 
     Button arrowBtn;
     ConstraintLayout expandableView;
+
+    //네이버 검색
+    Button Search_Voca;
+
+    public static RelativeLayout HiddenLayout_WebView;
+    public static WebView webView;
+    public static FloatingActionButton fab;
+
 
     //랜덤 객체
     private static Random random = new Random();
@@ -100,6 +111,11 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
         arrowBtn = (Button) findViewById(R.id.arrowBtn);
         BtnOnCLickListener btnOnCLickListener = new BtnOnCLickListener();
         arrowBtn.setOnClickListener(btnOnCLickListener);
+
+
+        HiddenLayout_WebView = findViewById(R.id.HiddenLayout_WebView);
+        webView = findViewById(R.id.webView);
+        fab = findViewById(R.id.fab);
 
         Get_Voca_Mean();
         textView_title.setText(VocaNoteName + "(" + 1 + "/" +cards.size() + ")");
@@ -165,6 +181,19 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
         viewPager.setAdapter(vocaCardAdapter);
         viewPager.setPadding(130,0,130,0);
 
+        /*//네이버 검색
+        //Search_Voca = viewPager.findViewById(R.id.Search_Voca);
+        View view =  getLayoutInflater().inflate(R.layout.cardview_activity_challenge_voca_card,viewPager,false);
+        View view2 = LayoutInflater.from(this).inflate(R.layout.cardview_activity_challenge_voca_card,viewPager,false);
+        Search_Voca = view2.findViewById(R.id.Search_Voca);
+        Search_Voca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //webview 검색된 결과를 보여준다
+                Log.e(TAG, "onClick: " );
+            }
+        });*/
+
         Integer[] colors_temp = {
                 getResources().getColor(R.color.color1),
                 getResources().getColor(R.color.color2),
@@ -184,9 +213,6 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
         for (i = 0; i < cards.size(); i++) {
             RandomTemp[i] = Color.argb(255,random.nextInt(256),random.nextInt(256),random.nextInt(256));
         }
-
-
-
 
         //colors = colors_temp;
 
@@ -254,6 +280,7 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
                       expandableView.setVisibility(View.GONE);
                       arrowBtn.setBackgroundResource(R.drawable.ic_baseline_keyboard_arrow_down_24);
                   }
+                  break;
             }
         }
     }
