@@ -149,7 +149,6 @@ public class ChapterActivity extends AppCompatActivity {
         toolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         toolbarLayout.setExpandedTitleColor(Color.WHITE);
 
-
         //toolbar.setNavigationIcon(R.drawable.button_hamburger_size);
 
         //NoteAddActivity.java - > 저장
@@ -240,6 +239,11 @@ public class ChapterActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
+            @Override
+            public void onItemBoardClick(BoardAdapter.ItemViewHolder holder, View view, int position) {
+
+            }
+
             @Override
             public void onItemClick(VocaNoteAdapter.ItemViewHolder holder, View view, int position) {
 

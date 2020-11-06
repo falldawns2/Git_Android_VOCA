@@ -22,6 +22,7 @@ namespace WcfService1
         List<DataSet_ChapterList> dataSet_ChapterList;
         List<DataSet_Voca_Mean> dataSet_Voca_Mean;
 
+        //단어장
         public List<DataSet_VocaNote> GetVocaNote(int Page_NO, int Page_SIZE, string userid, string OrderBy)
         {
 
@@ -51,6 +52,7 @@ namespace WcfService1
             DB_VOCAFORM.Close();
             return dataSet_VocaNote;
         }
+        //챕터
         public List<DataSet_Chapter> GetChapter(int Page_NO, int Page_SIZE, string userid, string VocaNoteName, string OrderBy)
         {
             DB_VOCAFORM = new DB_VocaForm();
@@ -70,6 +72,7 @@ namespace WcfService1
             DB_VOCAFORM.Close();
             return dataSet_Chapter;
         }
+        //단어장 목록 (스피너)
         public List<DataSet_VocaNoteList> GetVocaNoteList(string userid, string OrderBy)
         {
             DB_VOCAFORM = new DB_VocaForm();
@@ -88,6 +91,7 @@ namespace WcfService1
             DB_VOCAFORM.Close();
             return dataSet_VocaNoteList;
         }
+        //챕터 목록 (스피너)
         public List<DataSet_ChapterList> GetChapterList(string userid, string VocaNoteName, string OrderBy)
         {
             DB_VOCAFORM = new DB_VocaForm();
@@ -106,6 +110,7 @@ namespace WcfService1
             DB_VOCAFORM.Close();
             return dataSet_ChapterList;
         }
+        //단어, 뜻
         public List<DataSet_Voca_Mean> GetVocaMean(string userid, string VocaNoteName, string ChapterName, string OrderBy)
         {
             DB_VOCAFORM = new DB_VocaForm();

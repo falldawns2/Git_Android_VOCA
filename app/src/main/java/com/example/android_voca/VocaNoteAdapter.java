@@ -64,6 +64,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         if (viewType == VIEW_TYPE_ITEM) { //단어장 카드뷰
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View itemView = inflater.inflate(R.layout.cardview_vocanote,parent,false);
@@ -89,6 +90,11 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if(listener != null) {
             listener.onItemClick(holder, view, position);
         }
+    }
+
+    @Override
+    public void onItemBoardClick(BoardAdapter.ItemViewHolder holder, View view, int position) {
+
     }
 
     @Override

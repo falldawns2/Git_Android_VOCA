@@ -42,7 +42,6 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
         this.context = context;
     }
 
-
     // cardView Voca 적용 //
     @NonNull
     @Override
@@ -74,6 +73,12 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
     public void onItemChapterClick(ChapterAdapter.ItemViewHolder holder, View view, int position) {
 
     }
+
+    @Override
+    public void onItemBoardClick(BoardAdapter.ItemViewHolder holder, View view, int position) {
+
+    }
+
 
     //값 반복적으로 바인딩
     @Override

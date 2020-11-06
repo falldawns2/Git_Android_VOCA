@@ -52,4 +52,12 @@ public interface POSTApi {
     //단어,뜻 (단어 카드)
     @POST("GetVocaMean")
     Call<List<VocaCard>> GetVocaMean(@Body VocaCard vocaCard);
+
+    //게시판
+    @POST("GetBoard")
+    Call<List<Board>> GetBoard(@Body Board board);
+
+    //게시판 20개씩
+    @POST("GetBoard")
+    Call<List<Board2>> GetBoard(@Body Board2 board2);
 }

@@ -140,6 +140,11 @@ public class VocaActivity extends AppCompatActivity {
                 Toast.makeText(VocaActivity.this, voca + ", " + mean + ", "
                         + Sen + ", " + Inter, Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onItemBoardClick(BoardAdapter.ItemViewHolder holder, View view, int position) {
+
+            }
         });
     }
 
