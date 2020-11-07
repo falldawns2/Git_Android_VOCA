@@ -60,7 +60,7 @@ public class BoardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
-        //반복할 홀더 지정 (DO 클래스)
+        //반복할 홀더 지정 (DTO 클래스)
 
         if(holder instanceof ItemViewHolder) { //게시판 관련 뷰 홀더
             Board item = items.get(position);
@@ -108,6 +108,11 @@ public class BoardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if(listener != null) {
             listener.onItemBoardClick(holder, view, position);
         }
+    }
+
+    @Override
+    public void onItemGroupClick(GroupAdapter.GroupItemViewHolder holder, View view, int position) {
+
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

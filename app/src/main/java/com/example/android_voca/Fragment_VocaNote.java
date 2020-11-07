@@ -167,6 +167,11 @@ public class Fragment_VocaNote extends Fragment {
             public void onItemChapterClick(ChapterAdapter.ItemViewHolder holder, View view, int position) {
 
             }
+
+            @Override
+            public void onItemGroupClick(GroupAdapter.GroupItemViewHolder holder, View view, int position) {
+
+            }
         });
     }
 

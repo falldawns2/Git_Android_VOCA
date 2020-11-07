@@ -60,4 +60,12 @@ public interface POSTApi {
     //게시판 20개씩
     @POST("GetBoard")
     Call<List<Board2>> GetBoard(@Body Board2 board2);
+
+    //그룹
+    @POST("GetGroup")
+    Call<List<Group>> GetGroup(@Body Group group);
+
+    //그룹 20개씩
+    @POST("GetGroup")
+    Call<List<Group2>> GetGroup(@Body Group2 group2);
 }

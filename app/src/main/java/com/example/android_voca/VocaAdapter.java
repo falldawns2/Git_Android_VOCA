@@ -79,6 +79,10 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
 
     }
 
+    @Override
+    public void onItemGroupClick(GroupAdapter.GroupItemViewHolder holder, View view, int position) {
+
+    }
 
     //값 반복적으로 바인딩
     @Override

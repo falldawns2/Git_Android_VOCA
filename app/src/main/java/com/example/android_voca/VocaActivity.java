@@ -145,6 +145,11 @@ public class VocaActivity extends AppCompatActivity {
             public void onItemBoardClick(BoardAdapter.ItemViewHolder holder, View view, int position) {
 
             }
+
+            @Override
+            public void onItemGroupClick(GroupAdapter.GroupItemViewHolder holder, View view, int position) {
+
+            }
         });
     }
 

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
@@ -64,6 +65,7 @@ public class Fragment_Board extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_board, container, false);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.context_main));
 
         retrofit = new Retrofit(postApi);
@@ -110,6 +112,11 @@ public class Fragment_Board extends Fragment {
 
                 //게시판 글 내용 페이지로 이동한다.
                 Toast.makeText(MainActivity.context_main, "" + position, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemGroupClick(GroupAdapter.GroupItemViewHolder holder, View view, int position) {
+                //그룹
             }
         });
     }
@@ -182,14 +189,20 @@ public class Fragment_Board extends Fragment {
 
                 Log.d(TAG, "onScrolled: ");
 
+                // TODO: 이 부분 참고
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //StaggeredGridLayoutManager linearLayoutManager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+                //recyclerView.setLayoutManager(linearLayoutManager);
+                //int[] size = new int[3];
+                //int[] a = linearLayoutManager.findLastCompletelyVisibleItemPositions(size);
 
+                //비교 값 : a[3]
                 if (!isLoading) {
                     //리니어 레이아웃 매니저가 null or 마지막 아이템 포지션이 부분배열 사이즈 - 1값과 동일
                     //getadddata 메서드 실행 - > 부분배열에다가 새로운 값 20개 추가
                     //isloading 쓰레드 관련
-
                     if (!noSearch) { // 더이상 20개 이상 값이 없다 =서버 요청 x
+                        //Log.e(TAG, "test1: " + a[0] + " " + a[1] + " " + a[2] );
                         if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition()
                                 == list.size() - 1) {
                             adapter.notifyItemInserted(list.size() - 1); //그 공간에 프로그레스 바 넣는다.
@@ -210,7 +223,8 @@ public class Fragment_Board extends Fragment {
     public void QUERY(int Page_NO, POSTApi postApi) {
         Call<List<Board2>> call = postApi.GetBoard(new Board2(Page_NO, 20));
 
-        POST_Response = list_20.size();
+        /*동기 호출
+        * POST_Response = list_20.size();
 
         new Thread(new Runnable() {
             @Override
@@ -241,6 +255,42 @@ public class Fragment_Board extends Fragment {
         if (POST_Response < 20) { //20개 불렀는데 더 적은 수가 옴 = 다음 페이지 없다. = > 서버 요청 x
             noSearch = true;
         }
+        * */
+
+        call.enqueue(new Callback<List<Board2>>() {
+            @Override
+            public void onResponse(Call<List<Board2>> call, Response<List<Board2>> response) {
+                if(!response.isSuccessful()) {
+                    Log.e(TAG, "onResponse: " );
+                    return;
+                }
+
+                List<Board2> postResponse = response.body();
+                POST_Response = postResponse.size();
+
+                if(POST_Response < 20) { //20 불러왔는데 더 적으면 서버 요청 x
+                    noSearch = true;
+                }
+
+                if(postResponse != null) {
+                    for (Board2 board2 : postResponse) {
+                        list_20.add(new Board(
+                                board2.getProfileimage(),
+                                board2.getTitle(),
+                                board2.getUploadtime(),
+                                board2.getHits(),
+                                board2.getComments(),
+                                board2.getNickname()
+                        ));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Board2>> call, Throwable t) {
+                Log.e(TAG, "onFailure: "+t.getMessage());
+            }
+        });
     }
 
     //부분 배열에 새로운 값 20개 담아온다.

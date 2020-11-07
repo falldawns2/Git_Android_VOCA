@@ -108,6 +108,11 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
+    public void onItemGroupClick(GroupAdapter.GroupItemViewHolder holder, View view, int position) {
+
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) { //ViewHolder
 
         if(holder instanceof ItemViewHolder) { //단어장 관련 뷰홀더

@@ -272,6 +272,11 @@ public class ChapterActivity extends AppCompatActivity {
                 intent.putExtra("ChapterNoteName",item.getChapterName());
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemGroupClick(GroupAdapter.GroupItemViewHolder holder, View view, int position) {
+
+            }
         });
     }
 

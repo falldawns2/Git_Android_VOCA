@@ -60,13 +60,14 @@ public class LoginActivity extends AppCompatActivity {
         image_Logo.setLayoutParams(params);
 
 
-        //Retrofit
-        Retrofit retrofit = new Retrofit(postApi);
-        postApi = retrofit.setRetrofitInit(svcName); //반환된 인터페이스 받음
+
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Retrofit
+                Retrofit retrofit = new Retrofit(postApi);
+                postApi = retrofit.setRetrofitInit(svcName); //반환된 인터페이스 받음
                 //로그인 체크 Authenticate
                 LoginCheck loginCheck = new LoginCheck(Userid.getText().toString(), Passwd.getText().toString());
                 Call<LoginCheck> call = postApi.Authenticate(loginCheck);
