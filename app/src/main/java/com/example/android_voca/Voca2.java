@@ -2,7 +2,7 @@ package com.example.android_voca;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Voca {
+public class Voca2 {
 
     // 단어 테이블 //
     @SerializedName("Page_NO")
@@ -39,7 +39,7 @@ public class Voca {
 
     boolean isComplete;
 
-    public Voca(int page_NO, int page_SIZE, String userid, String vocaNoteName, String chapterName, String orderBy) {
+    public Voca2(int page_NO, int page_SIZE, String userid, String vocaNoteName, String chapterName, String orderBy) {
         Page_NO = page_NO;
         Page_SIZE = page_SIZE;
         this.userid = userid;
@@ -48,7 +48,7 @@ public class Voca {
         OrderBy = orderBy;
     }
 
-    public Voca(String voca, String mean, String sentence, String interpretation) {
+    public Voca2(String voca, String mean, String sentence, String interpretation) {
         Voca = voca;
         Mean = mean;
         Sentence = sentence;

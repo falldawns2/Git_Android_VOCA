@@ -68,4 +68,12 @@ public interface POSTApi {
     //그룹 20개씩
     @POST("GetGroup")
     Call<List<Group2>> GetGroup(@Body Group2 group2);
+
+    //단어
+    @POST("GetVoca")
+    Call<List<Voca>> GetVoca(@Body Voca voca);
+
+    //단어 20개씩
+    @POST("GetVoca")
+    Call<List<Voca2>> GetVoca(@Body Voca2 voca2);
 }

@@ -31,10 +31,16 @@ namespace WcfService1
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GetChapterList", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         List<DataSet_ChapterList> GetChapterList(string userid, string VocaNoteName, string OrderBy);
+        
         //POST 단어 뜻 (단어 카드)
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GetVocaMean", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         List<DataSet_Voca_Mean> GetVocaMean(string userid, string VocaNoteName, string ChapterName, string OrderBy);
+
+        //POST 단어
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "GetVoca", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        List<DataSet_Voca> GetVoca(int Page_NO, int Page_SIZE, string userid, string VocaNoteName, string ChapterName, string OrderBy);
     }
 
     [DataContract]
@@ -140,5 +146,40 @@ namespace WcfService1
             get { return mean; }
             set { mean = value; }
         }
+    }
+    public class DataSet_Voca
+    {
+        // 0 : no, 1 : bbsid, 2 : userid, 3 : VocaNoteName, 4 : ChapterName, 5 : Voca, 6: Mean, 7 : Sentence, 8 : Interpretation, 9 : Interpretaion, 10 : Complete, 11 : CreateDate
+
+        string voca;
+        string mean;
+        string sentence;
+        string interpretation;
+
+        [DataMember]
+        public string Voca
+        {
+            get { return voca; }
+            set { voca = value; }
+        }
+        [DataMember]
+        public string Mean
+        {
+            get { return mean; }
+            set { mean = value; }
+        }
+        [DataMember]
+        public string Sentence
+        {
+            get { return sentence; }
+            set { sentence = value; }
+        }
+        [DataMember]
+        public string Interpretation
+        {
+            get { return interpretation; }
+            set { interpretation = value; }
+        }
+
     }
 }

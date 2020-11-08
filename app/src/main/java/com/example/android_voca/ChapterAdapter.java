@@ -2,6 +2,7 @@ package com.example.android_voca;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,14 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     //static int a = 0;
     static Boolean Edit_Activation;
 
+    static int positions;
+
+
+
+    public ChapterAdapter(Context context, List<Chapter> itemModels) {
+        this.context = context;
+        this.items = itemModels;
+    }
 
     public void addItem(Chapter item) {
         items.add(item);
@@ -43,6 +52,13 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public Chapter getItem(int position) {
+        /*if(position != -1) {
+            positions = position;
+            return items.get(position);
+        } else { // -1
+            return items.get(positions);
+        }*/
+        Log.e("tt", "getItemaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " + position );
         return items.get(position);
     }
 
@@ -50,11 +66,6 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         items.set(position,item);
     }
 
-
-    public ChapterAdapter(Context context, List<Chapter> itemModels) {
-        this.context = context;
-        this.items = itemModels;
-    }
     
     /*public VocaNoteAdapter(Context context, List<VocaNote> itemModels) {
         this.items = itemModels;
@@ -92,6 +103,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onItemChapterClick(ItemViewHolder holder, View view, int position) {
 
+
         ///챕터
         if(listener != null) {
             listener.onItemChapterClick(holder, view, position);
@@ -115,6 +127,9 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) { //ViewHolder
+
+        //positon - 1
+        //final int Position = position;
 
         if(holder instanceof ItemViewHolder) { //단어장 관련 뷰홀더
             Chapter item = items.get(position);
@@ -205,13 +220,16 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return itemModelList;
     }
 
-     public class ItemViewHolder extends RecyclerView.ViewHolder {//static , private 없음
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {//static , private 없음
         TextView textview_VocaNote;
         //TextView textView_CreateDate;
         TextView textview_VocaCount;
 
         CheckBox main_checkbox;
         CardView Main_CardView;
+
+        //position -1 문제
+        //View view;
 
         public ItemViewHolder(View itemView, final OnVocaNoteItemClickListener listener) {
             super(itemView);
@@ -228,6 +246,8 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             final ViewGroup.MarginLayoutParams layoutParams =
                     (ViewGroup.MarginLayoutParams) Main_CardView.getLayoutParams();
 
+            //position -1
+            //this.view = itemView;
 
 
             if(MainActivity.tag == "single") {
@@ -318,10 +338,16 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             //textView_CreateDate.setText(item.getCreateDate());
             textview_VocaCount.setText(item.getVocaCount());
         }
+
+        //position - 1
+        /*View Viewreturn() {
+            return view;
+        }*/
     }
 
+
     //로딩 홀더
-    private class LoadingViewHolder extends RecyclerView.ViewHolder {
+    private static class LoadingViewHolder extends RecyclerView.ViewHolder {
         ProgressBar progressBar;
 
         public LoadingViewHolder(@NonNull View itemView) {

@@ -3,6 +3,8 @@ package com.example.android_voca;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,13 +20,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import org.jetbrains.annotations.NotNull;
+import retrofit2.Call;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VocaActivity extends AppCompatActivity {
 
-    TextView textView_VocaNoteName,textView_ChapterName;
+    TextView textView_VocaNoteName, textView_ChapterName;
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -37,6 +43,28 @@ public class VocaActivity extends AppCompatActivity {
     ////////
     RecyclerView recyclerView;
     VocaAdapter adapter;
+
+    boolean isLoading = false; //핸들러
+
+    Retrofit retrofit;
+    POSTApi postApi;
+
+    final String svcName = "Service_VocaNote.svc/";
+    final String TAG = "VocaActivity";
+
+    List<Voca> list;
+    List<Voca> list_20;
+
+    //postResponse
+    int POST_Response;
+
+    //noSearch == 20보다 작다 이제 더이상 없다는 뜻
+    boolean noSearch = false;
+
+    //핸들러 반복 횟수
+    static int handler_count;
+
+    int LastPosition; //dy;
 
     //카드뷰 내용 : 단어, 뜻, 예문, 해석
     public static String[] Arr_Voca = {};
@@ -67,6 +95,8 @@ public class VocaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_voca);
         //setContentView(R.layout.cardview_voca);
 
+        list = new ArrayList<>();
+        list_20 = new ArrayList<>();
         textView_VocaNoteName = (TextView) findViewById(R.id.textView_VocaNoteName);
         textView_ChapterName = (TextView) findViewById(R.id.textView_ChapterName);
 
@@ -96,21 +126,31 @@ public class VocaActivity extends AppCompatActivity {
 
         save = MainActivity.save;
 
-        if(save == 1) {
+        if (save == 1) {
 
         } else {
-            toolbarLayout.setTitle(VocaNoteName  + " (" + ChapterNoteName + ")");
+            toolbarLayout.setTitle(VocaNoteName + " (" + ChapterNoteName + ")");
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView_Voca);
-
-        QUERY_VOCA();
-
-        List<Voca> list = getList();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.context_main);
         recyclerView.setLayoutManager(layoutManager);
 
+        retrofit = new Retrofit(postApi);
+        postApi = retrofit.setRetrofitInit(svcName);
+
+        handler_count = 1;
+
+        QUERY_VOCA_ONE(handler_count, MainActivity.Session_ID, VocaNoteName, ChapterNoteName, postApi);
+
+        //list = getList();
+
+        initAdapter();
+
+        initScrollListener();
+    }
+
+    public void initAdapter() {
         //싱글 선택 어댑터 //
         adapter = new VocaAdapter(getApplicationContext(), list);
 
@@ -153,34 +193,164 @@ public class VocaActivity extends AppCompatActivity {
         });
     }
 
-    public void QUERY_VOCA() {
-        // 일단 임시로 단어 내용 넣는다. //
+    public void QUERY_VOCA_ONE(int Page_NO, String userid, String VocaNoteName, String ChapterName, POSTApi postApi) {
+        Call<List<Voca>> call = postApi.GetVoca(new Voca(Page_NO, 20, userid, VocaNoteName, ChapterName, "CreateDate desc"));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (Voca voca : call.execute().body()) {
+                        list.add(new Voca(
+                                voca.getVoca(),
+                                voca.getMean(),
+                                voca.getSentence(),
+                                voca.getInterpretation()
+                        ));
 
-        Arr_Voca = new String[20];
-        Arr_Mean = new String[20];
-        Arr_Sentence = new String[20];
-        Arr_Interpritation = new String[20];
+                        list_20.add(new Voca(
+                                voca.getVoca(),
+                                voca.getMean(),
+                                voca.getSentence(),
+                                voca.getInterpretation()
+                        ));
+                    }
+                } catch (IOException e) {
 
-        for (int i = 0; i< 20; i++) {
-            Arr_Voca[i] = "단어 " + i;
-            Arr_Mean[i] = "뜻 " + i;
-            Arr_Sentence[i] = "예문 " + i;
-            Arr_Interpritation[i] = "해석 " + i;
+                }
+            }
+        }).start();
+
+        try {
+            Thread.sleep(100);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        Arr_Voca[0] = "Speech";
-        Arr_Mean[0] = "연설, 말, 언어";
-        Arr_Sentence[0] = "man alone has the gift of speech";
-        Arr_Interpritation[0] = "인간만이 말할 줄 안다";
-
-        Arr_Voca[1] = "test1";
-        Arr_Mean[1] = "테스트1";
-        Arr_Sentence[1] = null;
-        Arr_Interpritation[1] = null;
-
+        POST_Response = list_20.size();
+        if (POST_Response < 20) {
+            noSearch = true;
+        }
     }
 
-    private List<Voca> getList() {
+    private void initScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull @NotNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.e(TAG, "onScrollStateChanged: ");
+
+                if (recyclerView.getScrollY() > LastPosition)
+                    MainActivity.bottom_bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
+                else
+                    MainActivity.bottom_bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+            }
+
+            @Override
+            public void onScrolled(@NonNull @NotNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LastPosition = dy;
+
+                Log.d(TAG, "onScrolled: ");
+
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                if (!isLoading) {
+                    if (!noSearch) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                                == list.size() - 1) {
+                            adapter.notifyItemInserted(list.size() - 1);
+                            ++handler_count;
+
+                            QUERY(handler_count, MainActivity.Session_ID, VocaNoteName, ChapterNoteName, postApi);
+                            GetAddData();
+
+                            isLoading = true;
+
+                            Toast.makeText(VocaActivity.this, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void GetAddData() {
+        Log.d(TAG, "GetAddData: ");
+
+        list.add(null);
+
+        recyclerView.scrollToPosition(list.size() - 1);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: " + handler_count);
+
+                list.remove(list.size() - 1); //2초 뒤 프로그레스바 배열에서 지움
+                int scrollPosition = list.size(); //현재 위치 저장
+                adapter.notifyItemRemoved(scrollPosition); //프로그레스바 사라짐
+                int currentSize = scrollPosition; //현재 위치 = 스크롤 위치 = 마지막 값 0 ~ 9면 9
+                int nextLimit = currentSize + POST_Response; //9에서 가져올 값 더해 19
+
+                //현재 값 9에서 ~ 19 까지 반복해서 전체 배열에서 현재 배열에 10개 담는다.
+                Copy(currentSize, nextLimit);
+                adapter.notifyDataSetChanged(); //새로고침
+
+                isLoading = false; //쓰레드
+            }
+        }, 2000);
+    }
+
+    public void Copy(int i, int j) {
+        for (int a = i; a < list_20.size(); a++) {
+            if (a == list_20.size()) {
+                return;
+            }
+            list.add(new Voca(
+
+                    list_20.get(a).getVoca(),
+                    list_20.get(a).getMean(),
+                    list_20.get(a).getSentence(),
+                    list_20.get(a).getInterpretation()));
+        }
+    }
+
+    public void QUERY(int Page_NO, String userid, String VocaNoteName, String ChapterName, POSTApi postApi) {
+        Call<List<Voca2>> call = postApi.GetVoca(new Voca2(Page_NO, 20, userid, VocaNoteName, ChapterName, "CreateDate desc"));
+
+        POST_Response = list_20.size();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (Voca2 voca2 : call.execute().body()) {
+                        list_20.add(new Voca(
+                                voca2.getVoca(),
+                                voca2.getMean(),
+                                voca2.getSentence(),
+                                voca2.getInterpretation()
+                        ));
+                    }
+                } catch (IOException e) {
+
+                }
+            }
+        }).start();
+
+        try {
+            Thread.sleep(100);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (POST_Response < 20) {
+            noSearch = true;
+        }
+    }
+
+    /*private List<Voca> getList() {
         List<Voca> list = new ArrayList<>();
 
         for(int i = 0; i < Arr_Voca.length; i++) {
@@ -194,7 +364,7 @@ public class VocaActivity extends AppCompatActivity {
             list.add(model);
         }
         return list;
-    }
+    }*/
 
     public void showToast(String message) {
         Toast.makeText(VocaActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -206,5 +376,8 @@ public class VocaActivity extends AppCompatActivity {
         MainActivity.save = 0;
         MainActivity.tag = "single";
         MainActivity.PageNum = 1;
+        /*Intent intent = new Intent(VocaActivity.this, ChapterActivity.class);
+
+        startActivity(intent);*/
     }
 }

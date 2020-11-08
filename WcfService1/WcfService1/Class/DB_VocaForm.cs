@@ -119,5 +119,21 @@ namespace WcfService1
             //실행 및 결과 반환
             return this.AdapterFill(mySql, "Word");
         }
+
+        //단어
+        public DataSet Word(int Page_NO, int Page_SIZE, string uid, string VocaNoteName, string ChapterName, string OrderBy) // **단어 목록을 가져온다**
+        {
+            //쿼리문 작성
+            string mySql = "DECLARE @PAGE_NO int = " + Page_NO + "" +
+                " DECLARE @PAGE_SIZE int = " + Page_SIZE + "" +
+                " SELECT * " +
+                " FROM Voca WHERE userid= '" + uid + "' and VocaNoteName = '" + VocaNoteName + "' and ChapterName = '" + ChapterName + "'" +
+                " Order by  " + OrderBy + "" +
+                " offset (@PAGE_NO - 1) * @PAGE_SIZE ROW" +
+                " FETCH NEXT @PAGE_SIZE ROW ONLY";
+
+            //실행 및 결과 반환
+            return this.AdapterFill(mySql, "Word");
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,13 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> implements OnVocaNoteItemClickListener {
+public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener {
+
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
 
     private List<Voca> items;
     private Context context;
 
     OnVocaNoteItemClickListener listener; //뷰 클릭시 여부
-    static boolean Edit_Activation;
+
+    static Boolean Edit_Activation;
 
     public void addItem(Voca item) {
         items.add(item);
@@ -45,11 +50,16 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
     // cardView Voca 적용 //
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.cardview_voca, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if(viewType == VIEW_TYPE_ITEM) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View itemView = inflater.inflate(R.layout.cardview_voca, parent, false);
 
-        return new ViewHolder(itemView, this);
+            return new ViewHolder(itemView, this);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_loading,parent,false);
+            return new LoadingViewHolder(view);
+        }
     }
 
     // 클릭 리스너 //
@@ -86,15 +96,27 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
 
     //값 반복적으로 바인딩
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Voca item = items.get(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        initializeView(item,holder,position);
+        if(holder instanceof ViewHolder) {
+
+            Voca item = items.get(position);
+            initializeView(item,(ViewHolder) holder,position);
+        } else if (holder instanceof LoadingViewHolder) {
+            showLoadingView((LoadingViewHolder) holder, position);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        //return items.size();
+        return items == null ? 0 : items.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        //return super.getItemViewType(position);
+        return items.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     private void initializeView(final Voca item, final VocaAdapter.ViewHolder holder, int position) {
@@ -125,6 +147,10 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
             }
         }
         return itemModelList;
+    }
+
+    private void showLoadingView(LoadingViewHolder viewHolder, int position) {
+
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -166,6 +192,17 @@ public class VocaAdapter extends RecyclerView.Adapter<VocaAdapter.ViewHolder> im
             Mean.setText(item.getMean());
             Sentence.setText(item.getSentence());
             Interpretation.setText(item.getInterpretation());
+        }
+    }
+
+    //로딩
+
+    private class LoadingViewHolder extends RecyclerView.ViewHolder {
+        ProgressBar progressBar;
+
+        public LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
     }
 }

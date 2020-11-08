@@ -231,12 +231,12 @@ public class ChapterActivity extends AppCompatActivity {
         });
     }
 
-    private void initAdapter() {
+    public void initAdapter() {
         // 싱글 선택 어댑터 //
         adapter = new ChapterAdapter(this,list);
 
         adapter.notifyDataSetChanged();
-        recyclerView.setAdapter(adapter);
+
 
         adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
             @Override
@@ -257,9 +257,9 @@ public class ChapterActivity extends AppCompatActivity {
             @Override
             public void onItemChapterClick(ChapterAdapter.ItemViewHolder holder, View view, int position) {
                 MainActivity.PageNum = 2; //단어 페이지로 이동
-
                 Chapter item = adapter.getItem(position);
-                //VocaNoteName = item.getVocaNoteName();
+                Log.e(TAG, "onItemChapterClick: " + position );
+
                 ChapterNoteName = item.getChapterName();
                 VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
 
@@ -269,7 +269,7 @@ public class ChapterActivity extends AppCompatActivity {
                 ///
                 Intent intent = new Intent(getApplicationContext(), VocaActivity.class);
                 intent.putExtra("VocaNoteName",VocaNoteName);
-                intent.putExtra("ChapterNoteName",item.getChapterName());
+                intent.putExtra("ChapterNoteName",ChapterNoteName);
                 startActivity(intent);
             }
 
@@ -278,11 +278,12 @@ public class ChapterActivity extends AppCompatActivity {
 
             }
         });
+        recyclerView.setAdapter(adapter);
     }
 
     //부분 배열에 새로운 값 20개 담아온다.
     private void GetAddData() {
-        Log.d(TAG, "GetAddData: ");
+        Log.e(TAG, "GetAddData: ");
         list.add(null); //빈 공간 추가
 
         recyclerView.scrollToPosition(list.size() - 1); //그 위치 자동으로 스크롤 내려줌.
@@ -341,6 +342,11 @@ public class ChapterActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
                 LastPosition = dy;
 
+                //중요// TODO: 스크롤 방지 해줘야함
+                /*if(list.size() == 1) {
+                    return;
+                }*/
+
                 Log.d(TAG, "onScrolled: ");
 
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -374,6 +380,11 @@ public class ChapterActivity extends AppCompatActivity {
         MainActivity.save = 0;
         MainActivity.tag = "single";
         MainActivity.PageNum = 0;
+
+        /*Intent intent = new Intent(ChapterActivity.this, MainActivity.class);
+        intent.putExtra("Session_ID",MainActivity.Session_ID);
+        startActivity(intent);*/
+
     }
 
     public void QUERY_Chapter_ONE(int Page_NO, String userid, String VocaNoteName,POSTApi postApi) {
@@ -441,6 +452,12 @@ public class ChapterActivity extends AppCompatActivity {
             Thread.sleep(100);
         }catch (Exception e) {
             e.printStackTrace();
+        }
+
+        POST_Response = list_20.size();
+
+        if(POST_Response < 20) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
+            noSearch = true;
         }
 
         /*for(int i = 0; i< 20; i++) {

@@ -208,7 +208,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return itemModelList;
     }
 
-     public class ItemViewHolder extends RecyclerView.ViewHolder {//static , private 없음
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {//static , private 없음
         TextView textview_VocaNote;
         //TextView textView_CreateDate;
         TextView textview_VocaCount;
@@ -324,7 +324,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     //로딩 홀더
-    private class LoadingViewHolder extends RecyclerView.ViewHolder {
+    private static class LoadingViewHolder extends RecyclerView.ViewHolder {
         ProgressBar progressBar;
 
         public LoadingViewHolder(@NonNull View itemView) {
