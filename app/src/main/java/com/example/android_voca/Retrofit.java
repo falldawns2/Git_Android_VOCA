@@ -24,7 +24,7 @@ public class Retrofit {
 
         //Retrofit 2 빌드
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
-                .baseUrl("http://192.168.0.2/WCF_Android/" + svcName)
+                .baseUrl("http://121.131.90.130/WCF_Android/" + svcName)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(ClientBuilder.build()) //로그 기록
                 .build();
