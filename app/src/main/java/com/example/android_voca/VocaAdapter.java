@@ -4,12 +4,18 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +31,14 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     OnVocaNoteItemClickListener listener; //뷰 클릭시 여부
 
     static Boolean Edit_Activation;
+
+    //단어 검색 webView -activity_voca.xml
+    public static RelativeLayout HiddenLayout_WebView;
+    public static WebView webView;
+
+    public static FloatingActionButton fabClose;
+
+    Button Search_Voca; //네이버 버튼
 
     public void addItem(Voca item) {
         items.add(item);
@@ -54,7 +68,7 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         if(viewType == VIEW_TYPE_ITEM) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View itemView = inflater.inflate(R.layout.cardview_voca, parent, false);
-
+            Search_Voca = itemView.findViewById(R.id.Search_Voca);
             return new ViewHolder(itemView, this);
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_loading,parent,false);
@@ -132,6 +146,39 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         } else {
             holder.Sentence.setVisibility(View.VISIBLE);
         }
+
+        //단어 검색
+        HiddenLayout_WebView = VocaActivity.HiddenLayout_WebView;
+        webView = VocaActivity.webView;
+        fabClose = VocaActivity.fabClose;
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient()); //새 창 띄우기 방지
+
+        //네이버 검색
+
+        Search_Voca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //webview 검색된 결과를 보여준다
+                HiddenLayout_WebView.setVisibility(View.VISIBLE);
+                //webView.getSettings().setLoadsImagesAutomatically(true);
+                //webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+
+                webView.loadUrl("https://en.dict.naver.com/#/search?query=" + holder.Word.getText());
+
+            }
+        });
+
+        fabClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HiddenLayout_WebView.setVisibility(View.GONE);
+                webView.loadUrl(null);
+            }
+        });
+
+
     }
 
     //체크박스 관련

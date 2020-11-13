@@ -154,9 +154,9 @@ public class ChapterActivity extends AppCompatActivity {
         //NoteAddActivity.java - > 저장
         save = MainActivity.save;
 
-        textView_VocaNoteName = findViewById(R.id.textView_VocaNoteName);
+        //textView_VocaNoteName = findViewById(R.id.textView_VocaNoteName);
         //Note_CreateDate = findViewById(R.id.Note_CreateDate);
-        textView_VocaCount = findViewById(R.id.textView_VocaCount);
+        //textView_VocaCount = findViewById(R.id.textView_VocaCount);
 
         if(save == 1) {
             Intent intent = getIntent();
@@ -169,9 +169,9 @@ public class ChapterActivity extends AppCompatActivity {
             //CreateDate = ((Fragment_Main)Fragment_Main.context_Frag_Main).CreateDate;
             VocaCount = ((Fragment_VocaNote)Fragment_VocaNote.context_Frag_Main).VocaCount;
 
-            textView_VocaNoteName.setText(VocaNoteName);
+            //textView_VocaNoteName.setText(VocaNoteName);
             //Note_CreateDate.setText(CreateDate);
-            textView_VocaCount.setText(VocaCount);
+            //textView_VocaCount.setText(VocaCount);
 
             //단어장 프래그먼트에서 단어장명 가져옴.
             toolbarLayout.setTitle(VocaNoteName);

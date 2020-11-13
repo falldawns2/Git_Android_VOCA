@@ -1,152 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-xmlns:tools="http://schemas.android.com/tools"
-android:orientation="vertical"
-tools:context=".ChapterActivity">
 
-<!--<androidx.appcompat.widget.Toolbar
-    android:id="@+id/toolbar1"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-</androidx.appcompat.widget.Toolbar> -->
-
-
-
-
-
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ChapterActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
-        android:background="@color/TitleBarLightColor">  <!-- 제목이 아래로 내려올 때 색상 -->
-        <!-- android:theme="@style/AppTheme.AppBarOverlay"-->
-        <!-- android:background="@color/TitleBarLightColor" -->
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        tools:context=".ChapterActivity">
+
+        <!--<androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </androidx.appcompat.widget.Toolbar> -->
+
+
+
+
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/TitleBarLightColor"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            tools:context=".ChapterActivity">
 
-            <!-- app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"  이걸로 햄버거 버튼 색상 변경됨 -->
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-                android:background="@color/TitleBarLightColor"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                >
-                <!--app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" -->
-                <!--<Button
-                    android:id="@+id/btn_Menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Men123u" /> -->
+                android:layout_height="@dimen/app_bar_height"
+                android:fitsSystemWindows="true"
+                android:background="@color/TitleBarLightColor">  <!-- 제목이 아래로 내려올 때 색상 -->
+                <!-- android:theme="@style/AppTheme.AppBarOverlay"-->
+                <!-- android:background="@color/TitleBarLightColor" -->
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id="@+id/toolbar_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
+                    app:contentScrim="@color/TitleBarLightColor"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:toolbarId="@+id/toolbar">
+
+                    <!-- app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"  이걸로 햄버거 버튼 색상 변경됨 -->
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:layout_collapseMode="pin"
+                        app:popupTheme="@style/AppTheme.PopupOverlay"
+                        app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+                        android:background="@color/TitleBarLightColor"
+                        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                        >
+                        <!--app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" -->
+                        <!--<Button
+                            android:id="@+id/btn_Menu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Men123u" /> -->
+                        <TextView
+                            android:layout_gravity="center"
+                            android:layout_marginRight="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:text="단어"/>
+
+                    </androidx.appcompat.widget.Toolbar>
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
                 <TextView
-                    android:layout_gravity="center"
-                    android:layout_marginRight="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:text="단어"/>
+                    android:text="정렬 순서"/>
 
-            </androidx.appcompat.widget.Toolbar>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/test"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:context=".ChapterActivity"
+                tools:showIn="@layout/activity_main"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <!--
+         <TextView
+            android:id="@+id/Note_CreateDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="정렬 순서"/>
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="132dp"
+            android:text="생성 날짜"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" /> -->
 
-    </com.google.android.material.appbar.AppBarLayout>
+
+                    <!-- 위의 내용물 -->
+                    <!-- intent 테스트 -->
+                    <!--
+                     <TextView
+                        android:id="@+id/textView_VocaNoteName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="19dp"
+                        android:layout_marginTop="9dp"
+                        android:text="제목"
+                        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+                    <TextView
+                        android:id="@+id/textView_ChapterName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="19dp"
+                        android:layout_marginTop="64dp"
+                        android:text="내용"
+                        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+                     -->
+                    <!-- app:layout_constraintTop_toBottomOf="@+id/Note_CreateDate" -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView_Voca"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </androidx.recyclerview.widget.RecyclerView>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/test"
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                app:fabSize="normal"
+                android:tint="@color/White"
+                android:src="@drawable/ic_vector_add_64px"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="15sp"
+                />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </LinearLayout>
+
+    <!-- webView activity -->
+    <RelativeLayout
+        android:id="@+id/HiddenLayout_WebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".ChapterActivity"
-        tools:showIn="@layout/activity_main"
-        >
+        android:visibility="gone">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_margin="40dp"
+            app:cardCornerRadius="20dp">
 
-            <!--
- <TextView
-    android:id="@+id/Note_CreateDate"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="19dp"
-    android:layout_marginTop="132dp"
-    android:text="생성 날짜"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" /> -->
-
-
-            <!-- 위의 내용물 -->
-
-            <TextView
-                android:id="@+id/textView_VocaNoteName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="19dp"
-                android:layout_marginTop="9dp"
-                android:text="제목"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-            <TextView
-                android:id="@+id/textView_ChapterName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="19dp"
-                android:layout_marginTop="64dp"
-                android:text="내용"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-            <!-- app:layout_constraintTop_toBottomOf="@+id/Note_CreateDate" -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_Voca"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-            </androidx.recyclerview.widget.RecyclerView>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                android:layout_height="match_parent">
 
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabClose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    app:fabCustomSize="40dp"
+                    app:backgroundTint="@color/TitleBarLightColor"
+                    app:fabSize="normal"
+                    android:tint="@color/White"
+                    android:src="@drawable/ic_baseline_close_24"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
+                    />
 
+                <WebView
+                    android:id="@+id/webView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        app:fabSize="normal"
-        android:tint="@color/White"
-        android:src="@drawable/ic_vector_add_64px"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="15sp"
-        />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            </FrameLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 
-</LinearLayout>
+</FrameLayout>

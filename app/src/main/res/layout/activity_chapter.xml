@@ -98,7 +98,9 @@
         app:layout_constraintTop_toTopOf="parent" /> -->
 
 
-                <TextView
+                <!-- intent 테스트 -->
+                <!--
+                 <TextView
                     android:id="@+id/textView_VocaNoteName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,6 +114,8 @@
 
                     android:text="내용"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+                 -->
                 <!-- app:layout_constraintTop_toBottomOf="@+id/Note_CreateDate" -->
 
                 <androidx.recyclerview.widget.RecyclerView

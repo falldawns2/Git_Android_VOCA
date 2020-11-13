@@ -48,6 +48,7 @@
                             android:layout_alignParentRight="true"
                             android:paddingTop="5dp"
                             android:paddingRight="5dp"
+                            android:layout_marginRight="15dp"
                             android:src="@drawable/speaker_icon_resize"
                             android:visibility="visible" />
                     </RelativeLayout>
@@ -77,14 +78,15 @@
                             android:layout_margin="@dimen/Voca_margin"
                             android:text="인간만이 말할 줄 안다." />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <Button
+                            android:id="@+id/Search_Voca"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:background="@drawable/naver_icon_resize"
                             android:layout_alignParentRight="true"
+                            android:layout_marginRight="15dp"
                             android:paddingTop="5dp"
-                            android:paddingRight="5dp"
-                            android:src="@drawable/naver_icon_resize"
-                            android:visibility="visible" />
+                            android:paddingRight="5dp"/>
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>

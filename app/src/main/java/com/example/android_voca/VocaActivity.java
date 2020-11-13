@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 
@@ -72,6 +76,13 @@ public class VocaActivity extends AppCompatActivity {
     public static String[] Arr_Sentence = {};
     public static String[] Arr_Interpritation = {};
 
+    //단어 검색 webView -activity_voca.xml
+    public static RelativeLayout HiddenLayout_WebView;
+    public static WebView webView;
+
+    public static FloatingActionButton fabClose;
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
@@ -95,15 +106,20 @@ public class VocaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_voca);
         //setContentView(R.layout.cardview_voca);
 
+        //단어 검색을 위해
+        HiddenLayout_WebView = (RelativeLayout)findViewById(R.id.HiddenLayout_WebView);
+        webView = (WebView) findViewById(R.id.webView);
+        fabClose = (FloatingActionButton) findViewById(R.id.fabClose);
+
         list = new ArrayList<>();
         list_20 = new ArrayList<>();
-        textView_VocaNoteName = (TextView) findViewById(R.id.textView_VocaNoteName);
-        textView_ChapterName = (TextView) findViewById(R.id.textView_ChapterName);
+        //textView_VocaNoteName = (TextView) findViewById(R.id.textView_VocaNoteName);
+        //textView_ChapterName = (TextView) findViewById(R.id.textView_ChapterName);
 
         Intent intent = getIntent();
 
-        textView_VocaNoteName.setText("단어장 명 : " + intent.getExtras().getString("VocaNoteName"));
-        textView_ChapterName.setText("챕터 명 : " + intent.getExtras().getString("ChapterNoteName"));
+        //textView_VocaNoteName.setText("단어장 명 : " + intent.getExtras().getString("VocaNoteName"));
+        //textView_ChapterName.setText("챕터 명 : " + intent.getExtras().getString("ChapterNoteName"));
 
         //단어장명
         VocaNoteName = intent.getExtras().getString("VocaNoteName");
@@ -266,7 +282,7 @@ public class VocaActivity extends AppCompatActivity {
 
                             isLoading = true;
 
-                            Toast.makeText(VocaActivity.this, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(VocaActivity.this, "스크롤 감지", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
