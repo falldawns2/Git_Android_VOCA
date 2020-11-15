@@ -143,7 +143,7 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void setItem(Group item) {
 
             Glide.with(MainActivity.context_main)
-                    .load("http://192.168.0.2/WCF_Android/groupImage/" + item.getGroupImage())
+                    .load("http://121.131.90.130/IIS_ASP_NET/groupImage/" + item.getGroupImage())
 
                     .into(imageView_GroupImage);
 
@@ -165,7 +165,7 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         //뷰 홀더 클래스에서 정의 및 초기화한 객체 설계
 
         Glide.with(MainActivity.context_main)
-                .load("http://192.168.0.2/WCF_Android/groupImage/" + item.getGroupImage())
+                .load("http://121.131.90.130/IIS_ASP_NET/groupImage/" + item.getGroupImage())
 
                 .into(holder.imageView_GroupImage);
 

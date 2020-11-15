@@ -12,3 +12,10 @@ E:\OneDrive\Git_Android_VOCA\WcfService1\WcfService1\obj\Release\WcfService1.csp
 E:\OneDrive\Git_Android_VOCA\WcfService1\WcfService1\obj\Release\WcfService1.csproj.CoreCompileInputs.cache
 E:\OneDrive\Git_Android_VOCA\WcfService1\WcfService1\obj\Release\WcfService1.dll
 E:\OneDrive\Git_Android_VOCA\WcfService1\WcfService1\obj\Release\WcfService1.pdb
+E:\OneDrive\GitHub\Git_Android_VOCA\WcfService1\WcfService1\bin\WcfService1.dll.config
+E:\OneDrive\GitHub\Git_Android_VOCA\WcfService1\WcfService1\bin\WcfService1.dll
+E:\OneDrive\GitHub\Git_Android_VOCA\WcfService1\WcfService1\bin\WcfService1.pdb
+E:\OneDrive\GitHub\Git_Android_VOCA\WcfService1\WcfService1\obj\Release\WcfService1.csprojAssemblyReference.cache
+E:\OneDrive\GitHub\Git_Android_VOCA\WcfService1\WcfService1\obj\Release\WcfService1.csproj.CoreCompileInputs.cache
+E:\OneDrive\GitHub\Git_Android_VOCA\WcfService1\WcfService1\obj\Release\WcfService1.dll
+E:\OneDrive\GitHub\Git_Android_VOCA\WcfService1\WcfService1\obj\Release\WcfService1.pdb

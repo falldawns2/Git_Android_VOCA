@@ -152,7 +152,7 @@ public class BoardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void setItem(Board item) {
 
             Glide.with(MainActivity.context_main)
-                    .load("http://192.168.0.2/WCF_Android/ProfileImage/" + item.getProfileimage())
+                    .load("http://121.131.90.130/IIS_ASP_NET/ProfileImage/" + item.getProfileimage())
                     .override(150,150)
                     .into(imageView_ProfileImage);
 
@@ -178,7 +178,7 @@ public class BoardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         //뷰 홀더 클래스에서 정의 및 초기화한 객체 설계
 
         Glide.with(MainActivity.context_main)
-                .load("http://192.168.0.2/WCF_Android/ProfileImage/" + item.getProfileimage())
+                .load("http://121.131.90.130/IIS_ASP_NET/ProfileImage/" + item.getProfileimage())
                 .override(150,150)
                 .into(holder.imageView_ProfileImage);
 

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -54,7 +55,13 @@ namespace WcfService1
 
             string base64ProfileImage;
 
-            string path = @"E:\OneDrive\Git_ASP_VOCA\ProfileImage\" + dB_Session.GetImage(id);
+            //string path = @"E:\OneDrive\Git_ASP_VOCA\ProfileImage\" + dB_Session.GetImage(id);
+            string path = "http://121.131.90.130/wcf_android/ProfileImage/" + dB_Session.GetImage(id);
+
+            WebRequest req = WebRequest.Create(path);
+            WebResponse res = req.GetResponse();
+
+            Stream responseStream = res.GetResponseStream();
 
             System.Drawing.Image ProfileImage;
 
@@ -80,11 +87,13 @@ namespace WcfService1
 
 
             //파일스트림으로 이미지 가져와 Image 객체에 담음.
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            /*using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 ProfileImage = System.Drawing.Image.FromStream(fs);
                 fs.Close();
-            }
+            }*/
+
+            ProfileImage = new Bitmap(responseStream);
 
             //메모리스트림으로 이미지를 byte로 변환 
             //base64 인코딩값을 string으로 변환

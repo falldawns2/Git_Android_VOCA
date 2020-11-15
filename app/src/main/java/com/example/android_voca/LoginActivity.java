@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.io.File;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -65,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clearCache();
                 //Retrofit
                 Retrofit retrofit = new Retrofit(postApi);
                 postApi = retrofit.setRetrofitInit(svcName); //반환된 인터페이스 받음
@@ -118,5 +121,26 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);*/
             }
         });
+    }
+
+    private void clearCache() {
+        final File cacheDirFile = this.getCacheDir();
+        if (null != cacheDirFile && cacheDirFile.isDirectory()) {
+            clearSubCacheFiles(cacheDirFile);
+        }
+    }
+    private void clearSubCacheFiles(File cacheDirFile) {
+        if (null == cacheDirFile || cacheDirFile.isFile()) {
+            return;
+        }
+        for (File cacheFile : cacheDirFile.listFiles()) {
+            if (cacheFile.isFile()) {
+                if (cacheFile.exists()) {
+                    cacheFile.delete();
+                }
+            } else {
+                clearSubCacheFiles(cacheFile);
+            }
+        }
     }
 }

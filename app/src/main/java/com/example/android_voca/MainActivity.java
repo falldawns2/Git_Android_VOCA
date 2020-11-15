@@ -39,6 +39,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        clearCache();
         //tag = "multi";
         tag = "single";
 
@@ -432,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
 
                //glide 이미지 가져오기
                Glide.with(MainActivity.this)
-                       .load("http://192.168.0.2/WCF_Android/ProfileImage/" + postResponse.getProfileImageName())
+                       .load("http://121.131.90.130/IIS_ASP_NET/ProfileImage/" + postResponse.getProfileImageName())
                        .override(150,150)
                        .into(ImageView_Menu_ProfileImage);
            }
@@ -486,6 +488,33 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        clearCache();
+    }
+
+    private void clearCache() {
+        final File cacheDirFile = this.getCacheDir();
+        if (null != cacheDirFile && cacheDirFile.isDirectory()) {
+            clearSubCacheFiles(cacheDirFile);
+        }
+    }
+    private void clearSubCacheFiles(File cacheDirFile) {
+        if (null == cacheDirFile || cacheDirFile.isFile()) {
+            return;
+        }
+        for (File cacheFile : cacheDirFile.listFiles()) {
+            if (cacheFile.isFile()) {
+                if (cacheFile.exists()) {
+                    cacheFile.delete();
+                }
+            } else {
+                clearSubCacheFiles(cacheFile);
+            }
+        }
     }
 
     public void Fab_Click() {
