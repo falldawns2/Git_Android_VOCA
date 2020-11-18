@@ -194,7 +194,7 @@ public class Fragment_Group extends Fragment {
                             GetAddData();
 
                             isLoading = true;
-                            Toast.makeText(MainActivity.context_main, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.context_main, "스크롤 감지", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
