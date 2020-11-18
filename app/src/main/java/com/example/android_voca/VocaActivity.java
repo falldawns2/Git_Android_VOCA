@@ -237,7 +237,7 @@ public class VocaActivity extends AppCompatActivity {
         }).start();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -356,7 +356,7 @@ public class VocaActivity extends AppCompatActivity {
         }).start();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (Exception e) {
             e.printStackTrace();
         }

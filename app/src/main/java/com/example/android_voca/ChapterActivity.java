@@ -366,7 +366,7 @@ public class ChapterActivity extends AppCompatActivity {
                             GetAddData(); //새 데이터 받아온다. (전체 배열에서 20개씩)
 
                             isLoading = true;
-                            //Toast.makeText(ChapterActivity.this, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChapterActivity.this, "스크롤 감지", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -431,6 +431,7 @@ public class ChapterActivity extends AppCompatActivity {
             public void run() {
                 try {
                     //Log.e(TAG, "run: "+ call.execute().body().get(0).getChapterName());
+
                     for(Chapter chapter : call.execute().body()) {
                         list.add(new Chapter(
                                 chapter.getChapterName(),
@@ -440,22 +441,24 @@ public class ChapterActivity extends AppCompatActivity {
 
                                 chapter.getChapterName(),
                                 chapter.getVocaCount()));
-                        //POST_Response++;
                     }
                 } catch (IOException e) {
 
                 }
             }
         }).start();
-        /*if(POST_Response < 20) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
-            noSearch = true;
-        }*/
+
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         }catch (Exception e) {
             e.printStackTrace();
         }
 
+        POST_Response = list_20.size();
+
+        if(POST_Response < 20) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
+            noSearch = true;
+        }
 
         /*for(int i = 0; i< 20; i++) {
             list.add(new Chapter("test" + i,i+""));
@@ -504,6 +507,8 @@ public class ChapterActivity extends AppCompatActivity {
             e.printStackTrace();
         }*/
 
+        POST_Response = list_20.size();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -513,7 +518,6 @@ public class ChapterActivity extends AppCompatActivity {
                                 chapter2.getChapterName(),
                                 chapter2.getVocaCount()
                         ));
-                        POST_Response++;
                     }
                 } catch (IOException e) {
 
@@ -521,18 +525,15 @@ public class ChapterActivity extends AppCompatActivity {
             }
         }).start();
 
-        if(POST_Response < 20) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
-            noSearch = true;
-        }
-
         try {
-
             Thread.sleep(1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
+        if(POST_Response < 20) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
+            noSearch = true;
+        }
     }
     ///////////
     public void QUERY_VocaNote() {

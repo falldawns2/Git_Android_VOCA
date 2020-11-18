@@ -407,7 +407,7 @@ public class Fragment_VocaNote extends Fragment {
                             GetAddData(); // 새 데이터 받아온다. (전체 배열에서 20개씩)
 
                             isLoading = true;
-                            //Toast.makeText(MainActivity.context_main, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.context_main, "스크롤 감지", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
