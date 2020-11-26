@@ -31,7 +31,9 @@ public class VocaCardAdapter  extends PagerAdapter {
     TextView Voca, Mean;
     Button Search_Voca;
 
+    //tts 관련
     CardView cardView;
+    Button btnTTS;
 
     TextToSpeech tts;
 
@@ -39,6 +41,7 @@ public class VocaCardAdapter  extends PagerAdapter {
     RelativeLayout HiddenLayout_WebView;
     WebView webView;
     FloatingActionButton fab;
+
 
     final String TAG = "VocaCardAdapter";
 
@@ -74,6 +77,7 @@ public class VocaCardAdapter  extends PagerAdapter {
 
         //tts
         cardView = view.findViewById(R.id.CardView);
+        btnTTS = Challenge_VocaCardActivity.btnTTS;
 
         tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
@@ -83,7 +87,7 @@ public class VocaCardAdapter  extends PagerAdapter {
             }
         });
 
-        cardView.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String TTS_Text = cards.get(position).getVoca();
@@ -92,7 +96,22 @@ public class VocaCardAdapter  extends PagerAdapter {
                     ttsGreater21(TTS_Text);
                 else ttsUnder20(TTS_Text);
             }
-        });
+        };
+
+        cardView.setOnClickListener(onClickListener);
+        btnTTS.setOnClickListener(onClickListener);
+
+        /*cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String TTS_Text = cards.get(position).getVoca();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    ttsGreater21(TTS_Text);
+                else ttsUnder20(TTS_Text);
+            }
+        });*/
+
 
         //Challenge_VocaCardActivity.java
         HiddenLayout_WebView = Challenge_VocaCardActivity.HiddenLayout_WebView;

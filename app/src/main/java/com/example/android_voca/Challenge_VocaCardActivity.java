@@ -68,6 +68,9 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
     public static WebView webView;
     public static FloatingActionButton fab;
 
+    //tts 버튼
+    public static Button btnTTS;
+
 
     //랜덤 객체
     private static Random random = new Random();
@@ -116,6 +119,8 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
         HiddenLayout_WebView = findViewById(R.id.HiddenLayout_WebView);
         webView = findViewById(R.id.webView);
         fab = findViewById(R.id.fab);
+
+        btnTTS = findViewById(R.id.btnTTS);
 
         Get_Voca_Mean();
         textView_title.setText(VocaNoteName + "(" + 1 + "/" +cards.size() + ")");
