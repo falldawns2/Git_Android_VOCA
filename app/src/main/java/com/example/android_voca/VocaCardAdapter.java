@@ -1,6 +1,8 @@
 package com.example.android_voca;
 
 import android.content.Context;
+import android.os.Build;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,9 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Struct;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class VocaCardAdapter  extends PagerAdapter {
 
@@ -26,6 +30,10 @@ public class VocaCardAdapter  extends PagerAdapter {
     private Context context;
     TextView Voca, Mean;
     Button Search_Voca;
+
+    CardView cardView;
+
+    TextToSpeech tts;
 
     //Challenge_VocaCardActivity.java
     RelativeLayout HiddenLayout_WebView;
@@ -63,6 +71,28 @@ public class VocaCardAdapter  extends PagerAdapter {
 
         Voca.setText(cards.get(position).getVoca());
         Mean.setText(cards.get(position).getMean());
+
+        //tts
+        cardView = view.findViewById(R.id.CardView);
+
+        tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != TextToSpeech.ERROR)
+                    tts.setLanguage(Locale.ENGLISH);
+            }
+        });
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String TTS_Text = cards.get(position).getVoca();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    ttsGreater21(TTS_Text);
+                else ttsUnder20(TTS_Text);
+            }
+        });
 
         //Challenge_VocaCardActivity.java
         HiddenLayout_WebView = Challenge_VocaCardActivity.HiddenLayout_WebView;
@@ -106,5 +136,16 @@ public class VocaCardAdapter  extends PagerAdapter {
         container.removeView((View)object);
     }
 
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+    }
+
+    public void ttsGreater21(String text) {
+        String utteranceId = this.hashCode() + "";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+    }
 
 }
