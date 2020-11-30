@@ -76,4 +76,8 @@ public interface POSTApi {
     //단어 20개씩
     @POST("GetVoca")
     Call<List<Voca2>> GetVoca(@Body Voca2 voca2);
+
+    //단어장 추가
+    @POST("InsertVocaNote")
+    Call<ADD> InsertVocaNote(@Body ADD add);
 }

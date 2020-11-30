@@ -23,6 +23,8 @@ namespace WcfService1
         List<DataSet_Voca_Mean> dataSet_Voca_Mean;
         List<DataSet_Voca> dataSet_Voca;
 
+        static bool isIdDuChecked = false; //단어장 중복 검사
+
         //단어장
         public List<DataSet_VocaNote> GetVocaNote(int Page_NO, int Page_SIZE, string userid, string OrderBy)
         {
@@ -152,6 +154,41 @@ namespace WcfService1
 
             DB_VOCAFORM.Close();
             return dataSet_Voca;
+        }
+
+        //단어장 추가
+        public Int_VocaNoteAdd InsertVocaNote(string VocaTitle, string Userid, string Nickname, string In_Group)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            Int_VocaNoteAdd int_VocaNoteAdd = new Int_VocaNoteAdd();
+
+            //단어장 이름을 변수에 담아 중복검사 실행
+            string VocaNoteName = VocaTitle;
+
+            if (VocaNoteName.Length <= 0)
+            {
+                DB_VOCAFORM.Close();
+                int_VocaNoteAdd.Check = 1; //1 : 한 글자 이상이어야 한다.
+                return int_VocaNoteAdd;
+            }
+
+            if (isIdDuChecked = DB_VOCAFORM.VerifyVocaName(Nickname,VocaTitle))
+            {
+                //중복검사 통과 --> 단어장 추가
+                DB_VOCAFORM.InsertVocaTable(VocaTitle, Userid, Nickname, In_Group);
+
+                //return 통과                
+                DB_VOCAFORM.Close();
+                int_VocaNoteAdd.Check = 0; //통과
+                return int_VocaNoteAdd;
+            }
+            else
+            {
+                //중복검사 실패
+                DB_VOCAFORM.Close();
+                int_VocaNoteAdd.Check = 2; //이 단어장은 이미 있습니다.                
+                return int_VocaNoteAdd;
+            }            
         }
     }
 }

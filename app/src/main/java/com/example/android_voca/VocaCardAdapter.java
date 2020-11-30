@@ -91,15 +91,16 @@ public class VocaCardAdapter  extends PagerAdapter {
             @Override
             public void onClick(View view) {
                 String TTS_Text = cards.get(position).getVoca();
+                String TTS_Text2 = cards.get(position).getMean();
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    ttsGreater21(TTS_Text);
-                else ttsUnder20(TTS_Text);
+                    ttsGreater21(TTS_Text,TTS_Text2);
+                else ttsUnder20(TTS_Text,TTS_Text2);
             }
         };
 
         cardView.setOnClickListener(onClickListener);
-        btnTTS.setOnClickListener(onClickListener);
+        //btnTTS.setOnClickListener(onClickListener); //이 버튼 나중에 사용
 
         /*cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,7 +149,7 @@ public class VocaCardAdapter  extends PagerAdapter {
 
         return view;
     }
-
+    
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         //super.destroyItem(container, position, object);
@@ -156,15 +157,37 @@ public class VocaCardAdapter  extends PagerAdapter {
     }
 
     @SuppressWarnings("deprecation")
-    private void ttsUnder20(String text) {
+    private void ttsUnder20(String text, String text2) {
         HashMap<String, String> map = new HashMap<>();
         map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+
+        for (int i = 0; i < 2; i++) {
+            if (i == 0) {
+                tts.setLanguage(Locale.ENGLISH);
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+            } else {
+                tts.setLanguage(Locale.KOREAN);
+                tts.speak(text2, TextToSpeech.QUEUE_ADD, map);
+            }
+            tts.playSilence(750,TextToSpeech.QUEUE_ADD,map);
+        }
+        //tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
     }
 
-    public void ttsGreater21(String text) {
+    public void ttsGreater21(String text, String text2) {
         String utteranceId = this.hashCode() + "";
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+
+        for (int i = 0; i < 2; i++) {
+            if (i == 0) {
+                tts.setLanguage(Locale.ENGLISH);
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+            } else {
+                tts.setLanguage(Locale.KOREAN);
+                tts.speak(text2, TextToSpeech.QUEUE_ADD, null, utteranceId);
+            }
+            tts.playSilence(750, TextToSpeech.QUEUE_ADD, null);
+        }
+        //tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
     }
 
 }

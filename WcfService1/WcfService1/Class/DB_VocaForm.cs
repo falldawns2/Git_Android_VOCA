@@ -135,5 +135,67 @@ namespace WcfService1
             //실행 및 결과 반환
             return this.AdapterFill(mySql, "Word");
         }
+
+        //단어장 이름 중복 검사
+        public bool VerifyVocaName(string nickname, string vocaname) //닉네임으로 구별한 후 단어장 중복 검사 (닉네임도 중복되지않아 아이디로 구별안했음)
+        {
+            //결과 반환용 변수
+            bool result = true;
+            //쿼리문 지정
+            string mySql = "SELECT * FROM VocaNote WHERE nickname = '" + nickname + "' and VocaNoteName = '" + vocaname + "'";
+
+            //결과를 구해옴
+            SqlDataReader myReader = this.ExecuteReader(mySql);
+
+            if (myReader.Read()) result = false; // 해당 단어장 이미 존재
+
+            //SqlDataReader 객체 소멸
+            myReader.Close();
+
+            return result;
+        }
+        //**단어장을 데이터베이스에 추가한다** 2019-01-28 수정 다시 수정
+        public void InsertVocaTable(string VocaTitle, string Userid, string Nickname, string In_Group)
+        {
+            SqlCommand myCmd = new SqlCommand("procInsertVocaNote", myConn);
+            myCmd.CommandType = CommandType.StoredProcedure;
+
+            SqlParameter param;
+            param = new SqlParameter("@VocaNoteName", SqlDbType.NVarChar, 50);
+            param.Value = VocaTitle;
+            myCmd.Parameters.Add(param);
+
+            param = new SqlParameter("@userid", SqlDbType.VarChar, 15);
+            param.Value = Userid;
+            myCmd.Parameters.Add(param);
+
+            param = new SqlParameter("@nickname", SqlDbType.NChar, 10);
+            param.Value = Nickname;
+            myCmd.Parameters.Add(param);
+
+            param = new SqlParameter("@Group", SqlDbType.Bit); // group 단어장인지 아닌지 판단, false : 그룹 아님, true : 그룹 단어장.
+            param.Value = In_Group;
+            myCmd.Parameters.Add(param);
+
+            myCmd.ExecuteNonQuery();
+        }
+        //단어장명을 변경함.
+        public bool VocaNote_Name_Change(string userid, string VocaNoteName, string ChangeVocaNoteName)
+        {
+
+            bool result = true;
+
+            string mysql = "UPDATE VocaNote set VocaNoteName = '" + ChangeVocaNoteName + "' where userid = '" + userid + "'" +
+                " and VocaNoteName = '" + VocaNoteName + "'" +
+                "    UPDATE Voca set VocaNoteName = '" + ChangeVocaNoteName + "' Where userid = '" + userid + "'" +
+                " and VocaNoteName = '" + VocaNoteName + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false; //해당 단어장 이미 존재
+
+            myReader.Close();
+            return result; // 존재 하지 않을때 true 보냄.
+        }
     }
 }

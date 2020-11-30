@@ -17,9 +17,11 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.internal.EverythingIsNonNull;
 
-public class Fragment_VocaNote extends Fragment {
+public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     RecyclerView recyclerView;
     VocaNoteAdapter adapter;
@@ -96,6 +98,9 @@ public class Fragment_VocaNote extends Fragment {
 
     int LastPosition; //dy;
 
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -121,11 +126,74 @@ public class Fragment_VocaNote extends Fragment {
         //QUERY_VocaNote(); //처음에 담아둘 배열 데이터
         //allList = getList(); //전체 단어장 가져옴.
         //list =  getList_Part(); //일부 단어장 가져옴.
+
+        //새로고침
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeRefresh);
+
+        //새로고침
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                //3초 후 해당 adapter 갱신하고 로딩중 보여줌.  setRefreshing(false)
+
+                //헨들러 사용 : 일반 쓰레드는 메인 쓰레드가 가진 UI에 접근 불가
+                //헨들러로 메시지큐에 메시지 전달 - > 루퍼를 이용하여 순서대로 UI에 접근
+
+                //반대로 메인 쓰레드에서 일반 쓰레드에 접근하기 위해서는 루퍼를 만듦.
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //해당 어댑터를 서버와 통신한 값
+
+                        handler_count = 1;
+                        RefreshAdapter();
+                        testQQQQ(handler_count,MainActivity.Session_ID,0, postApi);
+                        initAdapter();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                },100);
+            }
+        });
+
         initAdapter(); //리싸이클러 뷰 어댑터 생성
 
         initScrollListener(); //리싸이클러뷰 이벤트 발생
 
         return v;
+    }
+
+    private void RefreshAdapter() {
+        recyclerView.removeAllViewsInLayout();
+        //recyclerView.setAdapter(adapter);
+        list.clear();
+        list_20.clear();
+        noSearch = false; //이 값이 서버 요청을 할지 말지 정한다.
+        //initAdapter();
+    }
+
+    //MainActivity.java 에서 사용
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        //3초 후 해당 adapter 갱신하고 로딩중 보여줌.  setRefreshing(false)
+
+        //헨들러 사용 : 일반 쓰레드는 메인 쓰레드가 가진 UI에 접근 불가
+        //헨들러로 메시지큐에 메시지 전달 - > 루퍼를 이용하여 순서대로 UI에 접근
+
+        //반대로 메인 쓰레드에서 일반 쓰레드에 접근하기 위해서는 루퍼를 만듦.
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //해당 어댑터를 서버와 통신한 값
+
+                handler_count = 1;
+                RefreshAdapter();
+                testQQQQ(handler_count,MainActivity.Session_ID,0, postApi);
+                initAdapter();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        },100);
     }
 
     private void initAdapter() {
@@ -316,7 +384,39 @@ public class Fragment_VocaNote extends Fragment {
 
     public void testQQQQ(int Page_NO, String userid, int currentSize, POSTApi postApi) {
         Call<List<VocaNote>> call = postApi.GetVocaNote(new VocaNote(Page_NO, 20, userid, "CrDateNote desc"));
-        call.enqueue(new Callback<List<VocaNote>>() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (VocaNote vocaNote : call.execute().body()) {
+                        list.add(new VocaNote(
+
+                                vocaNote.getVocaNoteName(),
+                                /*vocaNote.getNickname(),
+                                vocaNote.getCrDateNote(),*/
+                                vocaNote.getTotalVocaCount()));
+
+                        list_20.add(new VocaNote(
+
+                                vocaNote.getVocaNoteName(),
+                                /*vocaNote.getNickname(),
+                                vocaNote.getCrDateNote(),*/
+                                vocaNote.getTotalVocaCount()));
+                    }
+                } catch (IOException e) {
+
+                }
+            }
+        }).start();
+
+        try {
+            Thread.sleep(100);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        /*call.enqueue(new Callback<List<VocaNote>>() {
             @Override
             public void onResponse(Call<List<VocaNote>> call, Response<List<VocaNote>> response) {
                 if(!response.isSuccessful()) {
@@ -333,15 +433,11 @@ public class Fragment_VocaNote extends Fragment {
                         list.add(new VocaNote(
 
                                 vocaNote.getVocaNoteName(),
-                                /*vocaNote.getNickname(),
-                                vocaNote.getCrDateNote(),*/
                                 vocaNote.getTotalVocaCount()));
 
                         list_20.add(new VocaNote(
 
                                 vocaNote.getVocaNoteName(),
-                                /*vocaNote.getNickname(),
-                                vocaNote.getCrDateNote(),*/
                                 vocaNote.getTotalVocaCount()));
 
                     }
@@ -354,7 +450,7 @@ public class Fragment_VocaNote extends Fragment {
             public void onFailure(Call<List<VocaNote>> call, Throwable t) {
 
             }
-        });
+        });*/
     }
 
     //리싸이클러뷰 이벤트

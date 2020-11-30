@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,8 @@ public class CustomDialog_VocaNote extends Dialog {
     private Context context;
     private CustomDialogSelectClickListener customDialogSelectClickListener; //클릭 여부
     private TextView tvTitle, tvNegative, tvPositive;
+
+    public static EditText InsertVocaNoteName;
 
     public CustomDialog_VocaNote(@NonNull Context context, CustomDialogSelectClickListener customDialogSelectClickListener) {
         super(context);
@@ -28,6 +31,8 @@ public class CustomDialog_VocaNote extends Dialog {
         tvTitle = findViewById(R.id.option_codetype_dialog_title_tv);
         tvPositive = findViewById(R.id.option_codetype_dialog_positive);
         tvNegative = findViewById(R.id.option_codetype_dialog_negative);
+
+        InsertVocaNoteName = findViewById(R.id.InsertVocaNoteName);
 
         tvPositive.setOnClickListener(new View.OnClickListener() {
             @Override

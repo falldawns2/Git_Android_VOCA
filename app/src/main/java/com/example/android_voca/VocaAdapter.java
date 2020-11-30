@@ -1,6 +1,9 @@
 package com.example.android_voca;
 
 import android.content.Context;
+import android.os.Build;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -18,7 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener {
 
@@ -39,6 +45,8 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     public static FloatingActionButton fabClose;
 
     Button Search_Voca; //네이버 버튼
+
+    TextToSpeech tts; //tts 관련
 
     public void addItem(Voca item) {
         items.add(item);
@@ -140,6 +148,27 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         holder.Sentence.setText(item.getSentence());
         holder.Interpretation.setText(item.getInterpretation());
 
+        //카드뷰 클릭 --> 단어 tts
+        //이 값은 설정 값에 따라서 달라진다
+        //(전체 - >단어-뜻)
+        // 단어,뜻 -- > 단어
+
+        tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != TextToSpeech.ERROR)
+                    tts.setLanguage(Locale.ENGLISH);
+            }
+        });
+
+        holder.Main_CardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    ttsGreater21(holder.Word.getText().toString(),holder.Mean.getText().toString());
+                else ttsUnder20(holder.Word.getText().toString(),holder.Mean.getText().toString());
+            }
+        });
         // 예문 해석이 없을 때 안보이게 설정
         if(item.getSentence() == null) {
             holder.Sentence.setVisibility(View.GONE);
@@ -179,6 +208,43 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         });
 
 
+    }
+
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text, String text2) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+
+        for (int i = 0; i < 2; i++) {
+            if (i == 0) {
+                tts.setLanguage(Locale.ENGLISH);
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+            } else {
+                tts.setLanguage(Locale.KOREAN);
+                tts.speak(text2, TextToSpeech.QUEUE_ADD, map);
+            }
+            tts.playSilence(750, TextToSpeech.QUEUE_ADD, map);
+        }
+    }
+
+    public void ttsGreater21(String text, String text2) {
+        String utteranceId = this.hashCode() + "";
+        for (int i = 0; i < 2; i++) {
+            if (i == 0) {
+                tts.setLanguage(Locale.ENGLISH);
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+            } else {
+                tts.setLanguage(Locale.KOREAN);
+                tts.speak(text2, TextToSpeech.QUEUE_ADD, null, utteranceId);
+            }
+            tts.playSilence(750, TextToSpeech.QUEUE_ADD, null);
+        }
+        //tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+
+        //tts.playSilence(2000, TextToSpeech.QUEUE_ADD, null);
+
+        //tts.setLanguage(Locale.KOREAN);
+        //tts.speak(text2, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
     }
 
     //체크박스 관련

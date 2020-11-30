@@ -41,6 +41,11 @@ namespace WcfService1
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GetVoca", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         List<DataSet_Voca> GetVoca(int Page_NO, int Page_SIZE, string userid, string VocaNoteName, string ChapterName, string OrderBy);
+
+        //단어장 추가
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "InsertVocaNote", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Int_VocaNoteAdd InsertVocaNote(string VocaTitle, string Userid, string Nickname, string In_Group);
     }
 
     [DataContract]
@@ -180,6 +185,19 @@ namespace WcfService1
             get { return interpretation; }
             set { interpretation = value; }
         }
+    }
+    public class Int_VocaNoteAdd
+    {
+        //
 
+        int check; //결과값 반환
+        //0: 성공, 1: 한 글자, 2: 실패
+
+        [DataMember]
+        public int Check
+        {
+            get { return check; }
+            set { check = value; }
+        }
     }
 }

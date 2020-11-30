@@ -49,11 +49,18 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     static String Session_ID; //유저 ID 세션 저장
+    static String Session_Nickname;
+    final String TAG = "MainActivity";
+
     private POSTApi postApi;
     private final String svcName = "Service_Account.svc/";
     Retrofit retrofit;
     AccountInfo accountInfo; //member 테이블 정보
     Call<AccountInfo> accountInfo_Call;
+
+    private final String svcName_ADD = "Service_VocaNote.svc/";
+    ADD add; //추가
+    Call<ADD> add_Call;
 
     private static final int REQ_CODE_OVERLAY_PERMISSION = 1;
     Intent foregroundServiceIntent;
@@ -478,6 +485,7 @@ public class MainActivity extends AppCompatActivity {
 
                AccountInfo postResponse = response.body();
                TextView_Menu_NickName.setText(postResponse.getNickcname());
+               Session_Nickname = TextView_Menu_NickName.getText().toString();
            }
 
            @Override
@@ -485,9 +493,6 @@ public class MainActivity extends AppCompatActivity {
                Log.e("Onfailure", t.getMessage() + "");
            }
        });
-
-
-
     }
 
     @Override
@@ -517,6 +522,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //TODO: fab 단어장 추가
     public void Fab_Click() {
         //각각의 페이지 상태에 따라 fab 버튼의 할 일이 다르다.
         //Intent intent = new Intent(getApplicationContext(), VocaNoteAddActivity.class);
@@ -525,11 +531,46 @@ public class MainActivity extends AppCompatActivity {
         //startActivity(intent);
         Toast.makeText(MainActivity.this, "save=0, 단어장 추가 이벤트", Toast.LENGTH_SHORT).show();
 
+        retrofit = new Retrofit(postApi);
+        postApi = retrofit.setRetrofitInit(svcName_ADD);
+
         CustomDialog = new CustomDialog_VocaNote(MainActivity.this,
                 new CustomDialogSelectClickListener() {
                     @Override
                     public void onPositiveClick() {
                         Log.e("test","OK");
+
+                        add = new ADD(CustomDialog_VocaNote.InsertVocaNoteName.getText().toString(),
+                                Session_ID,Session_Nickname,"false");
+                        add_Call = postApi.InsertVocaNote(add);
+                        add_Call.enqueue(new Callback<ADD>() {
+                            @Override
+                            public void onResponse(Call<ADD> call, Response<ADD> response) {
+                                if (!response.isSuccessful()) {
+                                    Log.e(TAG, "onResponse: " + response.code());
+                                    return;
+                                }
+
+                                ADD postResponse = response.body();
+
+                                if (postResponse.getValue() == 0) { //성공
+                                    //단어장 추가 성공함 새로고침 필요
+                                    Log.e(TAG, "단어장 추가 성공" );
+                                    //위로 당기면 새로고침 되는 기능 구현 필요
+                                    ((Fragment_VocaNote)Fragment_VocaNote.context_Frag_Main).onRefresh();
+                                    //((Fragment_VocaNote)Fragment_VocaNote.context_Frag_Main).mSwipeRefreshLayout.setRefreshing(false);
+                                } else if (postResponse.getValue() == 1) { // 한 글자 이상
+                                    Log.e(TAG, "한 글자 이상 쓰세요" );
+                                } else { //중복 존재함 == 2
+                                    Log.e(TAG, "중복 존재함");
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ADD> call, Throwable t) {
+                                Log.e(TAG, "onFailure: " + t.getMessage());
+                            }
+                        });
                     }
 
                     @Override
