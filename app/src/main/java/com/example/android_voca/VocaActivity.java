@@ -1,5 +1,6 @@
 package com.example.android_voca;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,7 +9,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,21 +21,26 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VocaActivity extends AppCompatActivity {
+public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     TextView textView_VocaNoteName, textView_ChapterName;
 
@@ -82,6 +90,22 @@ public class VocaActivity extends AppCompatActivity {
 
     public static FloatingActionButton fabClose;
 
+    //플로팅 버튼
+    FloatingActionButton fab;
+
+    //커스텀 다이얼로그
+    CustomDialog_Voca CustomDialog;
+
+    LinearLayout linearLayout;
+
+    //새로고침
+    SwipeRefreshLayout mSwipeRefreshLayout_Voca;
+
+    VocaADD add;
+    Call<VocaADD> add_Call;
+
+    //단어 수정 필요 시
+    static int UPDATE_VOCA = 0;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -164,6 +188,190 @@ public class VocaActivity extends AppCompatActivity {
         initAdapter();
 
         initScrollListener();
+
+        linearLayout = (LinearLayout) findViewById(R.id.Voca_Main_Panel);
+
+        //새로고침
+        mSwipeRefreshLayout_Voca = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh_Voca);
+
+        mSwipeRefreshLayout_Voca.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout_Voca.setRefreshing(true);
+                //3초 후 해당 adapter 갱신하고 로딩중 보여줌. setRefreshing(false)
+
+                //핸들러 사용 : 일반 쓰레드는 메인 스레드가 가진 UI에 접근 불가
+                //핸들러로 메시지큐에 메시지 전달 - > 루퍼를 이용하여 순서대로 UI에 접근
+
+                //반대로 메인 쓰레드에서 일반 쓰레드에 접근하기 위해서는 루퍼를 만듦.
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //해당 어댑터를 서버와 통신한 값
+                        handler_count = 1;
+                        RefreshAdapter();
+                        QUERY_VOCA_ONE(handler_count, MainActivity.Session_ID, VocaNoteName, ChapterNoteName, postApi);
+                        initAdapter();
+                        mSwipeRefreshLayout_Voca.setRefreshing(false);
+                    }
+                }, 100);
+            }
+        });
+
+        //플로팅 버튼
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(VocaActivity.this, "단어 추가 이벤트", Toast.LENGTH_SHORT).show();
+
+                retrofit = new Retrofit(postApi);
+                postApi = retrofit.setRetrofitInit(svcName);
+
+                CustomDialog = new CustomDialog_Voca(VocaActivity.this,
+                        new CustomDialogVocaClickListener() {
+                            @Override
+                            public void onPositiveClick() {
+                                Log.e(TAG, "OK" );
+
+                                if (UPDATE_VOCA == 1) { //TODO:업데이트 Call 비동기 요청 필요 WCF 서버에도 만들어야함.
+
+                                    UPDATE_VOCA = 0;
+                                    return;
+                                }
+
+
+                                add = new VocaADD(MainActivity.Session_ID,
+                                        VocaNoteName,
+                                        ChapterNoteName,
+                                        CustomDialog_Voca.InsertVoca.getText().toString(),
+                                        CustomDialog_Voca.InsertMean.getText().toString(),
+                                        CustomDialog_Voca.InsertSentence.getText().toString(),
+                                        CustomDialog_Voca.InsertSentence.getText().toString()
+                                        );
+
+                                add_Call = postApi.InsertVoca(add);
+                                add_Call.enqueue(new Callback<VocaADD>() {
+                                    @Override
+                                    public void onResponse(Call<VocaADD> call, Response<VocaADD> response) {
+                                        if(!response.isSuccessful()) {
+                                            Log.e(TAG, "onResponse: " + response.code() );
+                                            return;
+                                        }
+
+                                        VocaADD postResponse = response.body();
+                                        //0 : 성공, 1 : 단어 빈칸, 2 : 뜻 빈칸, 3 : 중복 존재
+                                        if (postResponse.getValue() == 0) { //성공
+
+                                            //단어 추가 성공
+                                            Log.e(TAG, "단어 추가 성공" );
+
+                                            Snackbar snackbar = Snackbar.make(linearLayout,"단어 추가했어요.", Snackbar.LENGTH_LONG);
+                                            View view = snackbar.getView();
+                                            TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                            tv.setTextColor(ContextCompat.getColor(VocaActivity.this, R.color.White));
+                                            view.setBackgroundColor(ContextCompat.getColor(VocaActivity.this, R.color.snack_Background_Success));
+                                            CustomDialog.dismiss();
+                                            snackbar.show();
+
+                                            //새로고침 구현 필요
+                                            onRefresh();
+
+                                        } else if (postResponse.getValue() == 1) { // 단어 빈칸
+                                            Snackbar snackbar = Snackbar.make(linearLayout,"단어를 써주세요.", Snackbar.LENGTH_LONG);
+                                            View view = snackbar.getView();
+                                            TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                            tv.setTextColor(ContextCompat.getColor(VocaActivity.this, R.color.White));
+                                            view.setBackgroundColor(ContextCompat.getColor(VocaActivity.this, R.color.snack_Background_Error));
+                                            snackbar.show();
+                                            CustomDialog_Voca.tvTitle.setText("단어 써주세요!");
+                                        } else if (postResponse.getValue() == 2) { //뜻 빈칸
+                                            Snackbar snackbar = Snackbar.make(linearLayout,"뜻을 써주세요.", Snackbar.LENGTH_LONG);
+                                            View view = snackbar.getView();
+                                            TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                            tv.setTextColor(ContextCompat.getColor(VocaActivity.this, R.color.White));
+                                            view.setBackgroundColor(ContextCompat.getColor(VocaActivity.this, R.color.snack_Background_Error));
+                                            snackbar.show();
+                                            CustomDialog_Voca.tvTitle.setText("뜻 써주세요!");
+                                        } else { //중복 존재
+                                            Snackbar snackbar = Snackbar.make(linearLayout,"중복! 단어를 수정해주세요.", Snackbar.LENGTH_LONG);
+                                            View view = snackbar.getView();
+                                            TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                            tv.setTextColor(ContextCompat.getColor(VocaActivity.this, R.color.White));
+                                            view.setBackgroundColor(ContextCompat.getColor(VocaActivity.this, R.color.snack_Background_Error));
+                                            snackbar.show();
+                                            CustomDialog_Voca.tvTitle.setText("중복 수정!");
+
+                                            //단어는 수정 안되고
+                                            CustomDialog_Voca.InsertVoca.setEnabled(false);
+                                            CustomDialog_Voca.InsertVoca.setText(postResponse.getUpdate_Voca());
+                                            //나머지 수정 가능
+                                            CustomDialog_Voca.InsertMean.setText(postResponse.getUpdate_Mean());
+                                            CustomDialog_Voca.InsertSentence.setText(postResponse.getUpdate_Sentence());
+                                            CustomDialog_Voca.InsertInterpretation.setText(postResponse.getUpdate_Interpretation());
+
+                                            // 이 다음부터는 확인을 누르면 업데이트 해야 한다.
+                                            //업데이트 변수
+                                            UPDATE_VOCA = 1;
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<VocaADD> call, Throwable t) {
+                                        Log.e(TAG, "onFailure: " + t.getMessage() );
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onNegativeClick() {
+                                Log.e(TAG, "cancel" );
+                            }
+
+                            @Override
+                            public void onADDClick() {
+                                //단어 연속으로 추가 한다.
+                                //TODO: 연속 추가도 코딩해야함
+                            }
+                        });
+                CustomDialog.setCanceledOnTouchOutside(true);
+                CustomDialog.setCancelable(true);
+                CustomDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.MATCH_PARENT);
+                CustomDialog.show();
+            }
+        });
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout_Voca.setRefreshing(true);
+        //3초 후 해당 adapter 갱신하고 로딩중 보여줌. setRefreshing(false)
+
+        //핸들러 사용 : 일반 쓰레드는 메인 스레드가 가진 UI에 접근 불가
+        //핸들러로 메시지큐에 메시지 전달 - > 루퍼를 이용하여 순서대로 UI에 접근
+
+        //반대로 메인 쓰레드에서 일반 쓰레드에 접근하기 위해서는 루퍼를 만듦.
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //해당 어댑터를 서버와 통신한 값
+                handler_count = 1;
+                RefreshAdapter();
+                QUERY_VOCA_ONE(handler_count, MainActivity.Session_ID, VocaNoteName, ChapterNoteName, postApi);
+                initAdapter();
+                mSwipeRefreshLayout_Voca.setRefreshing(false);
+            }
+        }, 100);
+    }
+
+    private void RefreshAdapter() {
+        recyclerView.removeAllViewsInLayout();
+        //recyclerView.setAdapter(adapter);
+        list.clear();
+        list_20.clear();
+        noSearch = false; //이 값이 서버 요청을 할지 말지 정한다.
+        //initAdapter();
     }
 
     public void initAdapter() {

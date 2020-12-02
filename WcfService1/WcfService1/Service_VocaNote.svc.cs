@@ -226,5 +226,70 @@ namespace WcfService1
                 return int_ChapterAdd;
             }
         }
+        public Int_VocaAdd InsertVoca(string Userid, string VocaNoteName, string ChapterName, string Voca, string Mean, string Sentence, string Interpretation)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            Int_VocaAdd int_VocaAdd = new Int_VocaAdd();
+
+            //0 : 성공, 1 : 단어 빈칸, 2 : 뜻 빈칸, 3 : 중복 존재
+
+            if (Voca.Length <= 0)
+            {
+                DB_VOCAFORM.Close();
+                int_VocaAdd.Check = 1; //1: 단어 빈칸
+                return int_VocaAdd;
+            }
+            else if (Mean.Length <= 0)
+            {
+                DB_VOCAFORM.Close();
+                int_VocaAdd.Check = 2; //2: 뜻 빈칸
+                return int_VocaAdd;
+            }
+
+            //단어 이름 중복 검사 하는 이유 : 단어가 중복이다 - > 수정하게 DB에서 불러와서 Update 하도록 한다.
+            if (isIdDuChecked = DB_VOCAFORM.SelectVoca(Userid,Voca,VocaNoteName,ChapterName))
+            {
+                if (Sentence.ToString() == "")
+                {
+                    //예문이 없다 (= 해석도 없다.)
+                    DB_VOCAFORM.InsertVoca(Userid, VocaNoteName, ChapterName, Voca, Mean);
+                }
+                else if (Interpretation.ToString() == "")
+                {
+                    //해석 x (하지만 예문 존재)
+                    DB_VOCAFORM.InsertVoca(Userid, VocaNoteName, ChapterName, Voca, Mean, Sentence);
+                }
+                else
+                {
+                    //단어 중복 x = > 단어 추가
+                    DB_VOCAFORM.InsertVoca(Userid, VocaNoteName, ChapterName, Voca, Mean, Sentence, Interpretation);
+                }
+
+                //단어 추가 됨 - > 단어 카운트  + 1
+                DB_VOCAFORM.UpdateVocaCount(Userid, VocaNoteName, ChapterName); //수정 반영
+                //return 통과
+                DB_VOCAFORM.Close();
+                int_VocaAdd.Check = 0; //통과
+                return int_VocaAdd;
+            }
+            else
+            {
+                //중복 존재
+                //DB에서 값을 가져와, 각각의 위치에 값을 뿌린다. (수정을 위해)
+                int_VocaAdd.Check = 3;  //중복 존재
+
+                dataTable = DB_VOCAFORM.GetVoca(Userid, Voca, VocaNoteName, ChapterName).Tables[0];
+
+                DataRow dr = dataTable.Rows[0];
+
+                int_VocaAdd.Update_Voca = dr[5].ToString();
+                int_VocaAdd.Update_Mean = dr[6].ToString();
+                int_VocaAdd.Update_Sentence = dr[7].ToString();
+                int_VocaAdd.Update_Interpretation = dr[8].ToString();
+
+                DB_VOCAFORM.Close();
+                return int_VocaAdd;
+            }
+        }
     }
 }

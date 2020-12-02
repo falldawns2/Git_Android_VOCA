@@ -10,6 +10,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/Voca_Main_Panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:tools="http://schemas.android.com/tools"
@@ -93,11 +94,18 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView_Voca"
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/swipeRefresh_Voca"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView_Voca"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             </LinearLayout>
 
 

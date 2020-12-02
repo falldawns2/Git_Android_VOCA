@@ -300,7 +300,7 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
                                             View view = snackbar.getView();
                                             TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
                                             tv.setTextColor(ContextCompat.getColor(context_Chapter, R.color.White));
-                                            view.setBackgroundColor(ContextCompat.getColor(context_Chapter, R.color.snack_Background_Success));
+                                            view.setBackgroundColor(ContextCompat.getColor(context_Chapter, R.color.snack_Background_Error));
                                             snackbar.show();
 
                                         } else { //중복 존재함 == 2
@@ -310,7 +310,7 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
                                             View view = snackbar.getView();
                                             TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
                                             tv.setTextColor(ContextCompat.getColor(context_Chapter, R.color.White));
-                                            view.setBackgroundColor(ContextCompat.getColor(context_Chapter, R.color.snack_Background_Success));
+                                            view.setBackgroundColor(ContextCompat.getColor(context_Chapter, R.color.snack_Background_Error));
                                             snackbar.show();
                                         }
                                     }

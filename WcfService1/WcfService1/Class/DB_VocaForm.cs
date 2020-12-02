@@ -249,5 +249,91 @@ namespace WcfService1
             myReader.Close();
             return CrDateNote;
         }
+        //단어 중복 확인을 위해
+        public bool SelectVoca(string userid, string Voca, string VocaNoteName, string ChapterName)
+        {
+            bool result = true;
+
+            //입력한 단어가 데이터베이스에 존재하는지 확인함.
+            string mysql = "SELECT * FROM Voca WHERE userid = '" + userid + "' and VocaNoteName = '" + VocaNoteName + "' and ChapterName = '" + ChapterName + "' and Voca = '" + Voca + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false;//단어가 존재함.
+
+            myReader.Close();
+            return result;
+        }
+        public bool InsertVoca(string userid, string VocaNoteName, string ChapterName, string Voca, string Mean)
+        {
+            //단어가 존재하지 않아 단어를 추가한다. 
+            //예문이 존재하지 않음, 해석도 당연히 존재하지 않음.
+            bool result = true;
+
+            string mysql = "INSERT INTO Voca" +
+                " Values(4, '" + userid + "', '" + VocaNoteName + "','" + ChapterName + "','" + Voca + "','" + Mean + "',NULL,NULL,0,GETDATE())";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false; //해당 단어장 이미 존재
+
+            myReader.Close();
+            return result; // 존재 하지 않을때 true 보냄.
+        }
+        public bool InsertVoca(string userid, string VocaNoteName, string ChapterName, string Voca, string Mean, string Sentence)
+        {
+            //단어가 존재하지 않아 단어를 추가한다.
+            //예문은 존재하지만 해석은 존재하지 않음.
+            bool result = true;
+
+            string mysql = "INSERT INTO Voca" +
+                " Values(4, '" + userid + "', '" + VocaNoteName + "','" + ChapterName + "','" + Voca + "','" + Mean + "','" + Sentence + "',NULL,0,GETDATE())";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false; //해당 단어장 이미 존재
+
+            myReader.Close();
+            return result; // 존재 하지 않을때 true 보냄.
+        }
+        public bool InsertVoca(string userid, string VocaNoteName, string ChapterName, string Voca, string Mean, string Sentence, string Interpretation)
+        {
+            //단어가 존재하지 않아 단어를 추가한다.
+            bool result = true;
+
+            string mysql = "INSERT INTO Voca" +
+                " Values(4, '" + userid + "', '" + VocaNoteName + "','" + ChapterName + "','" + Voca + "','" + Mean + "','" + Sentence + "','" + Interpretation + "',0,GETDATE())";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false; //해당 단어장 이미 존재
+
+            myReader.Close();
+            return result; // 존재 하지 않을때 true 보냄.
+        }
+        //단어 수를 수정하여 데이터베이스에 넣는다.
+        public bool UpdateVocaCount(string userid, string VocaNoteName, string ChapterName)
+        {
+            bool result = true;
+
+            string mysql = "UPDATE VocaNote SET VocaCount = (SELECT SUM(VocaCount + 1) VocaCount FROM VocaNote WHERE " +
+                " userid = '" + userid + "' and VocaNoteName = '" + VocaNoteName + "' and ChapterName = '" + ChapterName + "') " +
+                " WHERE userid = '" + userid + "' and VocaNoteName = '" + VocaNoteName + "'  and ChapterName = '" + ChapterName + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false;
+
+            myReader.Close();
+            return result;
+        }
+        //단어가 존재하므로 수정하기 위해 데이터베이스에서 정보를 끌어옴
+        public DataSet GetVoca(string userid, string Voca, string VocaNoteName, string ChapterName)
+        {            
+
+            string mysql = "SELECT * FROM Voca WHERE userid = '" + userid + "' and VocaNoteName = '" + VocaNoteName + "' and ChapterName = '" + ChapterName + "' and Voca = '" + Voca + "'";
+
+            return this.AdapterFill(mysql, "Voca");
+        }
     }
 }

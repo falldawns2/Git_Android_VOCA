@@ -84,4 +84,8 @@ public interface POSTApi {
     //챕터 추가
     @POST("InsertChapter")
     Call<ChapterADD> InsertChapter(@Body ChapterADD add);
+
+    //단어 추가
+    @POST("InsertVoca")
+    Call<VocaADD> InsertVoca(@Body VocaADD add);
 }
