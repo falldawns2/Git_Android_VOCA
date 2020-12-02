@@ -3,6 +3,7 @@ package com.example.android_voca;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -37,6 +38,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
@@ -145,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         clearCache();
         //tag = "multi";
@@ -556,13 +559,36 @@ public class MainActivity extends AppCompatActivity {
                                 if (postResponse.getValue() == 0) { //성공
                                     //단어장 추가 성공함 새로고침 필요
                                     Log.e(TAG, "단어장 추가 성공" );
+
+                                    Snackbar snackbar = Snackbar.make(MainPanel,"단어장 추가했습니다.", Snackbar.LENGTH_LONG);
+                                    View view = snackbar.getView();
+                                    TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                    tv.setTextColor(ContextCompat.getColor(context_main, R.color.White));
+                                    view.setBackgroundColor(ContextCompat.getColor(context_main, R.color.snack_Background_Success));
+                                    snackbar.show();
+
                                     //위로 당기면 새로고침 되는 기능 구현 필요
                                     ((Fragment_VocaNote)Fragment_VocaNote.context_Frag_Main).onRefresh();
                                     //((Fragment_VocaNote)Fragment_VocaNote.context_Frag_Main).mSwipeRefreshLayout.setRefreshing(false);
                                 } else if (postResponse.getValue() == 1) { // 한 글자 이상
                                     Log.e(TAG, "한 글자 이상 쓰세요" );
+
+                                    Snackbar snackbar = Snackbar.make(MainPanel,"두 글자 이상 쓰세요.", Snackbar.LENGTH_LONG);
+                                    View view = snackbar.getView();
+                                    TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                    tv.setTextColor(ContextCompat.getColor(context_main, R.color.White));
+                                    view.setBackgroundColor(ContextCompat.getColor(context_main, R.color.snack_Background_Error));
+                                    snackbar.show();
+
                                 } else { //중복 존재함 == 2
                                     Log.e(TAG, "중복 존재함");
+
+                                    Snackbar snackbar = Snackbar.make(MainPanel,"중복이 존재해요.", Snackbar.LENGTH_LONG);
+                                    View view = snackbar.getView();
+                                    TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                    tv.setTextColor(ContextCompat.getColor(context_main, R.color.White));
+                                    view.setBackgroundColor(ContextCompat.getColor(context_main, R.color.snack_Background_Error));
+                                    snackbar.show();
                                 }
                             }
 

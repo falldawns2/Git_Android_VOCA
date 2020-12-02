@@ -209,6 +209,10 @@ public class ChapterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(ChapterActivity.this, "챕터 추가 이벤트", Toast.LENGTH_SHORT).show();
+
+                /*retrofit = new Retrofit(postApi);
+                postApi = retrofit.setRetrofitInit(svc)*/
+
                 CustomDialog = new CustomDialog_VocaNote(ChapterActivity.this,
                         new CustomDialogSelectClickListener() {
                             @Override

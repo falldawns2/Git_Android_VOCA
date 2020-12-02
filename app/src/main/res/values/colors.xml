@@ -21,4 +21,9 @@
     <color name="color2">#7e455e</color>
     <color name="color3">#796e25</color>
     <color name="color4">#59717c</color>
+
+    <!-- 스낵바 색상-->
+    <color name="snack_Background_Success">#FF4CAF50</color> <!--성공-->
+    <color name="snack_Background_Error">#E91E63</color> <!-- 실패-->
+
 </resources>

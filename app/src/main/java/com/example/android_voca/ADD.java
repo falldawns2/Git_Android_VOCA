@@ -18,6 +18,7 @@ public class ADD {
     private String VocaName;
 
     //반환 값 0 : 성공, 1 : 한 글자 이상, 2 : 중복 존재
+    @SerializedName("Check")
     private int value;
 
     public ADD(String VocaNoteName, String Userid, String NickName, String In_Group) {
