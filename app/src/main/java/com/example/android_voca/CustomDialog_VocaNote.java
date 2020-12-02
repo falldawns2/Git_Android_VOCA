@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 
 public class CustomDialog_VocaNote extends Dialog {
 
-    private Context context;
     private CustomDialogSelectClickListener customDialogSelectClickListener; //클릭 여부
     private TextView tvTitle, tvNegative, tvPositive;
 
@@ -19,7 +18,6 @@ public class CustomDialog_VocaNote extends Dialog {
 
     public CustomDialog_VocaNote(@NonNull Context context, CustomDialogSelectClickListener customDialogSelectClickListener) {
         super(context);
-        this.context = context;
         this.customDialogSelectClickListener = customDialogSelectClickListener;
     }
 
@@ -33,6 +31,7 @@ public class CustomDialog_VocaNote extends Dialog {
         tvNegative = findViewById(R.id.option_codetype_dialog_negative);
 
         InsertVocaNoteName = findViewById(R.id.InsertVocaNoteName);
+        InsertVocaNoteName.setHint("단어장명을 입력하세요.");
 
         tvPositive.setOnClickListener(new View.OnClickListener() {
             @Override

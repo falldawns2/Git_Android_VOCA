@@ -462,13 +462,13 @@ public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.On
                 super.onScrollStateChanged(recyclerView, newState);
                 Log.d("Fragment_VocaNote","onScrollStateChanged: ");
 
-                MainActivity.fab.setOnClickListener(new View.OnClickListener() {
+                /*MainActivity.fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //QUERY(2,MainActivity.Session_ID,0, postApi);
                         //GetAddData();
                     }
-                });
+                });*/
 
                 //만약 스크롤을 내리고 있다면 fab 버튼을 오른쪽으로 이동시킴
                 //아니라면 다시 가운데로 이동시킴

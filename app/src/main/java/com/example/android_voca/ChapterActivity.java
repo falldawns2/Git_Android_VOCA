@@ -101,6 +101,7 @@ public class ChapterActivity extends AppCompatActivity {
 
     int LastPosition; //dy;
     List<Chapter> ccc;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //MenuInflater menuInflater = getMenuInflater();
@@ -110,7 +111,7 @@ public class ChapterActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             /*case R.id.btnEdit:
                 break;
             case R.id.test1:
@@ -158,16 +159,16 @@ public class ChapterActivity extends AppCompatActivity {
         //Note_CreateDate = findViewById(R.id.Note_CreateDate);
         //textView_VocaCount = findViewById(R.id.textView_VocaCount);
 
-        if(save == 1) {
+        if (save == 1) {
             Intent intent = getIntent();
             //textView_VocaNoteName.setText(intent.getExtras().getString("vocanotename"));
-                //Note_CreateDate.setText(intent.getExtras().getString("createDate"));
+            //Note_CreateDate.setText(intent.getExtras().getString("createDate"));
             //textView_VocaCount.setText(intent.getExtras().getString("vocacount"));
         } else {
 
-            VocaNoteName = ((Fragment_VocaNote)Fragment_VocaNote.context_Frag_Main).VocaNoteName;
+            VocaNoteName = ((Fragment_VocaNote) Fragment_VocaNote.context_Frag_Main).VocaNoteName;
             //CreateDate = ((Fragment_Main)Fragment_Main.context_Frag_Main).CreateDate;
-            VocaCount = ((Fragment_VocaNote)Fragment_VocaNote.context_Frag_Main).VocaCount;
+            VocaCount = ((Fragment_VocaNote) Fragment_VocaNote.context_Frag_Main).VocaCount;
 
             //textView_VocaNoteName.setText(VocaNoteName);
             //Note_CreateDate.setText(CreateDate);
@@ -194,14 +195,12 @@ public class ChapterActivity extends AppCompatActivity {
         handler_count = 1;
 
 
-        QUERY_Chapter_ONE(handler_count, MainActivity.Session_ID,VocaNoteName,postApi);
+        QUERY_Chapter_ONE(handler_count, MainActivity.Session_ID, VocaNoteName, postApi);
 
         initAdapter(); //리싸이클러 뷰 어댑터 생성
 
 
-
         initScrollListener(); //리싸이클러 뷰 이벤트 발생
-
 
 
         //플로팅 버튼 테스트
@@ -214,12 +213,12 @@ public class ChapterActivity extends AppCompatActivity {
                         new CustomDialogSelectClickListener() {
                             @Override
                             public void onPositiveClick() {
-                                Log.e("test","OK");
+                                Log.e("test", "OK");
                             }
 
                             @Override
                             public void onNegativeClick() {
-                                Log.e("test","cancel");
+                                Log.e("test", "cancel");
                             }
                         });
                 CustomDialog.setCanceledOnTouchOutside(true);
@@ -233,7 +232,7 @@ public class ChapterActivity extends AppCompatActivity {
 
     public void initAdapter() {
         // 싱글 선택 어댑터 //
-        adapter = new ChapterAdapter(this,list);
+        adapter = new ChapterAdapter(this, list);
 
         adapter.notifyDataSetChanged();
 
@@ -258,7 +257,7 @@ public class ChapterActivity extends AppCompatActivity {
             public void onItemChapterClick(ChapterAdapter.ItemViewHolder holder, View view, int position) {
                 MainActivity.PageNum = 2; //단어 페이지로 이동
                 Chapter item = adapter.getItem(position);
-                Log.e(TAG, "onItemChapterClick: " + position );
+                Log.e(TAG, "onItemChapterClick: " + position);
 
                 ChapterNoteName = item.getChapterName();
                 VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
@@ -268,8 +267,8 @@ public class ChapterActivity extends AppCompatActivity {
 
                 ///
                 Intent intent = new Intent(getApplicationContext(), VocaActivity.class);
-                intent.putExtra("VocaNoteName",VocaNoteName);
-                intent.putExtra("ChapterNoteName",ChapterNoteName);
+                intent.putExtra("VocaNoteName", VocaNoteName);
+                intent.putExtra("ChapterNoteName", ChapterNoteName);
                 startActivity(intent);
             }
 
@@ -310,7 +309,7 @@ public class ChapterActivity extends AppCompatActivity {
     }
 
     public void Copy(int i, int j) {
-        for (int a = i; a< list_20.size(); a++) {
+        for (int a = i; a < list_20.size(); a++) {
             if (a == list_20.size()) {
                 return;
             }
@@ -320,6 +319,7 @@ public class ChapterActivity extends AppCompatActivity {
                     list_20.get(a).getVocaCount()));
         }
     }
+
     //리싸이클러 뷰 이벤트
     private void initScrollListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -331,7 +331,7 @@ public class ChapterActivity extends AppCompatActivity {
                 //만약 스크롤을 내리고 있다면 fab 버튼을 오른쪽으로 이동시킴
                 //아니라면 다시 가운데로 이동시킴
 
-                if(recyclerView.getScrollY() > LastPosition)
+                if (recyclerView.getScrollY() > LastPosition)
                     MainActivity.bottom_bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
                 else
                     MainActivity.bottom_bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
@@ -351,18 +351,18 @@ public class ChapterActivity extends AppCompatActivity {
 
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-                if(!isLoading) {
+                if (!isLoading) {
                     //리니어 레이아웃 매니저가 null이거나 마지막 아이템 포지션이 부분배열 사이즈 - 1 값과 동일하면
                     //GetAddData()을 통해 list(부분 배열) 에다가 새로운 값 20개를 받아온다.
                     //isLoading 은 쓰레드 관련
 
-                    if(!noSearch) { //더 이상 20개 이상 값이 없다 = 서버에서 요청하지 말아라.
-                        if(linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                            == list.size() - 1) {
+                    if (!noSearch) { //더 이상 20개 이상 값이 없다 = 서버에서 요청하지 말아라.
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                                == list.size() - 1) {
                             adapter.notifyItemInserted(list.size() - 1); //그 공간에 프로그레스 바를 넣는다.
                             ++handler_count;
 
-                            QUERY(handler_count, MainActivity.Session_ID,VocaNoteName,postApi);
+                            QUERY(handler_count, MainActivity.Session_ID, VocaNoteName, postApi);
                             GetAddData(); //새 데이터 받아온다. (전체 배열에서 20개씩)
 
                             isLoading = true;
@@ -387,7 +387,7 @@ public class ChapterActivity extends AppCompatActivity {
 
     }
 
-    public void QUERY_Chapter_ONE(int Page_NO, String userid, String VocaNoteName,POSTApi postApi) {
+    public void QUERY_Chapter_ONE(int Page_NO, String userid, String VocaNoteName, POSTApi postApi) {
         /*Call<List<Chapter>> call = postApi.GetChapter(new Chapter(Page_NO,20,userid, VocaNoteName,"CrDateNote desc"));
 
         call.enqueue(new Callback<List<Chapter>>() {
@@ -425,14 +425,14 @@ public class ChapterActivity extends AppCompatActivity {
             }
         });*/
 
-        Call<List<Chapter>> call = postApi.GetChapter(new Chapter(Page_NO,20,userid, VocaNoteName,"CrDateNote desc"));
+        Call<List<Chapter>> call = postApi.GetChapter(new Chapter(Page_NO, 20, userid, VocaNoteName, "CrDateNote desc"));
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     //Log.e(TAG, "run: "+ call.execute().body().get(0).getChapterName());
 
-                    for(Chapter chapter : call.execute().body()) {
+                    for (Chapter chapter : call.execute().body()) {
                         list.add(new Chapter(
                                 chapter.getChapterName(),
                                 chapter.getVocaCount()
@@ -450,13 +450,13 @@ public class ChapterActivity extends AppCompatActivity {
 
         try {
             Thread.sleep(100);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         POST_Response = list_20.size();
 
-        if(POST_Response < 20) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
+        if (POST_Response < 20) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
             noSearch = true;
         }
 
@@ -508,12 +508,13 @@ public class ChapterActivity extends AppCompatActivity {
         }*/
 
         POST_Response = list_20.size();
+        Log.e(TAG, "" + POST_Response );
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    for(Chapter2 chapter2 : call.execute().body()) {
+                    for (Chapter2 chapter2 : call.execute().body()) {
                         list_20.add(new Chapter(
                                 chapter2.getChapterName(),
                                 chapter2.getVocaCount()
@@ -531,10 +532,15 @@ public class ChapterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if(POST_Response < 20) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
+        // 요청 할때마다 20개씩 가져올 테니 20 * (요청 값) 하면 20 40 60 .. 늘어난다.
+        // 만약 가져온 값 list .size 가 그 20개씩 가져온 것보다 적은 값이라면 다음은 없으므로 요청하지 못하게 한다.
+
+        if (POST_Response < 20 * handler_count) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
             noSearch = true;
         }
+
     }
+
     ///////////
     public void QUERY_VocaNote() {
         // 일단 임시로 넣는다 나중에 DB에서 연동 //
@@ -606,8 +612,8 @@ public class ChapterActivity extends AppCompatActivity {
     private List<VocaNote> getList() {
         List<VocaNote> list = new ArrayList<>();
 
-        for(int i = 0; i< Arr_VocaNoteName.length; i++) {
-            VocaNote model = new VocaNote(1,2,"0","t");
+        for (int i = 0; i < Arr_VocaNoteName.length; i++) {
+            VocaNote model = new VocaNote(1, 2, "0", "t");
             //model.setChapterName(Arr_VocaNoteName[i]); // 챕터명 //
             //model.setCrDateNote(Arr_CREATE_DATE[i]);
             //model.setVocaCount(Arr_VocaCount[i]); // 총 단어 수 //
@@ -620,9 +626,9 @@ public class ChapterActivity extends AppCompatActivity {
     public void selectedClick() {
         List list = adapter.getSelectedItem();
 
-        if(list.size() > 0 ) {
+        if (list.size() > 0) {
             StringBuilder sb = new StringBuilder();
-            for(int index = 0; index < list.size(); index++) {
+            for (int index = 0; index < list.size(); index++) {
                 VocaNote model = (VocaNote) list.get(index);
                 //sb.append(model.getChapterName()).append("\n");
             }
