@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
@@ -189,6 +190,41 @@ namespace WcfService1
                 int_VocaNoteAdd.Check = 2; //이 단어장은 이미 있습니다.                
                 return int_VocaNoteAdd;
             }            
+        }
+        //챕터 추가
+        public Int_ChapterAdd InsertChapter(string Userid, string NickName, string ChapterName, string VocaNoteName)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            Int_ChapterAdd int_ChapterAdd = new Int_ChapterAdd();
+
+            //챕터 이름을 변수에 담아 중복검사 실행
+            
+            if (ChapterName.Length <= 0)
+            {
+                DB_VOCAFORM.Close();
+                int_ChapterAdd.Check = 1; //1: 두 글자 이상이어야 한다.
+                return int_ChapterAdd;
+            }
+
+            if (isIdDuChecked = DB_VOCAFORM.VerifyChapterName(NickName,VocaNoteName,ChapterName))
+            {
+                //중복검사 통과 --- > 챕터 추가
+                //DB_VOCAFORM.NoteCrDateNote(Userid, VocaNoteName)
+                //string Date = DB_VOCAFORM.NoteCrDateNote(Userid, VocaNoteName);
+                DB_VOCAFORM.InsertChapter(Userid, NickName, ChapterName, VocaNoteName, "1234");
+
+                //return 통과
+                DB_VOCAFORM.Close();
+                int_ChapterAdd.Check = 0; //통과
+                return int_ChapterAdd;
+            }
+            else
+            {
+                //중복검사 실패
+                DB_VOCAFORM.Close();
+                int_ChapterAdd.Check = 2; //이 단어장은 이미 있습니다.
+                return int_ChapterAdd;
+            }
         }
     }
 }

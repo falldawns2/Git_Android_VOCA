@@ -197,5 +197,57 @@ namespace WcfService1
             myReader.Close();
             return result; // 존재 하지 않을때 true 보냄.
         }
+        //챕터 이름 중복 검사
+        public bool VerifyChapterName(string nickname, string vocaname, string chaptername) //닉네임으로 구별한 후 단어장 중복 검사 (닉네임도 중복되지않아 아이디로 구별안했음)
+        {
+            //결과 반환용 변수
+            bool result = true;
+            //쿼리문 지정
+            string mySql = "SELECT ChapterName FROM VocaNote WHERE nickname = '" + nickname + "' and VocaNoteName = '" + vocaname + "' and ChapterName = '" + chaptername + "'";
+
+            //결과를 구해옴
+            SqlDataReader myReader = this.ExecuteReader(mySql);
+
+            if (myReader.Read()) result = false; // 해당 챕터 이미 존재
+
+            //SqlDataReader 객체 소멸
+            myReader.Close();
+
+            return result;
+        }
+        //단어장에 null이 존재하지 않으므로 챕터를 새로운 레코드 추가해서 집어넣음.
+        public bool InsertChapter(string userid, string nickname, string chaptername, string VocaNoteName, string firstCrDateNote)
+        {
+
+            bool result = true;
+
+            string mysql = "INSERT INTO VocaNote" +
+                " Values(3, '" + userid + "', '" + nickname + "','" + VocaNoteName + "','" + chaptername + "',0," +
+                " (SELECT TOP 1 CrDateNote FROM VocaNote WHERE userid = '" + userid + "' and VocaNoteName = '" + VocaNoteName + "')" + ",getdate(),'false')";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false; //해당 단어장 이미 존재
+
+            myReader.Close();
+            return result; // 존재 하지 않을때 true 보냄.
+        }
+        //단어장 생성날짜 저장하기위해 사용
+        public string NoteCrDateNote(string uid, string VocaNoteName)
+        {
+            string CrDateNote = null;
+
+            string mySql = "select VocaNoteName, CONVERT(date,CrDateNote) as CrDateNote from VocaNote" +
+                " where userid = '" + uid + "' and VocaNoteName = '" + VocaNoteName + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(mySql);
+
+            if (myReader.Read())
+            {
+                CrDateNote = myReader["CrDateNote"].ToString();
+            }
+            myReader.Close();
+            return CrDateNote;
+        }
     }
 }

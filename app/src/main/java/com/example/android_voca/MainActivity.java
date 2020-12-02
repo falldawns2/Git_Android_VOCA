@@ -560,7 +560,7 @@ public class MainActivity extends AppCompatActivity {
                                     //단어장 추가 성공함 새로고침 필요
                                     Log.e(TAG, "단어장 추가 성공" );
 
-                                    Snackbar snackbar = Snackbar.make(MainPanel,"단어장 추가했습니다.", Snackbar.LENGTH_LONG);
+                                    Snackbar snackbar = Snackbar.make(MainPanel,"단어장 추가했어요.", Snackbar.LENGTH_LONG);
                                     View view = snackbar.getView();
                                     TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
                                     tv.setTextColor(ContextCompat.getColor(context_main, R.color.White));

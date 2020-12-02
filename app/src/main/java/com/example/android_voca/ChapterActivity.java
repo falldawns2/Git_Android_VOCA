@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,13 +18,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +43,7 @@ import retrofit2.Response;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.internal.EverythingIsNonNull;
 
-public class ChapterActivity extends AppCompatActivity {
+public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{ //
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -67,6 +71,9 @@ public class ChapterActivity extends AppCompatActivity {
 
     final String svcName = "Service_VocaNote.svc/";
     final String TAG = "ChapterActivity";
+
+    ChapterADD add;
+    Call<ChapterADD> add_Call;
 
     List<Chapter> list; // 10개씩
     List<Chapter> list_20;
@@ -102,6 +109,10 @@ public class ChapterActivity extends AppCompatActivity {
     int LastPosition; //dy;
     List<Chapter> ccc;
 
+    LinearLayout linearLayout;
+
+    SwipeRefreshLayout mSwipeRefreshLayout_Chapter;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //MenuInflater menuInflater = getMenuInflater();
@@ -131,6 +142,9 @@ public class ChapterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter);
+
+        linearLayout = findViewById(R.id.Chapter_Main_Panel);
+
         list = new ArrayList<>();
         list_20 = new ArrayList<>();
 
@@ -202,6 +216,33 @@ public class ChapterActivity extends AppCompatActivity {
 
         initScrollListener(); //리싸이클러 뷰 이벤트 발생
 
+        //새로고침
+        mSwipeRefreshLayout_Chapter = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh_Chapter);
+
+        mSwipeRefreshLayout_Chapter.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout_Chapter.setRefreshing(true);
+                //3초 후 해당 adapter 갱신하고 로딩중 보여줌.  setRefreshing(false)
+
+                //헨들러 사용 : 일반 쓰레드는 메인 쓰레드가 가진 UI에 접근 불가
+                //헨들러로 메시지큐에 메시지 전달 - > 루퍼를 이용하여 순서대로 UI에 접근
+
+                //반대로 메인 쓰레드에서 일반 쓰레드에 접근하기 위해서는 루퍼를 만듦.
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //해당 어댑터를 서버와 통신한 값
+
+                        handler_count = 1;
+                        RefreshAdapter();
+                        QUERY_Chapter_ONE(handler_count, MainActivity.Session_ID, VocaNoteName, postApi);
+                        initAdapter();
+                        mSwipeRefreshLayout_Chapter.setRefreshing(false);
+                    }
+                },100);
+            }
+        });
 
         //플로팅 버튼 테스트
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -210,14 +251,76 @@ public class ChapterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(ChapterActivity.this, "챕터 추가 이벤트", Toast.LENGTH_SHORT).show();
 
-                /*retrofit = new Retrofit(postApi);
-                postApi = retrofit.setRetrofitInit(svc)*/
+                retrofit = new Retrofit(postApi);
+                postApi = retrofit.setRetrofitInit(svcName);
+                /*CustomDialog_VocaNote.tvTitle.setText("챕터 추가");
+                CustomDialog_VocaNote.InsertVocaNoteName.setHint("챕터명을 입력하세요.");*/
 
                 CustomDialog = new CustomDialog_VocaNote(ChapterActivity.this,
                         new CustomDialogSelectClickListener() {
                             @Override
                             public void onPositiveClick() {
                                 Log.e("test", "OK");
+
+                                add = new ChapterADD(MainActivity.Session_ID,
+                                        MainActivity.Session_Nickname,
+                                        CustomDialog_VocaNote.InsertVocaNoteName.getText().toString(),
+                                        context_Frag_Main.VocaNoteName
+                                        );
+
+                                add_Call = postApi.InsertChapter(add);
+                                add_Call.enqueue(new Callback<ChapterADD>() {
+                                    @Override
+                                    public void onResponse(Call<ChapterADD> call, Response<ChapterADD> response) {
+                                        if (!response.isSuccessful()) {
+                                            Log.e(TAG, "onResponse: " + response.code() );
+                                            return;
+                                        }
+
+                                        ChapterADD postResponse = response.body();
+
+                                        if (postResponse.getValue() == 0) { //성공
+                                            //챕터 추가 성공
+                                            Log.e(TAG, "챕터 추가 성공" );
+
+                                            Snackbar snackbar = Snackbar.make(linearLayout,"챕터 추가했어요.", Snackbar.LENGTH_LONG);
+                                            View view = snackbar.getView();
+                                            TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                            tv.setTextColor(ContextCompat.getColor(context_Chapter, R.color.White));
+                                            view.setBackgroundColor(ContextCompat.getColor(context_Chapter, R.color.snack_Background_Success));
+                                            snackbar.show();
+
+                                            //위로 당기면 새로고침 되는 기능 구현 필요
+                                            onRefresh();
+
+                                        } else if (postResponse.getValue() == 1) { // 한 글자 이상
+                                            Log.e(TAG, "한 글자 이상 쓰세요" );
+
+                                            Snackbar snackbar = Snackbar.make(linearLayout,"두 글자 이상 쓰세요.", Snackbar.LENGTH_LONG);
+                                            View view = snackbar.getView();
+                                            TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                            tv.setTextColor(ContextCompat.getColor(context_Chapter, R.color.White));
+                                            view.setBackgroundColor(ContextCompat.getColor(context_Chapter, R.color.snack_Background_Success));
+                                            snackbar.show();
+
+                                        } else { //중복 존재함 == 2
+                                            Log.e(TAG, "중복 존재함");
+
+                                            Snackbar snackbar = Snackbar.make(linearLayout,"중복이 존재해요.", Snackbar.LENGTH_LONG);
+                                            View view = snackbar.getView();
+                                            TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                            tv.setTextColor(ContextCompat.getColor(context_Chapter, R.color.White));
+                                            view.setBackgroundColor(ContextCompat.getColor(context_Chapter, R.color.snack_Background_Success));
+                                            snackbar.show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ChapterADD> call, Throwable t) {
+                                        Log.e(TAG, "onFailure: " + t.getMessage() );
+                                    }
+                                });
+
                             }
 
                             @Override
@@ -232,6 +335,38 @@ public class ChapterActivity extends AppCompatActivity {
                 CustomDialog.show();
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout_Chapter.setRefreshing(true);
+        //3초 후 해당 adapter 갱신하고 로딩중 보여줌.  setRefreshing(false)
+
+        //헨들러 사용 : 일반 쓰레드는 메인 쓰레드가 가진 UI에 접근 불가
+        //헨들러로 메시지큐에 메시지 전달 - > 루퍼를 이용하여 순서대로 UI에 접근
+
+        //반대로 메인 쓰레드에서 일반 쓰레드에 접근하기 위해서는 루퍼를 만듦.
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //해당 어댑터를 서버와 통신한 값
+
+                handler_count = 1;
+                RefreshAdapter();
+                QUERY_Chapter_ONE(handler_count, MainActivity.Session_ID, VocaNoteName, postApi);
+                initAdapter();
+                mSwipeRefreshLayout_Chapter.setRefreshing(false);
+            }
+        },100);
+    }
+
+    private void RefreshAdapter() {
+        recyclerView.removeAllViewsInLayout();
+        //recyclerView.setAdapter(adapter);
+        list.clear();
+        list_20.clear();
+        noSearch = false; //이 값이 서버 요청을 할지 말지 정한다.
+        //initAdapter();
     }
 
     public void initAdapter() {
