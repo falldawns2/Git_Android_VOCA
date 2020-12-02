@@ -336,6 +336,7 @@ public class VocaActivity extends AppCompatActivity {
         Call<List<Voca2>> call = postApi.GetVoca(new Voca2(Page_NO, 20, userid, VocaNoteName, ChapterName, "CreateDate desc"));
 
         POST_Response = list_20.size();
+        Log.e(TAG, "" + POST_Response );
 
         new Thread(new Runnable() {
             @Override
@@ -361,7 +362,11 @@ public class VocaActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if (POST_Response < 20) {
+
+        // 요청 할때마다 20개씩 가져올 테니 20 * (요청 값) 하면 20 40 60 .. 늘어난다.
+        // 만약 가져온 값 list .size 가 그 20개씩 가져온 것보다 적은 값이라면 다음은 없으므로 요청하지 못하게 한다.
+
+        if (POST_Response < 20 * handler_count) { //20개 불렀는데 더 적은 수가 왔다 = 다음 페이지 없음 - > 서버 요청 x
             noSearch = true;
         }
     }

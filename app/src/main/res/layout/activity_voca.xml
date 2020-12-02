@@ -87,64 +87,18 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/test"
+            <LinearLayout
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:context=".ChapterActivity"
-                tools:showIn="@layout/activity_main"
-                >
+                android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView_Voca"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <!--
-         <TextView
-            android:id="@+id/Note_CreateDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="19dp"
-            android:layout_marginTop="132dp"
-            android:text="생성 날짜"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" /> -->
-
-
-                    <!-- 위의 내용물 -->
-                    <!-- intent 테스트 -->
-                    <!--
-                     <TextView
-                        android:id="@+id/textView_VocaNoteName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="19dp"
-                        android:layout_marginTop="9dp"
-                        android:text="제목"
-                        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-                    <TextView
-                        android:id="@+id/textView_ChapterName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="19dp"
-                        android:layout_marginTop="64dp"
-                        android:text="내용"
-                        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-                     -->
-                    <!-- app:layout_constraintTop_toBottomOf="@+id/Note_CreateDate" -->
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerView_Voca"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </androidx.recyclerview.widget.RecyclerView>
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-
+                    android:layout_height="match_parent" >
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
 
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
