@@ -45,6 +45,14 @@ public class VocaADD {
         Interpretation = interpretation;
     }
 
+    public VocaADD(String userid, String voca, String mean, String sentence, String interpretation) {
+        Userid = userid;
+        Voca = voca;
+        Mean = mean;
+        Sentence = sentence;
+        Interpretation = interpretation;
+    }
+
     public String getUserid() {
         return Userid;
     }

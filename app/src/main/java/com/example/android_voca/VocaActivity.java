@@ -236,10 +236,14 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
 
                                 if (UPDATE_VOCA == 1) { //TODO:업데이트 Call 비동기 요청 필요 WCF 서버에도 만들어야함.
 
+                                    //업데이트 할 비동기 호출 하자.
+
+
                                     UPDATE_VOCA = 0;
+                                    CustomDialog.dismiss();
+                                    onRefresh();
                                     return;
                                 }
-
 
                                 add = new VocaADD(MainActivity.Session_ID,
                                         VocaNoteName,
@@ -445,7 +449,7 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
         }).start();
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -565,7 +569,7 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
         }).start();
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
