@@ -75,7 +75,7 @@ public class CustomDialog_Voca extends Dialog {
             public void onClick(View view) {
                 //계속 추가
                 customDialogVocaClickListener.onADDClick();
-                dismiss();
+                //dismiss();
             }
         });
     }

@@ -107,6 +107,8 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
     //단어 수정 필요 시
     static int UPDATE_VOCA = 0;
 
+    //연속 추가
+    static boolean bool_onADDClick = false;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
@@ -227,6 +229,7 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
 
                 retrofit = new Retrofit(postApi);
                 postApi = retrofit.setRetrofitInit(svcName);
+                bool_onADDClick = false;
 
                 CustomDialog = new CustomDialog_Voca(VocaActivity.this,
                         new CustomDialogVocaClickListener() {
@@ -329,7 +332,10 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
                                             TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
                                             tv.setTextColor(ContextCompat.getColor(VocaActivity.this, R.color.White));
                                             view.setBackgroundColor(ContextCompat.getColor(VocaActivity.this, R.color.snack_Background_Success));
-                                            CustomDialog.dismiss();
+                                            if (!bool_onADDClick) {
+                                                CustomDialog.dismiss();
+                                                bool_onADDClick = false;
+                                            }
                                             snackbar.show();
 
                                             //새로고침 구현 필요
@@ -390,6 +396,14 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
                             public void onADDClick() {
                                 //단어 연속으로 추가 한다.
                                 //TODO: 연속 추가도 코딩해야함
+                                bool_onADDClick = true;
+                                onPositiveClick();
+                                CustomDialog_Voca.InsertVoca.setText("");
+                                CustomDialog_Voca.InsertVoca.requestFocus(); //포커스
+                                CustomDialog_Voca.InsertMean.setText("");
+                                CustomDialog_Voca.InsertSentence.setText("");
+                                CustomDialog_Voca.InsertInterpretation.setText("");
+
                             }
                         });
                 CustomDialog.setCanceledOnTouchOutside(true);
