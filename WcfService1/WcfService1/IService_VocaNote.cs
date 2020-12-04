@@ -56,6 +56,11 @@ namespace WcfService1
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "InsertVoca", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         Int_VocaAdd InsertVoca(string Userid, string VocaNoteName, string ChapterName, string Voca, string Mean, string Sentence, string Interpretation);
+
+        //단어 수정
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "UpdateVoca", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Int_VocaUpdate UpdateVoca(string Userid, string Voca, string Mean, string Sentence, string Interpretation); 
     }
 
     [DataContract]
@@ -230,10 +235,10 @@ namespace WcfService1
         //0 : 성공, 1 : 단어 빈칸, 2 : 뜻 빈칸, 3 : 중복 존재
 
         //만약 중복 존재하면 4가지 다 보내야함
-         string voca;
-         string mean;
-         string sentence;
-         string interpretation;
+        string voca;
+        string mean;
+        string sentence;
+        string interpretation;
 
         [DataMember]
         public int Check
@@ -265,5 +270,17 @@ namespace WcfService1
             get { return interpretation; }
             set { interpretation = value; }
         }
+    }
+    public class Int_VocaUpdate
+    {
+        int check;
+        //0 : 성공, 1 : 에러
+
+        [DataMember]
+        public int Check
+        {
+            get { return check; }
+            set { check = value; }
+        }      
     }
 }

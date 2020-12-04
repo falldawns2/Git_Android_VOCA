@@ -35,6 +35,7 @@ public class VocaADD {
     @SerializedName("Update_Interpretation")
     private String Update_Interpretation;
 
+    //단어 추가
     public VocaADD(String userid, String vocaNoteName, String chapterName, String voca, String mean, String sentence, String interpretation) {
         Userid = userid;
         VocaNoteName = vocaNoteName;
@@ -45,6 +46,7 @@ public class VocaADD {
         Interpretation = interpretation;
     }
 
+    //중복으로 인해 업데이트
     public VocaADD(String userid, String voca, String mean, String sentence, String interpretation) {
         Userid = userid;
         Voca = voca;

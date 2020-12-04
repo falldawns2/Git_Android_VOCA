@@ -335,5 +335,23 @@ namespace WcfService1
 
             return this.AdapterFill(mysql, "Voca");
         }
+        public bool UpdateVoca(string userid, string Voca, string CMean, string CSentence, string CInterpretation)
+        {
+            //단어가 존재하므로 5가지를 수정한다. (단어,뜻,예문,해석,수정날짜)
+            bool result = true;
+
+            string mysql = "UPDATE Voca SET Mean = '" + CMean + "' WHERE userid = '" + userid + "' and Voca = '" + Voca + "'" +
+                "  UPDATE Voca SET Sentence = '" + CSentence + "' WHERE userid = '" + userid + "' and Voca = '" + Voca + "'" +
+                "  UPDATE Voca SET Interpretation = '" + CInterpretation + "' WHERE userid = '" + userid + "' and Voca = '" + Voca + "'" +
+                "  UPDATE Voca SET Createdate = GETDATE() WHERE userid = '" + userid + "' and  Voca = '" + Voca + "'";
+            //"  UPDATE Voca SET Voca = '" + CVoca + "' WHERE userid = '" + userid + "' and Voca ='" + Voca + "'"; 단어가 중복되서 수정하러왓는데 단어를 수정할리 없다.
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false;
+
+            myReader.Close();
+            return result;
+        }
     }
 }

@@ -234,11 +234,65 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
                             public void onPositiveClick() {
                                 Log.e(TAG, "OK" );
 
-                                if (UPDATE_VOCA == 1) { //TODO:업데이트 Call 비동기 요청 필요 WCF 서버에도 만들어야함.
+                                if (UPDATE_VOCA == 1) {
 
                                     //업데이트 할 비동기 호출 하자.
+                                    add = new VocaADD(MainActivity.Session_ID,
+                                            CustomDialog_Voca.InsertVoca.getText().toString(),
+                                            CustomDialog_Voca.InsertMean.getText().toString(),
+                                            CustomDialog_Voca.InsertSentence.getText().toString(),
+                                            CustomDialog_Voca.InsertInterpretation.getText().toString()
+                                    );
+
+                                    add_Call = postApi.UpdateVoca(add);
+                                    add_Call.enqueue(new Callback<VocaADD>() {
+                                        @Override
+                                        public void onResponse(Call<VocaADD> call, Response<VocaADD> response) {
+                                            if(!response.isSuccessful()) {
+                                                Log.e(TAG, "onResponse: " + response.code() );
+                                                return;
+                                            }
+
+                                            VocaADD postResponse = response.body();
+
+                                            //0: 성공, 1: 실패
+                                            if(postResponse.getValue() == 0) { //성공
+                                                //단어 수정 성공
+                                                Log.e(TAG, "단어 수정 성공" );
+
+                                                Snackbar snackbar = Snackbar.make(linearLayout,"단어 수정했어요.", Snackbar.LENGTH_LONG);
+                                                View view = snackbar.getView();
+                                                TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                                tv.setTextColor(ContextCompat.getColor(VocaActivity.this, R.color.White));
+                                                view.setBackgroundColor(ContextCompat.getColor(VocaActivity.this, R.color.snack_Background_Success));
+                                                CustomDialog.dismiss();
+                                                snackbar.show();
+
+                                                /*
+                                                //새로고침 구현 필요
+                                                onRefresh();
+                                                */
+                                            } else if (postResponse.getValue() == 1) { //실패
+
+                                                Snackbar snackbar = Snackbar.make(linearLayout,"오류!", Snackbar.LENGTH_LONG);
+                                                View view = snackbar.getView();
+                                                TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                                tv.setTextColor(ContextCompat.getColor(VocaActivity.this, R.color.White));
+                                                view.setBackgroundColor(ContextCompat.getColor(VocaActivity.this, R.color.snack_Background_Error));
+                                                snackbar.show();
+                                                CustomDialog.dismiss();
+                                                //CustomDialog_Voca.tvTitle.setText("단어 써주세요!");
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<VocaADD> call, Throwable t) {
+                                            Log.e(TAG, "onFailure: " + t.getMessage() );
+                                        }
+                                    });
 
 
+                                    //다시 단어 추가 상태로 변경
                                     UPDATE_VOCA = 0;
                                     CustomDialog.dismiss();
                                     onRefresh();
@@ -251,7 +305,7 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
                                         CustomDialog_Voca.InsertVoca.getText().toString(),
                                         CustomDialog_Voca.InsertMean.getText().toString(),
                                         CustomDialog_Voca.InsertSentence.getText().toString(),
-                                        CustomDialog_Voca.InsertSentence.getText().toString()
+                                        CustomDialog_Voca.InsertInterpretation.getText().toString()
                                         );
 
                                 add_Call = postApi.InsertVoca(add);

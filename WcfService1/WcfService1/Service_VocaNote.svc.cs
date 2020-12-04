@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
@@ -290,6 +291,27 @@ namespace WcfService1
                 DB_VOCAFORM.Close();
                 return int_VocaAdd;
             }
+        }
+        //단어 중복으로 인해 (뜻, 예문, 해석) 을 수정하도록 한다.
+        public Int_VocaUpdate UpdateVoca(string Userid, string Voca, string Mean, string Sentence, string Interpretation)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+
+            Int_VocaUpdate int_VocaUpdate = new Int_VocaUpdate();
+
+            //업데이트
+            bool a = DB_VOCAFORM.UpdateVoca(Userid, Voca, Mean, Sentence, Interpretation);
+            
+            int check = 0; //기본값 성공
+            
+            //실패하면
+            if (!a) check = 1; //실패            
+
+            int_VocaUpdate.Check = check;
+
+            DB_VOCAFORM.Close();
+
+            return int_VocaUpdate;
         }
     }
 }

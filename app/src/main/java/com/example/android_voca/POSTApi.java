@@ -88,4 +88,8 @@ public interface POSTApi {
     //단어 추가
     @POST("InsertVoca")
     Call<VocaADD> InsertVoca(@Body VocaADD add);
+
+    //단어 업데이트
+    @POST("UpdateVoca")
+    Call<VocaADD> UpdateVoca(@Body VocaADD add);
 }
