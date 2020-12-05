@@ -22,23 +22,45 @@
                     android:id="@+id/textView_Voca"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="150dp"
+                    android:layout_marginTop="100dp"
                     android:text="TESTTESTTESTTESTTEST"
                     android:textColor="#262626"
-                    android:textSize="16sp"
+                    android:textSize="25sp"
                     android:textAlignment="center"/>
 
             <TextView
                     android:id="@+id/textView_Mean"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="40dp"
                     android:drawablePadding="10dp"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="Description"
                     android:textAlignment="center"
                     android:layout_below="@id/textView_Voca"/>
+
+            <TextView
+                android:id="@+id/textView_Sentence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:drawablePadding="10dp"
+                android:text="What's your name and address?"
+                android:textAlignment="center"
+                android:visibility="invisible"
+                android:layout_below="@id/textView_Mean"/>
+
+            <TextView
+                android:id="@+id/textView_Interpretation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:drawablePadding="10dp"
+                android:text="성함과 주소가 어떻게 되세요?"
+                android:textAlignment="center"
+                android:visibility="invisible"
+                android:layout_below="@id/textView_Sentence"/>
 
             <Button
                     android:id="@+id/Search_Voca"

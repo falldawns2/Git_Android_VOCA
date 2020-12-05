@@ -50,47 +50,65 @@ public class Fragment_Challenge extends Fragment {
     class BtnOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.CardView_VocaCard:
-                    //먼저 커스텀 다이얼로그 안에 있는 스피너에 값을 담는다.
-                    CustomDialog_Select CustomDialog = new CustomDialog_Select(getContext(), new CustomDialogSelectClickListener() {
-                        @Override
-                        public void onPositiveClick() {
-                            Log.e("test","OK");
+
+            //먼저 커스텀 다이얼로그 안에 있는 스피너에 값을 담는다.
+            CustomDialog_Select CustomDialog = new CustomDialog_Select(view, getContext(), new CustomDialogSelectClickListener() {
+                @Override
+                public void onPositiveClick() {
+                    Log.e("test","OK");
+                    switch (view.getId()) {
+                        case R.id.CardView_VocaCard:
                             //단어 카드 액티비티로 이동한다.
                             Intent intent = new Intent(MainActivity.context_main,Challenge_VocaCardActivity.class);
                             intent.putExtra("VocaNoteName",VocaNoteName); //단어장
                             intent.putExtra("ChapterName",ChapterName); //챕터
                             intent.putExtra("Shuffle",Shuffle_CheckBox.isChecked()); //단어 섞기
                             startActivity(intent);
-                        }
+                            break;
+                        case R.id.CardView_Quiz:
+                            //단어 카드 액티비티로 이동한다.
+                            intent = new Intent(MainActivity.context_main,Challenge_VocaCardActivity.class);
+                            intent.putExtra("VocaNoteName",VocaNoteName); //단어장
+                            intent.putExtra("ChapterName",ChapterName); //챕터
+                            intent.putExtra("Shuffle",Shuffle_CheckBox.isChecked()); //단어 섞기
+                            startActivity(intent);
+                            break;
+                        case R.id.CardView_Spelling:
+                            //단어 카드 액티비티로 이동한다.
+                            /*
+                            intent = new Intent(MainActivity.context_main,MainActivity.class);
+                            intent.putExtra("VocaNoteName",VocaNoteName); //단어장
+                            intent.putExtra("ChapterName",ChapterName); //챕터
+                            intent.putExtra("Shuffle",Shuffle_CheckBox.isChecked()); //단어 섞기
+                            startActivity(intent);*/
+                            break;
+                    }
+                }
 
-                        @Override
-                        public void onNegativeClick() {
-                            Log.e("test","cancel");
-                        }
-                    });
-                    CustomDialog.setCanceledOnTouchOutside(true);
-                    CustomDialog.setCancelable(true);
-                    CustomDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-                    CustomDialog.show();
+                @Override
+                public void onNegativeClick() {
+                    Log.e("test","cancel");
+                }
+            });
+            CustomDialog.setCanceledOnTouchOutside(true);
+            CustomDialog.setCancelable(true);
+            CustomDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+            CustomDialog.show();
 
-                    //커스텀 다이얼로그 스피너
-                    VocaNote_Spinner = (AppCompatSpinner) CustomDialog.findViewById(R.id.VocaNote_Spinner);
-                    Chapter_Spinner = (AppCompatSpinner) CustomDialog.findViewById(R.id.Chapter_Spinner);
+            //커스텀 다이얼로그 스피너
+            VocaNote_Spinner = (AppCompatSpinner) CustomDialog.findViewById(R.id.VocaNote_Spinner);
+            Chapter_Spinner = (AppCompatSpinner) CustomDialog.findViewById(R.id.Chapter_Spinner);
 
-                    //커스텀 다이얼로그 체크박스
-                    Shuffle_CheckBox = (CheckBox) CustomDialog.findViewById(R.id.Shuffle_CheckBox);
+            //커스텀 다이얼로그 체크박스
+            Shuffle_CheckBox = (CheckBox) CustomDialog.findViewById(R.id.Shuffle_CheckBox);
 
-                    //Spinner Selected
-                    OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener();
-                    VocaNote_Spinner.setOnItemSelectedListener(onItemSelectedListener);
-                    Chapter_Spinner.setOnItemSelectedListener(onItemSelectedListener);
+            //Spinner Selected
+            OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener();
+            VocaNote_Spinner.setOnItemSelectedListener(onItemSelectedListener);
+            Chapter_Spinner.setOnItemSelectedListener(onItemSelectedListener);
 
-                    //Retrofit 비동기 호출 (단어장 목록 스피너)
-                    VocaNote_Spinner_Insert(MainActivity.Session_ID, "CrDateNote desc");
-                    break;
-            }
+            //Retrofit 비동기 호출 (단어장 목록 스피너)
+            VocaNote_Spinner_Insert(MainActivity.Session_ID, "CrDateNote desc");
         }
     }
 

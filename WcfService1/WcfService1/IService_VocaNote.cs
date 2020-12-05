@@ -153,6 +153,8 @@ namespace WcfService1
 
         string voca;
         string mean;
+        string sentence;
+        string interpretation;
 
         [DataMember]
         public string Voca
@@ -165,6 +167,18 @@ namespace WcfService1
         {
             get { return mean; }
             set { mean = value; }
+        }
+        [DataMember]
+        public string Sentence
+        {
+            get { return sentence; }
+            set { sentence = value; }
+        }
+        [DataMember]
+        public string Interpretation
+        {
+            get { return interpretation; }
+            set { interpretation = value; }
         }
     }
     public class DataSet_Voca

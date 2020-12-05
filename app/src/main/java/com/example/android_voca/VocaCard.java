@@ -19,6 +19,10 @@ public class VocaCard {
     private String Voca;
     @SerializedName("Mean")
     private String Mean;
+    @SerializedName("Sentence")
+    private String Sentence;
+    @SerializedName("Interpretation")
+    private String Interpretation;
 
     public VocaCard(String userid, String VocaNoteName, String ChapterName, String OrderBy) {
         this.userid = userid;
@@ -27,9 +31,11 @@ public class VocaCard {
         this.OrderBy = OrderBy;
     }
 
-    public VocaCard(String Voca, String Mean) {
+    public VocaCard(String Voca, String Mean, String Sentence, String Interpretation, int a) {
         this.Voca = Voca;
         this.Mean = Mean;
+        this.Sentence = Sentence;
+        this.Interpretation = Interpretation;
     }
 
     public String getVoca() {
@@ -78,5 +84,21 @@ public class VocaCard {
 
     public void setOrderBy(String orderBy) {
         OrderBy = orderBy;
+    }
+
+    public String getSentence() {
+        return Sentence;
+    }
+
+    public void setSentence(String sentence) {
+        Sentence = sentence;
+    }
+
+    public String getInterpretation() {
+        return Interpretation;
+    }
+
+    public void setInterpretation(String interpretation) {
+        Interpretation = interpretation;
     }
 }

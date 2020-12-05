@@ -16,14 +16,20 @@ public class CustomDialog_Select extends Dialog {
 
     private Context context;
     private CustomDialogSelectClickListener customDialogSelectClickListener;
-    private TextView tvTitle, tvNegatvie, tvPositive;
+    private TextView tvNegatvie, tvPositive;
+
+    public TextView tvTitle;
 
     Spinner spinner, spinner2;
     ArrayList<String> arrayList, arrayList2;
     ArrayAdapter<String> arrayAdapter;
 
-    public CustomDialog_Select(@NonNull Context context, CustomDialogSelectClickListener customDialogSelectClickListener) {
+    View view;
+
+
+    public CustomDialog_Select(View view,@NonNull Context context, CustomDialogSelectClickListener customDialogSelectClickListener) {
         super(context);
+        this.view = view;
         this.context = context;
         this.customDialogSelectClickListener = customDialogSelectClickListener;
     }
@@ -36,6 +42,19 @@ public class CustomDialog_Select extends Dialog {
         tvTitle = findViewById(R.id.option_codetype_dialog_title_tv);
         tvPositive = findViewById(R.id.option_codetype_dialog_positive);
         tvNegatvie = findViewById(R.id.option_codetype_dialog_negative);
+
+        //단어선택, 단어 뜻 맞추기, 스펠링 쓰기
+        switch (view.getId()) {
+            case R.id.CardView_VocaCard:
+                tvTitle.setText("단어 카드");
+                break;
+            case R.id.CardView_Quiz:
+                tvTitle.setText("단어/뜻 맞추기");
+                break;
+            case R.id.CardView_Spelling:
+                tvTitle.setText("스펠링 맞추기");
+                break;
+        }
 
         tvPositive.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ public class VocaCardAdapter  extends PagerAdapter {
     private List<VocaCard> cards;
     private Context context;
     TextView Voca, Mean;
+    TextView Sentence, Interpretation;
     Button Search_Voca;
 
     //tts 관련
@@ -44,6 +46,9 @@ public class VocaCardAdapter  extends PagerAdapter {
 
 
     final String TAG = "VocaCardAdapter";
+
+    //체크박스
+    CheckBox check_sentence, check_interpretation;
 
     public VocaCardAdapter(List<VocaCard> cards, Context context) {
         this.cards = cards;
@@ -71,9 +76,51 @@ public class VocaCardAdapter  extends PagerAdapter {
 
         Voca = view.findViewById(R.id.textView_Voca);
         Mean = view.findViewById(R.id.textView_Mean);
+        Sentence = view.findViewById(R.id.textView_Sentence);
+        Interpretation = view.findViewById(R.id.textView_Interpretation);
 
         Voca.setText(cards.get(position).getVoca());
         Mean.setText(cards.get(position).getMean());
+        Sentence.setText(cards.get(position).getSentence());
+        Interpretation.setText(cards.get(position).getInterpretation());
+
+        //체크박스
+        //check_sentence = findViewById(R.id.check_sentence);
+        check_sentence = Challenge_VocaCardActivity.check_sentence;
+        //check_interpretation = findViewById(R.id.check_interpretation);
+        check_interpretation = Challenge_VocaCardActivity.check_interpretation;
+
+        /*check_sentence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(check_sentence.isChecked()) { //예문 체크됨
+                    check_interpretation.setEnabled(true);//해석 활성화
+
+                    //예문이 보이도록 하는 코드
+                    Sentence.setVisibility(View.VISIBLE);
+                } else {
+                    check_interpretation.setEnabled(false);
+
+                    //예문 안보이게
+                    Sentence.setVisibility(View.INVISIBLE);
+
+                }
+            }
+        });*/
+
+        if(check_sentence.isChecked()) {
+            check_interpretation.setEnabled(true);
+
+            Sentence.setVisibility(View.VISIBLE);
+        } else {
+            Sentence.setVisibility(View.INVISIBLE);
+        }
+
+        if(check_interpretation.isChecked()) {
+            Interpretation.setVisibility(View.VISIBLE);
+        } else {
+            Interpretation.setVisibility(View.INVISIBLE);
+        }
 
         //tts
         cardView = view.findViewById(R.id.CardView);

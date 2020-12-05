@@ -128,7 +128,9 @@ namespace WcfService1
                     .Add(new DataSet_Voca_Mean
                     {
                         Voca = dr[5].ToString(),
-                        Mean = dr[6].ToString()
+                        Mean = dr[6].ToString(),
+                        Sentence = dr[7].ToString(),
+                        Interpretation = dr[8].ToString()
                     });
             }
 

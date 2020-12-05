@@ -19,6 +19,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Adapter;
+import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -56,6 +57,7 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
 
     CardView CardView_Title;
     TextView textView_title;
+    int Pager_position;
     RelativeLayout Relative_layout;
 
     Button arrowBtn;
@@ -77,10 +79,14 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
 
     int color;
 
+    //체크박스
+    public static CheckBox check_sentence, check_interpretation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge__voca_card);
+
 
         /*txt1 = findViewById(R.id.txt1);
         txt2 = findViewById(R.id.txt2);
@@ -125,6 +131,49 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
         Get_Voca_Mean();
         textView_title.setText(VocaNoteName + "(" + 1 + "/" +cards.size() + ")");
         SetAdapter();
+
+        //체크박스
+        check_sentence = findViewById(R.id.check_sentence);
+        check_interpretation = findViewById(R.id.check_interpretation);
+
+        check_sentence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(check_sentence.isChecked()) { //예문 체크됨
+                    check_interpretation.setEnabled(true);//해석 활성화
+
+                    //예문이 보이도록 하는 코드
+                    //VocaCardAdapter.Sentence.setVisibility(View.VISIBLE);
+                    SetAdapter();
+                    viewPager.setCurrentItem(Pager_position);
+                    textView_title.setText(VocaNoteName + "(" + (Pager_position + 1) + "/" + cards.size() + ")");
+                } else {
+                    check_interpretation.setEnabled(false);
+                    check_interpretation.setChecked(false);
+                    //예문 안보이게
+                    //VocaCardAdapter.Sentence.setVisibility(View.INVISIBLE);
+                    SetAdapter();
+                    viewPager.setCurrentItem(Pager_position);
+                    textView_title.setText(VocaNoteName + "(" + (Pager_position + 1) + "/" + cards.size() + ")");
+                }
+            }
+        });
+
+        check_interpretation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(check_interpretation.isChecked()) { //해석 체크됨
+                    //해석이 보이도록 하는 코드
+                    SetAdapter();
+                    viewPager.setCurrentItem(Pager_position);
+                    textView_title.setText(VocaNoteName + "(" + (Pager_position + 1) + "/" + cards.size() + ")");
+                } else { //해석 안보이게
+                    SetAdapter();
+                    viewPager.setCurrentItem(Pager_position);
+                    textView_title.setText(VocaNoteName + "(" + (Pager_position + 1) + "/" + cards.size() + ")");
+                }
+            }
+        });
     }
 
     public void Get_Voca_Mean() {
@@ -163,7 +212,10 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
                     for(VocaCard vocaCard : call.execute().body()) {
                         cards.add(new VocaCard(
                                 vocaCard.getVoca(),
-                                vocaCard.getMean()
+                                vocaCard.getMean(),
+                                vocaCard.getSentence(),
+                                vocaCard.getInterpretation(),
+                                0
                         ));
                     }
                 } catch (IOException e) {
@@ -262,6 +314,7 @@ public class Challenge_VocaCardActivity extends AppCompatActivity {
                 );*/
 
                 textView_title.setText(VocaNoteName + "(" + (position + 1) + "/" + cards.size() + ")");
+                Pager_position = position;
             }
 
             @Override
