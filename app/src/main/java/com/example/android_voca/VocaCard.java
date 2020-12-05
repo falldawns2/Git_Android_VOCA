@@ -38,6 +38,11 @@ public class VocaCard {
         this.Interpretation = Interpretation;
     }
 
+    public VocaCard(String Voca, String Mean) {
+        this.Voca = Voca;
+        this.Mean = Mean;
+    }
+
     public String getVoca() {
         return Voca;
     }

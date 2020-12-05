@@ -13,6 +13,7 @@ public class Retrofit {
     public Retrofit(POSTApi postApi) {
         this.postApi = postApi;
     }
+    
 
     public POSTApi setRetrofitInit(String svcName) {
 
