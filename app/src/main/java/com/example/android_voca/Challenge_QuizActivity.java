@@ -1,6 +1,8 @@
 package com.example.android_voca;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,10 +55,28 @@ public class Challenge_QuizActivity extends AppCompatActivity {
     //단어 카운트 (배열 순서대로)
     static int Voca_Count = 0;
 
+    //파스텔 톤
+    Integer[] Integer_Colors;
+
+    //최상위 레이아웃
+    ConstraintLayout constraintLayout;
+
+    //정답률
+    TextView txt_Answer_Rate;
+
+    static double static_rate;
+    double var_rate = 0; //정답률 카운트
+
+    //배열 위치 카운트
+    TextView txt_list_length;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge__quiz);
+
+        constraintLayout = findViewById(R.id.constraintLayout);
+        static_rate = 0;
 
         Intent intent = getIntent();
         VocaNoteName = intent.getExtras().getString("VocaNoteName");
@@ -78,6 +100,10 @@ public class Challenge_QuizActivity extends AppCompatActivity {
         txt_Mean3 = (TextView) findViewById(R.id.txt_Mean3);
 
         txt_timer = (TextView) findViewById(R.id.txt_timer);
+
+        txt_Answer_Rate = (TextView) findViewById(R.id.txt_Answer_Rate);
+
+        txt_list_length = (TextView) findViewById(R.id.txt_list_length);
 
         Set();
 
@@ -119,11 +145,27 @@ public class Challenge_QuizActivity extends AppCompatActivity {
 
         Random random = new Random();
 
+        //정해둔 파스텔톤 컬러
+        Integer_Colors = new Integer[8];
+        Integer_Colors[0] = Color.argb(255,255,254,170);
+        Integer_Colors[1] = Color.argb(255,224,251,156);
+        Integer_Colors[2] = Color.argb(255,161,255,221);
+        Integer_Colors[3] = Color.argb(255,162,234,255);
+        Integer_Colors[4] = Color.argb(255,239,202,254);
+        Integer_Colors[5] = Color.argb(255,175,224,255);
+        Integer_Colors[6] = Color.argb(255,255,204,213);
+        Integer_Colors[7] = Color.argb(255,198,211,255);
+
+        constraintLayout.setBackgroundColor(Integer_Colors[random.nextInt(8)]);
+
+
         txt_Voca.setText(cards.get(Voca_Count).getVoca());
 
         txt_Mean1.setText(cards.get(random.nextInt(cards.size())).getMean());
         txt_Mean2.setText(cards.get(random.nextInt(cards.size())).getMean());
         txt_Mean3.setText(cards.get(random.nextInt(cards.size())).getMean());
+
+        txt_list_length.setText("(" + String.valueOf(Voca_Count + 1) + "/" + cards.size() + ")");
 
         int a = random.nextInt(3);
         switch (a) {
@@ -152,12 +194,17 @@ public class Challenge_QuizActivity extends AppCompatActivity {
 
                 if (txt_Mean.getText().equals(cards.get(Voca_Count).getMean())) {
                     //정답
-                    //정확도 올라가고 정답 색상
+                    //정확도 유지, 정답 색상
                     txt_Mean.setBackgroundResource(R.drawable.text_style_true);
+
                 } else {
                     //오답
                     //오답 색상
                     txt_Mean.setBackgroundResource(R.drawable.text_style_false);
+
+                    var_rate = static_rate + 1;
+                    txt_Answer_Rate.setText(String.valueOf(100 - Math.round(var_rate / cards.size() * 100)) + "%");
+                    static_rate = var_rate;
                 }
 
                 timerTask_4 = NewTimerTask_4();
@@ -182,14 +229,47 @@ public class Challenge_QuizActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        txt_list_length.setText("(" + String.valueOf(Voca_Count + 1) + "/" + cards.size() + ")");
                         //정답 오답 색상 초기화
+                        txt_Mean1.setEnabled(true);
+                        txt_Mean2.setEnabled(true);
+                        txt_Mean3.setEnabled(true);
                         txt_Mean1.setBackgroundResource(R.drawable.text_style);
                         txt_Mean2.setBackgroundResource(R.drawable.text_style);
                         txt_Mean3.setBackgroundResource(R.drawable.text_style);
 
-                        if (count == 0) {
+                        if (count <= 0) {
                             //10초 이므로 타이머 중단 후 4초 타이머 실행
                             timerTask_10.cancel();
+
+                            //아무것도 안누름 - > 오답
+                            if(txt_Mean1.getText().equals(cards.get(Voca_Count).getMean())) {
+
+                                txt_Mean1.setBackgroundResource(R.drawable.text_style_false);
+
+                                var_rate = static_rate + 1;
+                                txt_Answer_Rate.setText(String.valueOf(100 - Math.round(var_rate / cards.size() * 100)) + "%");
+                                static_rate = var_rate;
+                            }
+
+                            else if (txt_Mean2.getText().equals(cards.get(Voca_Count).getMean())) {
+
+                                txt_Mean2.setBackgroundResource(R.drawable.text_style_false);
+
+                                var_rate = static_rate + 1;
+                                txt_Answer_Rate.setText(String.valueOf(100 - Math.round(var_rate / cards.size() * 100)) + "%");
+                                static_rate = var_rate;
+                            }
+
+                            else {
+
+                                txt_Mean3.setBackgroundResource(R.drawable.text_style_false);
+
+                                var_rate = static_rate + 1;
+                                txt_Answer_Rate.setText(String.valueOf(100 - Math.round(var_rate / cards.size() * 100)) + "%");
+                                static_rate = var_rate;
+                            }
+
                             timerTask_4 = NewTimerTask_4();
                             count = 4;
                             //Timer 생성
@@ -216,13 +296,31 @@ public class Challenge_QuizActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (count == 0) {
+                        txt_Mean1.setEnabled(false);
+                        txt_Mean2.setEnabled(false);
+                        txt_Mean3.setEnabled(false);
+
+                        if (count <= 0) {
                             //일단 4초 타이머 중단
                             timerTask_4.cancel();
 
                             //Voca_Count 값이 배열 크기와 동일하면 중단해야 한다.
                             if(Voca_Count + 1 == cards.size()) {
                                 Voca_Count = 0; //초기화 후 리턴
+                                //도전 페이지로 이동 후 스낵바로 정확도 결과 보여준다.
+
+                                Snackbar snackbar = Snackbar.make(constraintLayout,"정확도 : " + txt_Answer_Rate.getText().toString(), 100000)
+                                        .setAction("Confirm", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                onBackPressed();
+                                            }
+                                        });
+                                View view = snackbar.getView();
+                                TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                                tv.setTextColor(ContextCompat.getColor(Challenge_QuizActivity.this, R.color.White));
+                                //view.setBackgroundColor(ContextCompat.getColor(Challenge_QuizActivity.this, R.color.snack_Background_Success));
+                                snackbar.show();
                                 return;
                             }
                             //텍스트 변경 후 다시 10초 타이머 시작
@@ -232,6 +330,7 @@ public class Challenge_QuizActivity extends AppCompatActivity {
                             //뜻은 랜덤으로 섞은 후 하나는 정답 배치
 
                             Voca_Count++;
+                            constraintLayout.setBackgroundColor(Integer_Colors[random.nextInt(8)]);
                             txt_Voca.setText(cards.get(Voca_Count).getVoca());
 
                             int a = random.nextInt(3);
