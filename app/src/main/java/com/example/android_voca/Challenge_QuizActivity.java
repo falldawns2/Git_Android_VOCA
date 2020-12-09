@@ -310,7 +310,7 @@ public class Challenge_QuizActivity extends AppCompatActivity {
                                 //도전 페이지로 이동 후 스낵바로 정확도 결과 보여준다.
 
                                 Snackbar snackbar = Snackbar.make(constraintLayout,"정확도 : " + txt_Answer_Rate.getText().toString(), 100000)
-                                        .setAction("Confirm", new View.OnClickListener() {
+                                        .setAction("확인", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
                                                 onBackPressed();

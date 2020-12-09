@@ -252,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
                         toolbarLayout.setContentScrimColor(Color.parseColor("#ff4340")); // 스크롤 시 변하는 중인 색상 //
                         toolbarLayout.setBackgroundColor(Color.parseColor("#ff4340")); // 스크롤 다 되고 변화된 색상 //
                         toolbar.setBackgroundColor(Color.parseColor("#ff4340")); // 툴바 색상 //
-                        //fab.setColorFilter(getResources().getColor(R.color.Black)); //플러스 버튼 색상 변경됨//
                         fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff4340"))); // 플로팅 버튼 뒷 색상 변경 //
                         searchView.setQueryHint("단어 검색");
                         fab.setOnClickListener(new View.OnClickListener() {
@@ -268,12 +267,14 @@ public class MainActivity extends AppCompatActivity {
                         toolbarLayout.setContentScrimColor(Color.parseColor("#252526"));
                         toolbarLayout.setBackgroundColor(Color.parseColor("#252526"));
                         toolbar.setBackgroundColor(Color.parseColor("#252526"));
-                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff4340"))); // 단어장 추가 이므로 색상 그대로 //
+                        //fab.setColorFilter(getResources().getColor(R.color.Black)); //플러스 버튼 색상 변경됨//
+                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ff4340"))); // 플로팅 버튼 뒷 색상 변경 //
                         searchView.setQueryHint("단어 검색");
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Toast.makeText(MainActivity.this, "플로팅 : 도전", Toast.LENGTH_SHORT).show();
+                                Fab_Click();
+                                pager.setCurrentItem(0);
                             }
                         });
                         break;

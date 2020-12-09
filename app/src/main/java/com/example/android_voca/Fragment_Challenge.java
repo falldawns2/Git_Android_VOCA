@@ -75,12 +75,12 @@ public class Fragment_Challenge extends Fragment {
                             break;
                         case R.id.CardView_Spelling:
                             //단어 카드 액티비티로 이동한다.
-                            /*
-                            intent = new Intent(MainActivity.context_main,MainActivity.class);
+
+                            intent = new Intent(MainActivity.context_main,Challenge_SpellingActivity.class);
                             intent.putExtra("VocaNoteName",VocaNoteName); //단어장
                             intent.putExtra("ChapterName",ChapterName); //챕터
                             intent.putExtra("Shuffle",Shuffle_CheckBox.isChecked()); //단어 섞기
-                            startActivity(intent);*/
+                            startActivity(intent);
                             break;
                     }
                 }
