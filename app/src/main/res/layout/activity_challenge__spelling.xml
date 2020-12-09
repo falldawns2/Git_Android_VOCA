@@ -13,71 +13,98 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="12dp"
         android:text="100%"
+        android:textStyle="bold"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/txt_list_length"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="test(1/999)"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_Answer_Rate" />
+
+    <TextView
         android:id="@+id/txt_Mean"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="119dp"
+        android:layout_marginTop="25dp"
         android:gravity="center"
         android:text="사과"
+        android:textStyle="bold"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_list_length" />
 
     <EditText
         android:id="@+id/Edit_Insert_Voca"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="53dp"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_Mean" />
-
-    <Button
-        android:id="@+id/btnPass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_marginEnd="2dp"
-        android:text="몰라요"
-        app:layout_constraintEnd_toStartOf="@+id/btnNext"
-        app:layout_constraintStart_toEndOf="@+id/btnCancel"
-        app:layout_constraintTop_toBottomOf="@+id/txt_hint" />
 
     <Button
         android:id="@+id/btnCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="11dp"
         android:text="나가기"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btnPass"
+        android:background="@drawable/button_black"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/btnPass"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_hint" />
+
+    <Button
+        android:id="@+id/btnPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="2dp"
+        android:text="몰라요"
+        android:background="@drawable/button_red"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/btnNext"
+        app:layout_constraintStart_toEndOf="@+id/btnCancel"
+        app:layout_constraintTop_toBottomOf="@+id/txt_hint" />
 
     <Button
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
         android:layout_marginEnd="5dp"
         android:text="다음"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btnPass"
+        android:background="@drawable/button_green"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnPass" />
+        app:layout_constraintStart_toEndOf="@+id/btnPass"
+        app:layout_constraintTop_toBottomOf="@+id/txt_hint" />
 
     <!-- 정답 -->
     <TextView
         android:id="@+id/txt_hint"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="37dp"
         android:gravity="center"
         android:text=""
         android:textColor="@color/successColor"

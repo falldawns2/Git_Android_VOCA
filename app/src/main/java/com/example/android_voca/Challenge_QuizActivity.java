@@ -6,7 +6,9 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +18,9 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,6 +73,9 @@ public class Challenge_QuizActivity extends AppCompatActivity {
 
     //배열 위치 카운트
     TextView txt_list_length;
+
+    //TTS
+    TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +150,14 @@ public class Challenge_QuizActivity extends AppCompatActivity {
 
     public void Set() {
 
+        tts = new TextToSpeech(Challenge_QuizActivity.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != TextToSpeech.ERROR)
+                    tts.setLanguage(Locale.ENGLISH);
+            }
+        });
+
         Random random = new Random();
 
         //정해둔 파스텔톤 컬러
@@ -195,17 +210,35 @@ public class Challenge_QuizActivity extends AppCompatActivity {
                 if (txt_Mean.getText().equals(cards.get(Voca_Count).getMean())) {
                     //정답
                     //정확도 유지, 정답 색상
+                    txt_Mean1.setText("");
+                    txt_Mean2.setText("");
+                    txt_Mean3.setText("");
+
+                    txt_Mean.setText(cards.get(Voca_Count).getMean());
+
                     txt_Mean.setBackgroundResource(R.drawable.text_style_true);
 
                 } else {
                     //오답
+                    //오답일 경우 정답을 빨간색으로 한다.
                     //오답 색상
+                    txt_Mean1.setText("");
+                    txt_Mean2.setText("");
+                    txt_Mean3.setText("");
+
+                    txt_Mean.setText(cards.get(Voca_Count).getMean());
                     txt_Mean.setBackgroundResource(R.drawable.text_style_false);
 
                     var_rate = static_rate + 1;
                     txt_Answer_Rate.setText(String.valueOf(100 - Math.round(var_rate / cards.size() * 100)) + "%");
                     static_rate = var_rate;
                 }
+
+                //TTS
+                String TTS_Text = cards.get(Voca_Count).getVoca();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    ttsGreater21(TTS_Text);
+                else ttsUnder20(TTS_Text);
 
                 timerTask_4 = NewTimerTask_4();
                 count = 4;
@@ -242,10 +275,19 @@ public class Challenge_QuizActivity extends AppCompatActivity {
                             //10초 이므로 타이머 중단 후 4초 타이머 실행
                             timerTask_10.cancel();
 
+                            //TTS
+                            String TTS_Text = cards.get(Voca_Count).getVoca();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                                ttsGreater21(TTS_Text);
+                            else ttsUnder20(TTS_Text);
+
                             //아무것도 안누름 - > 오답
                             if(txt_Mean1.getText().equals(cards.get(Voca_Count).getMean())) {
 
                                 txt_Mean1.setBackgroundResource(R.drawable.text_style_false);
+
+                                txt_Mean2.setText("");
+                                txt_Mean3.setText("");
 
                                 var_rate = static_rate + 1;
                                 txt_Answer_Rate.setText(String.valueOf(100 - Math.round(var_rate / cards.size() * 100)) + "%");
@@ -256,6 +298,9 @@ public class Challenge_QuizActivity extends AppCompatActivity {
 
                                 txt_Mean2.setBackgroundResource(R.drawable.text_style_false);
 
+                                txt_Mean1.setText("");
+                                txt_Mean3.setText("");
+
                                 var_rate = static_rate + 1;
                                 txt_Answer_Rate.setText(String.valueOf(100 - Math.round(var_rate / cards.size() * 100)) + "%");
                                 static_rate = var_rate;
@@ -264,6 +309,9 @@ public class Challenge_QuizActivity extends AppCompatActivity {
                             else {
 
                                 txt_Mean3.setBackgroundResource(R.drawable.text_style_false);
+
+                                txt_Mean1.setText("");
+                                txt_Mean2.setText("");
 
                                 var_rate = static_rate + 1;
                                 txt_Answer_Rate.setText(String.valueOf(100 - Math.round(var_rate / cards.size() * 100)) + "%");
@@ -368,10 +416,23 @@ public class Challenge_QuizActivity extends AppCompatActivity {
         return tempTask;
     }
 
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+    }
+
+    public void ttsGreater21(String text) {
+        String utteranceId = this.hashCode() + "";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         timerTask_10.cancel();
         timerTask_4.cancel();
+        Voca_Count = 0;
     }
 }

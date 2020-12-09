@@ -6,7 +6,9 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +20,9 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -68,6 +72,12 @@ public class Challenge_SpellingActivity extends AppCompatActivity {
 
     Random random;
 
+    //배열 위치 카운트
+    TextView txt_list_length;
+
+    //TTS
+    TextToSpeech tts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +108,8 @@ public class Challenge_SpellingActivity extends AppCompatActivity {
         txt_Answer_Rate = (TextView) findViewById(R.id.txt_Answer_Rate); //정답률
         txt_Mean = (TextView) findViewById(R.id.txt_Mean); //뜻 맞추기
         txt_hint = (TextView) findViewById(R.id.txt_hint); //정답 힌트 (오답 시 보여줌)
+
+        txt_list_length = (TextView) findViewById(R.id.txt_list_length);
 
         Edit_Insert_Voca = (EditText) findViewById(R.id.Edit_Insert_Voca); // 단어 스펠링 입력
 
@@ -137,6 +149,14 @@ public class Challenge_SpellingActivity extends AppCompatActivity {
 
     public void Set() {
 
+        tts = new TextToSpeech(Challenge_SpellingActivity.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != TextToSpeech.ERROR)
+                    tts.setLanguage(Locale.ENGLISH);
+            }
+        });
+
         //정해둔 파스텔톤 컬러
         Integer_Colors = new Integer[8];
         Integer_Colors[0] = Color.argb(255,255,254,170);
@@ -151,6 +171,8 @@ public class Challenge_SpellingActivity extends AppCompatActivity {
         constraintLayout.setBackgroundColor(Integer_Colors[random.nextInt(8)]);
 
         txt_Mean.setText(cards.get(Voca_Count).getMean());
+
+        txt_list_length.setText("(" + String.valueOf(Voca_Count + 1) + "/" + cards.size() + ")");
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -187,6 +209,13 @@ public class Challenge_SpellingActivity extends AppCompatActivity {
                         Toasty.success(Challenge_SpellingActivity.this, "정답!!", Toast.LENGTH_SHORT, true).show();
                         Next_Voca();
                     }
+
+                    //TTS
+                    String TTS_Text = cards.get(Voca_Count).getVoca();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        ttsGreater21(TTS_Text);
+                    else ttsUnder20(TTS_Text);
+
                 } else if (view.getId() == R.id.btnCancel) {
 
                     //나가기 리턴
@@ -209,9 +238,11 @@ public class Challenge_SpellingActivity extends AppCompatActivity {
             constraintLayout.setBackgroundColor(Integer_Colors[random.nextInt(8)]);
             //2. static 단어 카운트 증가 후 배열 값 이동
             txt_Mean.setText(cards.get(++Voca_Count).getMean());
+            txt_list_length.setText("(" + String.valueOf(Voca_Count + 1) + "/" + cards.size() + ")");
         } else { //마지막 단어에 도달
-            Voca_Count = 0; //초기화 후 종료
 
+            txt_list_length.setText("(" + String.valueOf(Voca_Count + 1) + "/" + cards.size() + ")");
+            Voca_Count = 0; //초기화 후 종료
             Snackbar snackbar = Snackbar.make(constraintLayout, "정확도 : " + txt_Answer_Rate.getText().toString(), 100000)
                     .setAction("확인", new View.OnClickListener() {
                         @Override
@@ -242,7 +273,6 @@ public class Challenge_SpellingActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                         if(count <= 0) {
                             //타이머 종료 후 값 변경
                             timerTask.cancel();
@@ -269,9 +299,22 @@ public class Challenge_SpellingActivity extends AppCompatActivity {
         return tempTask;
     }
 
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+    }
+
+    public void ttsGreater21(String text) {
+        String utteranceId = this.hashCode() + "";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         timerTask.cancel();
+        Voca_Count = 0;
     }
 }
