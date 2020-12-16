@@ -3,6 +3,7 @@ package com.example.android_voca;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,6 +157,8 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         holder.textview_VocaCount.setText(String.valueOf(item.getTotalVocaCount()));
 
+        //!! 여기서 한번 null 줘서 체크박스가 이상하게 체크되는 것 방지
+        holder.main_checkbox.setOnCheckedChangeListener(null);
         holder.main_checkbox.setChecked(item.isSelected());
         holder.main_checkbox.setTag(position);
 
@@ -172,16 +175,19 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });*/
 
+
+
             holder.main_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
                     if(holder.main_checkbox.isChecked()) {
                         int ClickedPosition = (Integer) holder.main_checkbox.getTag();
-                        items.get(ClickedPosition).setSelected(holder.main_checkbox.isChecked());
+                        items.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
                         //notifyDataSetChanged();
                     } else {
                         int ClickedPosition = (Integer) holder.main_checkbox.getTag();
-                        items.get(ClickedPosition).setSelected(holder.main_checkbox.isChecked());
+                        items.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
 
                         //notifyDataSetChanged();
                     }
@@ -280,6 +286,7 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                             if(main_checkbox.isChecked()) {
                                 main_checkbox.setChecked(false);
+                                Log.e("test", "onClick: " );
                             }
                             else {
                                 main_checkbox.setChecked(true);
