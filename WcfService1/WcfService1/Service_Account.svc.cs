@@ -56,7 +56,7 @@ namespace WcfService1
             string base64ProfileImage;
 
             //string path = @"E:\OneDrive\Git_ASP_VOCA\ProfileImage\" + dB_Session.GetImage(id);
-            string path = "http://121.131.90.130/wcf_android/ProfileImage/" + dB_Session.GetImage(id);
+            string path = "http://121.131.90.130/wcf_android/ProfileImage/" + dB_Session.GetImage(id); //서버 ip
 
             WebRequest req = WebRequest.Create(path);
             WebResponse res = req.GetResponse();

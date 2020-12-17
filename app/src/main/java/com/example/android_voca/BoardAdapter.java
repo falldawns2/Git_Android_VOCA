@@ -150,7 +150,7 @@ public class BoardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         public void setItem(Board item) {
-
+            //서버 ip
             Glide.with(MainActivity.context_main)
                     .load("http://121.131.90.130/IIS_ASP_NET/ProfileImage/" + item.getProfileimage())
                     .override(150,150)
@@ -176,7 +176,7 @@ public class BoardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private void initializeViews(final Board item, final BoardAdapter.ItemViewHolder holder, int position) {
         //뷰 홀더 클래스에서 정의 및 초기화한 객체 설계
-
+        //서버 ip
         Glide.with(MainActivity.context_main)
                 .load("http://121.131.90.130/IIS_ASP_NET/ProfileImage/" + item.getProfileimage())
                 .override(150,150)

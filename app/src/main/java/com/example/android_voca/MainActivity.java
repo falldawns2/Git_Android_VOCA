@@ -450,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
 
                AccountInfo postResponse = response.body();
 
-               //glide 이미지 가져오기
+               //glide 이미지 가져오기 //서버 ip (. . . .)
                Glide.with(MainActivity.this)
                        .load("http://121.131.90.130/IIS_ASP_NET/ProfileImage/" + postResponse.getProfileImageName())
                        .override(150,150)

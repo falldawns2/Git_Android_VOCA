@@ -22,7 +22,7 @@ public class Retrofit {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         ClientBuilder.addInterceptor(loggingInterceptor);
-
+        //서버 ip
         //Retrofit 2 빌드
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl("http://121.131.90.130/WCF_Android/" + svcName)
