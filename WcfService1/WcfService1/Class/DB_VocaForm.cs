@@ -353,5 +353,22 @@ namespace WcfService1
             myReader.Close();
             return result;
         }
+
+        //일반 단어장
+        public bool DeleteVocaNote(string userid, string VocaNoteName)
+        {
+
+            bool result = true;
+
+            string mysql = "delete From VocaNote where userid ='" + userid + "' and VocaNoteName = '" + VocaNoteName + "'" +
+                "  DELETE FROM Voca Where userid = '" + userid + "' and VocaNoteName = '" + VocaNoteName + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false; //해당 단어장 이미 존재
+
+            myReader.Close();
+            return result; // 존재 하지 않을때 true 보냄.
+        }
     }
 }

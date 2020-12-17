@@ -315,5 +315,31 @@ namespace WcfService1
 
             return int_VocaUpdate;
         }
+
+        //단어장 삭제
+        public Int_VocaNoteDelete DeleteVocaNote(string userid, string VocaNoteName)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            bool a = false;
+            Int_VocaNoteDelete int_VocaNoteDelete = new Int_VocaNoteDelete();
+
+            //긴 문자열을 여기서 자른다.
+            string s = VocaNoteName;
+            char sp = '/';
+            string[] asd = s.Split(sp);
+            int i;
+            for (i = 0; i < asd.Length - 1; i++)
+            {
+                a = DB_VOCAFORM.DeleteVocaNote(userid, asd[i]);
+            }
+
+            int check = 0; //기본 값성공
+            if (!a) check = 1; //실패
+
+            int_VocaNoteDelete.Check = check;
+            DB_VOCAFORM.Close();
+
+            return int_VocaNoteDelete;
+        }
     }
 }

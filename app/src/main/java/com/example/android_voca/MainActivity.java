@@ -143,6 +143,13 @@ public class MainActivity extends AppCompatActivity {
     //보조 메뉴 닉네임 //
     TextView TextView_Menu_NickName;
 
+    //메뉴 휴지통 등 변경을 위해 사용
+    private Menu menu;
+
+    //기본 메뉴 = 0, 삭제 메뉴 = 1
+    static int menu_num = 0;
+
+    Fragment_VocaNote fragment_vocaNote;
    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -202,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
        Tab_PagerAdapter adapter = new Tab_PagerAdapter(getSupportFragmentManager());
 
        // 프래그먼트 1 (단어장) //
-       Fragment_VocaNote fragment_vocaNote = new Fragment_VocaNote();
+       fragment_vocaNote = new Fragment_VocaNote();
        adapter.addItem(fragment_vocaNote);
 
        // 프래그먼트 2 (도전) - > 암기카드, 퀴즈 등 //
@@ -533,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
         save = 0; // save = 1;
         //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         //startActivity(intent);
-        Toast.makeText(MainActivity.this, "save=0, 단어장 추가 이벤트", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MainActivity.this, "save=0, 단어장 추가 이벤트", Toast.LENGTH_SHORT).show();
 
         retrofit = new Retrofit(postApi);
         postApi = retrofit.setRetrofitInit(svcName_ADD);
@@ -659,31 +666,46 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.clear();
         getMenuInflater().inflate(R.menu.main_menu, menu);
-
         MenuItem menuItem = menu.findItem(R.id.search_icon);
-        searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("단어 검색"); //상황에 따라 검색이 달라야한다.
+        MenuItem menuItem1 = menu.findItem(R.id.Trash_icon);
+        //MenuItem menuItem_Home = menu.findItem(android.R.id.home);
+        if(menu_num == 0) {
+            menuItem1.setVisible(false); //편집 버튼 안보이게
+            //menuItem_Home.setIcon(getDrawable(R.drawable.button_hamburger_size));
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);
 
-        searchView.setOnClickListener(new SearchView.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            searchView = (SearchView) menuItem.getActionView();
+            searchView.setQueryHint("단어 검색"); //상황에 따라 검색이 달라야한다.
 
-            }
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
+            searchView.setOnClickListener(new SearchView.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            @Override
-            public boolean onQueryTextChange(String s) {
-                //글씨 들어가면 mainActivity 에서 메모지 불러옴.
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                return true;
-            }
-        });
+                }
+            });
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    //글씨 들어가면 mainActivity 에서 메모지 불러옴.
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    return true;
+                }
+            });
+        } else { //menu_num == 1
+            menuItem.setVisible(false);
+            menuItem1.setVisible(true);
+            //menuItem_Home.setIcon(getDrawable(R.drawable.ic_baseline_clear_24));
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
+
+        }
+        this.menu = menu;
         return true;
     }
 
@@ -691,57 +713,64 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: //Left Hamburger Button
-                if (!is_Panel_Expanded) {
-                    is_Panel_Expanded = true; //else로 넘기기 위해
-                    MainPanel.animate()
-                            .x(PanelWidth)
-                            .setDuration(300)
-                            .start();
+                if(menu_num == 0) {
+                    if (!is_Panel_Expanded) {
+                        is_Panel_Expanded = true; //else로 넘기기 위해
+                        MainPanel.animate()
+                                .x(PanelWidth)
+                                .setDuration(300)
+                                .start();
 
-                    //매인 레이아웃 안보이게
-                    //버튼을 누르면 레이아웃을 안눌리게 처리한다
-                    //옆으로 밀려난 매인 화면은 무조건 Empty 레이아웃이 감싸고 그 값만 터치 이벤트로 (empty 화면은 투명 레이ㅏ아웃)
-                    //다시 원래 화면으로 돌아올 수 있다.
+                        //매인 레이아웃 안보이게
+                        //버튼을 누르면 레이아웃을 안눌리게 처리한다
+                        //옆으로 밀려난 매인 화면은 무조건 Empty 레이아웃이 감싸고 그 값만 터치 이벤트로 (empty 화면은 투명 레이ㅏ아웃)
+                        //다시 원래 화면으로 돌아올 수 있다.
 
-                    //FrameLayout ViewGroup = (FrameLayout) findViewById(R.id.Frame_RelativeLayout).getParent(); //레이아웃 정보 가져옴
-                    androidx.coordinatorlayout.widget.CoordinatorLayout ViewGroup =
-                            (androidx.coordinatorlayout.widget.CoordinatorLayout) findViewById(R.id.pager).getParent();
-                    ViewGroup_Enable_Toggle(ViewGroup, false);
-                    //findViewById(R.id.btn_Menu).setEnabled(false); //따로 있는 버튼도 안보여야한다.(이 부분은 액션바로 대체할 예정)
+                        //FrameLayout ViewGroup = (FrameLayout) findViewById(R.id.Frame_RelativeLayout).getParent(); //레이아웃 정보 가져옴
+                        androidx.coordinatorlayout.widget.CoordinatorLayout ViewGroup =
+                                (androidx.coordinatorlayout.widget.CoordinatorLayout) findViewById(R.id.pager).getParent();
+                        ViewGroup_Enable_Toggle(ViewGroup, false);
+                        //findViewById(R.id.btn_Menu).setEnabled(false); //따로 있는 버튼도 안보여야한다.(이 부분은 액션바로 대체할 예정)
 
-                    //투명 레이아웃 보이개
-                    ((LinearLayout) findViewById(R.id.Frame_Empty_LinearLayout)).setVisibility(View.VISIBLE);
-                    findViewById(R.id.Frame_Empty_LinearLayout).setEnabled(true); //활성화
-                    findViewById(R.id.Frame_Empty_LinearLayout).setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View view, MotionEvent motionEvent) {
-                            MainPanel.animate()
-                                    .x(0)
-                                    .setDuration(300)
-                                    .start();
-                            is_Panel_Expanded = false;
+                        //투명 레이아웃 보이개
+                        ((LinearLayout) findViewById(R.id.Frame_Empty_LinearLayout)).setVisibility(View.VISIBLE);
+                        findViewById(R.id.Frame_Empty_LinearLayout).setEnabled(true); //활성화
+                        findViewById(R.id.Frame_Empty_LinearLayout).setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View view, MotionEvent motionEvent) {
+                                MainPanel.animate()
+                                        .x(0)
+                                        .setDuration(300)
+                                        .start();
+                                is_Panel_Expanded = false;
 
-                            //빈 레이아웃을 터치 함으로써 다시 원상태로 돌아옴 빈 레이아웃은 다시 비활성화
-                            //FrameLayout ViewGroup = (FrameLayout) findViewById(R.id.Frame_RelativeLayout).getParent();
-                            androidx.coordinatorlayout.widget.CoordinatorLayout ViewGroup =
-                                    (androidx.coordinatorlayout.widget.CoordinatorLayout) findViewById(R.id.pager).getParent();
-                            ViewGroup_Enable_Toggle(ViewGroup, true);
-                            //findViewById(R.id.btn_Menu).setEnabled(true); //따로 있는 버튼도 안보여야한다.(이 부분은 액션바로 대체할 예정)
+                                //빈 레이아웃을 터치 함으로써 다시 원상태로 돌아옴 빈 레이아웃은 다시 비활성화
+                                //FrameLayout ViewGroup = (FrameLayout) findViewById(R.id.Frame_RelativeLayout).getParent();
+                                androidx.coordinatorlayout.widget.CoordinatorLayout ViewGroup =
+                                        (androidx.coordinatorlayout.widget.CoordinatorLayout) findViewById(R.id.pager).getParent();
+                                ViewGroup_Enable_Toggle(ViewGroup, true);
+                                //findViewById(R.id.btn_Menu).setEnabled(true); //따로 있는 버튼도 안보여야한다.(이 부분은 액션바로 대체할 예정)
 
-                            ((LinearLayout) findViewById(R.id.Frame_Empty_LinearLayout)).setVisibility(View.GONE);
-                            findViewById(R.id.Frame_Empty_LinearLayout).setEnabled(false);
+                                ((LinearLayout) findViewById(R.id.Frame_Empty_LinearLayout)).setVisibility(View.GONE);
+                                findViewById(R.id.Frame_Empty_LinearLayout).setEnabled(false);
 
-                            return true;
-                        }
-                    });
-                } else {
-                    MainPanel.animate()
-                            .x(0)
-                            .setDuration(300)
-                            .start();
+                                return true;
+                            }
+                        });
+                    } else {
+                        MainPanel.animate()
+                                .x(0)
+                                .setDuration(300)
+                                .start();
+                    }
+                } else { //menu_num == 1 home 버튼 뒤로가기 버튼이 된다. -> 편집 모드 - > 일반 모드
+                    tag = "single";
+                    reDefault();
                 }
                 return true;
-
+            case R.id.Trash_icon:
+                fragment_vocaNote.selectedClick();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -750,12 +779,14 @@ public class MainActivity extends AppCompatActivity {
     protected void restart() {
         Edit_Activation = true;
 
+        menu_num = 1; //편집 메뉴 (삭제)
+        onCreateOptionsMenu(menu);
         //페이저 기능
 
         Tab_PagerAdapter adapter = new Tab_PagerAdapter(getSupportFragmentManager());
         adapter.notifyDataSetChanged();
 
-        final Fragment_VocaNote fragment_vocaNote = new Fragment_VocaNote();
+        fragment_vocaNote = new Fragment_VocaNote();
         adapter.addItem(fragment_vocaNote);
 
         Fragment_Challenge fragment_favorites = new Fragment_Challenge();
@@ -781,4 +812,51 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    protected void reDefault() {
+
+       menu_num = 0; //기본 메뉴 (검색)
+       onCreateOptionsMenu(menu);
+
+       Edit_Activation = false;
+
+       Tab_PagerAdapter adapter = new Tab_PagerAdapter(getSupportFragmentManager());
+       adapter.notifyDataSetChanged();
+
+       fragment_vocaNote = new Fragment_VocaNote();
+       adapter.addItem(fragment_vocaNote);
+
+        Fragment_Challenge fragment_favorites = new Fragment_Challenge();
+        adapter.addItem(fragment_favorites);
+
+        Fragment_Board fragment_board = new Fragment_Board();
+        adapter.addItem(fragment_board);
+
+        Fragment_Group fragment_group = new Fragment_Group();
+        adapter.addItem(fragment_group);
+
+        final ChapterActivity chapterActivity = new ChapterActivity();
+
+        pager.setPageTransformer(true, new DepthPageTransformer());
+        pager.setAdapter(adapter);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fab_Click();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        if (tag == "multi") {
+            //멀티 모드면 싱글 모드로 전환
+            tag = "single";
+            reDefault();
+        } else {
+            finish();
+            super.onBackPressed();
+        }
+    }
 }

@@ -92,4 +92,8 @@ public interface POSTApi {
     //단어 업데이트
     @POST("UpdateVoca")
     Call<VocaADD> UpdateVoca(@Body VocaADD add);
+
+    //단어장 삭제
+    @POST("DeleteVocaNote")
+    Call<VocaNote> DeleteVocaNote(@Body VocaNote VocaNotedelete);
 }

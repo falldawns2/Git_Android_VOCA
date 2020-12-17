@@ -2,8 +2,6 @@ package com.example.android_voca;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class VocaNote {
 
     // 단어장 테이블 //
@@ -45,9 +43,14 @@ public class VocaNote {
     @SerializedName("TotalVocaCount")
     String TotalVocaCount; //총 단어 수
 
+    @SerializedName("Check")
+    private int value; //단어장 삭제//
+
     // 단어장 체크박스 유무 //
 
     boolean isSelected;
+
+
 
     //보낼 값
     public VocaNote(int Page_NO, int Page_SIZE, String userid, String OrderBy) {
@@ -87,6 +90,11 @@ public class VocaNote {
         this.OrderBy = OrderBy;
     }
 
+    //단어장 삭제 보낼 값//
+    public VocaNote(String Userid, String VocaNoteName, int a) {
+        this.userid = Userid;
+        this.VocaNoteName = VocaNoteName;
+    }
     //챕터//
     //받는 값//
     /*public VocaNote(String ChapterName, String VocaCount ) {
@@ -222,5 +230,13 @@ public class VocaNote {
 
     public void setNickName(String nickName) {
         NickName = nickName;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }

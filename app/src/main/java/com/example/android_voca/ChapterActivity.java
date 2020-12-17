@@ -249,7 +249,7 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ChapterActivity.this, "챕터 추가 이벤트", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ChapterActivity.this, "챕터 추가 이벤트", Toast.LENGTH_SHORT).show();
 
                 retrofit = new Retrofit(postApi);
                 postApi = retrofit.setRetrofitInit(svcName);
@@ -401,7 +401,7 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
                 ChapterNoteName = item.getChapterName();
                 VocaCount = "총 단어 수 :" + String.valueOf(item.getVocaCount());
 
-                Toast.makeText(getApplicationContext(), "선택된 단어장 : " + VocaNoteName + ", " + item.getChapterName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "선택된 단어장 : " + VocaNoteName + ", " + item.getChapterName(), Toast.LENGTH_SHORT).show();
 
 
                 ///
@@ -505,7 +505,7 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
                             GetAddData(); //새 데이터 받아온다. (전체 배열에서 20개씩)
 
                             isLoading = true;
-                            Toast.makeText(ChapterActivity.this, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(ChapterActivity.this, "스크롤 감지", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }

@@ -60,7 +60,12 @@ namespace WcfService1
         //단어 수정
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "UpdateVoca", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
-        Int_VocaUpdate UpdateVoca(string Userid, string Voca, string Mean, string Sentence, string Interpretation); 
+        Int_VocaUpdate UpdateVoca(string Userid, string Voca, string Mean, string Sentence, string Interpretation);
+
+        //단어장 삭제
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "DeleteVocaNote", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Int_VocaNoteDelete DeleteVocaNote(string userid, string VocaNoteName);
     }
 
     [DataContract]
@@ -296,5 +301,17 @@ namespace WcfService1
             get { return check; }
             set { check = value; }
         }      
+    }
+    public class Int_VocaNoteDelete
+    {
+        int check;
+        //0 : 성공, 1 : 에러
+
+        [DataMember]
+        public int Check
+        {
+            get { return check; }
+            set { check = value; }
+        }
     }
 }

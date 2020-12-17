@@ -9,10 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +45,7 @@ public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.On
     Retrofit retrofit;
     POSTApi postApi;
     final String svcName = "Service_VocaNote.svc/";
+    final String TAG = "Fragment_VocaNote";
     //ArrayList<String> allList = new ArrayList<>(); //단어장 전체 가져오기 (서비스에서 가져옴)
     //ArrayList<String> list = new ArrayList<>(); //단어장 20개씩 가져옴 (배열에 20개씩 담을 예정)
 
@@ -100,6 +105,12 @@ public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.On
 
     SwipeRefreshLayout mSwipeRefreshLayout;
 
+    //단어장 삭제
+    VocaNote vocaNote;
+    Call<VocaNote> delete_Call;
+
+    //최상위 레이아웃
+    LinearLayout FragVocaNote_LinearLayout;
 
     @Nullable
     @Override
@@ -107,6 +118,8 @@ public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.On
 
         context_Frag_Main = Fragment_VocaNote.this;
         final View v = inflater.inflate(R.layout.fragment_vocanote, container, false);
+
+        FragVocaNote_LinearLayout = (LinearLayout) v.findViewById(R.id.FragVocaNote_LinearLayout);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.context_main));
@@ -218,7 +231,7 @@ public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.On
                 VocaNoteName = item.getVocaNoteName();
                 VocaCount = "총 단어 수 :" + String.valueOf(item.getTotalVocaCount());
 
-                Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getTotalVocaCount(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "선택된 단어장 : " + item.getVocaNoteName() + ", " + item.getTotalVocaCount(), Toast.LENGTH_SHORT).show();
 
 
                 ///ChapterActivity
@@ -503,7 +516,7 @@ public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.On
                             GetAddData(); // 새 데이터 받아온다. (전체 배열에서 20개씩)
 
                             isLoading = true;
-                            Toast.makeText(MainActivity.context_main, "스크롤 감지", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.context_main, "스크롤 감지", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -617,12 +630,52 @@ public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.On
             StringBuilder sb = new StringBuilder();
             for(int index = 0; index < list.size(); index++) {
                 VocaNote model = (VocaNote) list.get(index);
-                sb.append(model.getVocaNoteName()).append("\n");
+                sb.append(model.getVocaNoteName()).append("/");
             }
-            showToast(sb.toString());
+            //sb.delete(sb.length()-1,sb.length()); //빈칸 삭제 - > 다시 넣기로 함 배열로 담기 위해
+            //showToast(sb.toString());
+
+            retrofit = new Retrofit(postApi);
+            postApi = retrofit.setRetrofitInit(svcName);
+
+            vocaNote = new VocaNote(MainActivity.Session_ID,sb.toString(),1);
+
+            delete_Call = postApi.DeleteVocaNote(vocaNote);
+            delete_Call.enqueue(new Callback<VocaNote>() {
+                @Override
+                public void onResponse(Call<VocaNote> call, Response<VocaNote> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e(TAG, "onResponse: " + response.code());
+                        return;
+                    }
+
+                    VocaNote postResponse = response.body();
+
+                    if (postResponse.getValue() == 0) { //성공
+                        //단어장 삭제 성공
+                        Log.e(TAG, "단어장 삭제 성공");
+
+                        Snackbar snackbar = Snackbar.make(FragVocaNote_LinearLayout,"단어장을 삭제했어요.", Snackbar.LENGTH_LONG);
+                        View view = snackbar.getView();
+                        TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                        tv.setTextColor(ContextCompat.getColor(MainActivity.context_main, R.color.White));
+                        view.setBackgroundColor(ContextCompat.getColor(MainActivity.context_main, R.color.snack_Background_Success));
+                        snackbar.show();
+
+                        onRefresh();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<VocaNote> call, Throwable t) {
+                    Log.e(TAG, "onFailure: " + t.getMessage());
+                }
+            });
+
+
 
         } else {
-            showToast("체크 안됨");
+            showToast("삭제할 단어장을 선택해요");
         }
     }
 

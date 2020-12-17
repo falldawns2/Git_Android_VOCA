@@ -225,7 +225,7 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(VocaActivity.this, "단어 추가 이벤트", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(VocaActivity.this, "단어 추가 이벤트", Toast.LENGTH_SHORT).show();
 
                 retrofit = new Retrofit(postApi);
                 postApi = retrofit.setRetrofitInit(svcName);
