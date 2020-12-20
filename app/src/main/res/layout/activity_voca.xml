@@ -70,6 +70,7 @@
                             android:layout_height="wrap_content"
                             android:text="Men123u" /> -->
                         <TextView
+                            android:id="@+id/Toolbar_subTitle_Voca"
                             android:layout_gravity="center"
                             android:layout_marginRight="15dp"
                             android:layout_width="wrap_content"

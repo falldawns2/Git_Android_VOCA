@@ -3,8 +3,10 @@ package com.example.android_voca;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +40,9 @@ import retrofit2.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
@@ -109,9 +113,37 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     //연속 추가
     static boolean bool_onADDClick = false;
+
+    public static Context context_Voca;
+
+    //메뉴 휴지통 등 변경을 위해 사용
+    private Menu menu;
+
+    //기본 메뉴 = 0, 삭제 메뉴 = 1
+    static int menu_num = 0;
+
+    //툴바 타이틀 = 단어
+    TextView Toolbar_subTitle_Voca;
+
+    TextToSpeech tts; //tts 관련
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+
+        menu.clear();
+        getMenuInflater().inflate(R.menu.activity_main_delete_menu, menu); //편집 - > 삭제 버튼 생성
+        MenuItem menuItem = menu.findItem(R.id.Trash_icon);
+
+        if (menu_num == 0) {
+            menuItem.setVisible(false); //편집 버튼 안보이게
+            Toolbar_subTitle_Voca.setVisibility(View.VISIBLE);
+        } else {
+            menuItem.setVisible(true);
+            Toolbar_subTitle_Voca.setVisibility(View.INVISIBLE);
+        }
+
+        this.menu = menu;
+        return true;
+        //return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -121,9 +153,15 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
             case android.R.id.home:
                 finish();
                 onBackPressed();
-                break;
+                return true;
+            case R.id.Trash_icon:
+                Log.e(TAG, "onOptionsItemSelected: " + "휴지통 클릭" );
+                //selectedClick();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+        //return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -131,6 +169,16 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voca);
         //setContentView(R.layout.cardview_voca);
+
+        context_Voca = VocaActivity.this;
+
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != TextToSpeech.ERROR)
+                    tts.setLanguage(Locale.ENGLISH);
+            }
+        });
 
         //단어 검색을 위해
         HiddenLayout_WebView = (RelativeLayout)findViewById(R.id.HiddenLayout_WebView);
@@ -151,6 +199,8 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
         VocaNoteName = intent.getExtras().getString("VocaNoteName");
         //챕터명
         ChapterNoteName = intent.getExtras().getString("ChapterNoteName");
+
+        Toolbar_subTitle_Voca = findViewById(R.id.Toolbar_subTitle_Voca);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -448,10 +498,9 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     public void initAdapter() {
         //싱글 선택 어댑터 //
-        adapter = new VocaAdapter(getApplicationContext(), list);
+        adapter = new VocaAdapter(this, list);
 
         adapter.notifyDataSetChanged();
-        recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener(new OnVocaNoteItemClickListener() {
             @Override
@@ -473,8 +522,14 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
                 String Sen = item.getSentence();
                 String Inter = item.getInterpretation();
 
-                Toast.makeText(VocaActivity.this, voca + ", " + mean + ", "
-                        + Sen + ", " + Inter, Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(VocaActivity.this, voca + ", " + mean + ", "
+                        + Sen + ", " + Inter, Toast.LENGTH_SHORT).show();*/
+
+                if(MainActivity.tag == "single") {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        ttsGreater21(item.getVoca(),item.getMean());
+                    else ttsUnder20(item.getVoca(), item.getMean());
+                }
             }
 
             @Override
@@ -487,6 +542,39 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
 
             }
         });
+
+        recyclerView.setAdapter(adapter);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text, String text2) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+
+        for (int i = 0; i < 2; i++) {
+            if (i == 0) {
+                tts.setLanguage(Locale.ENGLISH);
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+            } else {
+                tts.setLanguage(Locale.KOREAN);
+                tts.speak(text2, TextToSpeech.QUEUE_ADD, map);
+            }
+            tts.playSilence(750, TextToSpeech.QUEUE_ADD, map);
+        }
+    }
+
+    public void ttsGreater21(String text, String text2) {
+        String utteranceId = this.hashCode() + "";
+        for (int i = 0; i < 2; i++) {
+            if (i == 0) {
+                tts.setLanguage(Locale.ENGLISH);
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+            } else {
+                tts.setLanguage(Locale.KOREAN);
+                tts.speak(text2, TextToSpeech.QUEUE_ADD, null, utteranceId);
+            }
+            tts.playSilence(750, TextToSpeech.QUEUE_ADD, null);
+        }
     }
 
     public void QUERY_VOCA_ONE(int Page_NO, String userid, String VocaNoteName, String ChapterName, POSTApi postApi) {
@@ -673,12 +761,39 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        MainActivity.save = 0;
-        MainActivity.tag = "single";
-        MainActivity.PageNum = 1;
+        //super.onBackPressed();
+        //MainActivity.save = 0;
+
+        if(MainActivity.tag == "multi") {
+            MainActivity.tag = "single";
+            reDefault();
+        } else {
+            MainActivity.PageNum = 1;
+            super.onBackPressed();
+        }
+
         /*Intent intent = new Intent(VocaActivity.this, ChapterActivity.class);
 
         startActivity(intent);*/
+    }
+
+    protected void restart() {
+        Toast.makeText(context_Voca, "VocaActivity_restart()", Toast.LENGTH_SHORT).show();
+        MainActivity.Edit_Activation = true;
+        menu_num = 1; //편집 메뉴 (삭제)
+        onCreateOptionsMenu(menu);
+
+        initAdapter();
+    }
+
+    protected void reDefault() {
+        menu_num = 0; //기본 메뉴 (휴지통 없앰)
+        onCreateOptionsMenu(menu);
+        MainActivity.Edit_Activation = false;
+
+        RefreshAdapter();
+        initAdapter();
+        handler_count = 1;
+        QUERY_VOCA_ONE(handler_count, MainActivity.Session_ID, VocaNoteName, ChapterNoteName, postApi);
     }
 }

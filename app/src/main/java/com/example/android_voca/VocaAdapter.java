@@ -1,5 +1,6 @@
 package com.example.android_voca;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -161,14 +164,7 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             }
         });
 
-        holder.Main_CardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    ttsGreater21(holder.Word.getText().toString(),holder.Mean.getText().toString());
-                else ttsUnder20(holder.Word.getText().toString(),holder.Mean.getText().toString());
-            }
-        });
+
         // 예문 해석이 없을 때 안보이게 설정
         if(item.getSentence() == null) {
             holder.Sentence.setVisibility(View.GONE);
@@ -180,6 +176,24 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         HiddenLayout_WebView = VocaActivity.HiddenLayout_WebView;
         webView = VocaActivity.webView;
         fabClose = VocaActivity.fabClose;
+
+        //여기서 다시 오버라이딩 하면 문제가 발생한다.
+
+        //TODO:지금 이 부분 VocaActivity 로 이동
+        /*if(MainActivity.tag == "single") {
+            holder.Main_CardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        ttsGreater21(holder.Word.getText().toString(),holder.Mean.getText().toString());
+                    else ttsUnder20(holder.Word.getText().toString(),holder.Mean.getText().toString());
+
+                }
+            });
+        }*/
+
+
+
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient()); //새 창 띄우기 방지
@@ -207,7 +221,25 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             }
         });
 
+        //!! 여기서 한번 null 줘서 체크박스가 이사하게 체크되는 것 방지
+        holder.main_checkbox_voca.setOnCheckedChangeListener(null);
+        holder.main_checkbox_voca.setChecked(item.isComplete());
+        holder.main_checkbox_voca.setTag(position);
 
+        if(MainActivity.tag == "multi") {
+            holder.main_checkbox_voca.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(holder.main_checkbox_voca.isChecked()) {
+                        int ClickedPosition = (Integer) holder.main_checkbox_voca.getTag();
+                        items.get(ClickedPosition).setComplete(b);
+                    } else {
+                        int ClickedPosition = (Integer) holder.main_checkbox_voca.getTag();
+                        items.get(ClickedPosition).setComplete(b);
+                    }
+                }
+            });
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -275,6 +307,9 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         CardView Main_CardView;
 
+        //체크박스
+        CheckBox main_checkbox_voca;
+
         public ViewHolder(View itemView, final OnVocaNoteItemClickListener listener) {
             super(itemView);
 
@@ -285,19 +320,83 @@ public class VocaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
             Main_CardView = itemView.findViewById(R.id.Main_CardView_Voca);
 
+            main_checkbox_voca = itemView.findViewById(R.id.main_checkbox_voca);
+
             final ViewGroup.MarginLayoutParams layoutParams =
                     (ViewGroup.MarginLayoutParams) Main_CardView.getLayoutParams();
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
+            if(MainActivity.tag == "single") {
 
-                    if (listener != null) {
-                        listener.onItemVocaClick(ViewHolder.this, view, position);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int position = getAdapterPosition();
+
+                        if (listener != null) {
+                            listener.onItemVocaClick(ViewHolder.this, view, position);
+
+                            if(main_checkbox_voca.isChecked()) main_checkbox_voca.setChecked(false);
+                            else main_checkbox_voca.setChecked(true);
+                        }
                     }
+                });
+
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        if(main_checkbox_voca.getVisibility() == View.INVISIBLE) {
+                            Log.e("롱클릭", "onLongClick: " + "test" );
+                            MainActivity.tag = "multi";
+                            main_checkbox_voca.setChecked(true);
+                            //if (MainActivity.PageNum == 0)
+                            if (MainActivity.PageNum == 0) {
+                                Log.e("메인 페이지", "onLongClick: " );
+                            } else if (MainActivity.PageNum == 1) {
+                                Log.e("챕터 페이지", "onLongClick: " );
+                            } else {
+                                Log.e("단어 페이지", "onLongClick: " );
+                                ((VocaActivity)VocaActivity.context_Voca).restart();
+                            }
+                        }
+                        return true;
+                    }
+                });
+            } else { //MainActivity.tag == multi
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int position = getAdapterPosition();
+
+                        if (listener != null) {
+                            if (main_checkbox_voca.isChecked()) main_checkbox_voca.setChecked(false);
+                            else main_checkbox_voca.setChecked(true);
+                        }
+                    }
+                });
+            }
+
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(25);
+            valueAnimator.setDuration(400);
+            Edit_Activation = ((MainActivity)MainActivity.context_main).Edit_Activation;
+
+            if(Edit_Activation) {
+                if(!main_checkbox_voca.isChecked()) {
+                    main_checkbox_voca.setVisibility(View.VISIBLE);
+
+                    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                            layoutParams.setMargins(0,
+                                    0,
+                                    (Integer) valueAnimator.getAnimatedValue(),
+                                    (Integer) valueAnimator.getAnimatedValue());
+                            Main_CardView.requestLayout();
+                        }
+                    });
+                    valueAnimator.start();
                 }
-            });
+            } else main_checkbox_voca.setVisibility(View.INVISIBLE);
         }
 
         public void setItem(Voca item) {
