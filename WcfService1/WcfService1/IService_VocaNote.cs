@@ -66,6 +66,11 @@ namespace WcfService1
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "DeleteVocaNote", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         Int_VocaNoteDelete DeleteVocaNote(string userid, string VocaNoteName);
+
+        //챕터 삭제
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "DeleteChapter", BodyStyle = WebMessageBodyStyle.WrappedRequest, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Int_ChapterDelete DeleteChapter(string userid, string VocaNoteName, string ChapterName);
     }
 
     [DataContract]
@@ -305,6 +310,19 @@ namespace WcfService1
     public class Int_VocaNoteDelete
     {
         int check;
+        //0 : 성공, 1 : 에러
+
+        [DataMember]
+        public int Check
+        {
+            get { return check; }
+            set { check = value; }
+        }
+    }
+    public class Int_ChapterDelete
+    {
+        int check;
+
         //0 : 성공, 1 : 에러
 
         [DataMember]

@@ -341,5 +341,31 @@ namespace WcfService1
 
             return int_VocaNoteDelete;
         }
+
+        //챕터 삭제
+        public Int_ChapterDelete DeleteChapter(string userid, string VocaNoteName, string ChapterName)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            bool a = false;
+            Int_ChapterDelete int_ChapterDelete = new Int_ChapterDelete();
+
+            //긴 문자열 여기서 자른다.
+            string s = ChapterName;
+            char sp = '/';
+            string[] asd = s.Split(sp);
+            int i;
+            for (i = 0; i < asd.Length - 1; i++)
+            {
+                a = DB_VOCAFORM.DeleteChapter(userid, VocaNoteName , asd[i]);
+            }
+
+            int check = 0; //기본 값성공
+            if (!a) check = 1; //실패
+
+            int_ChapterDelete.Check = check;
+            DB_VOCAFORM.Close();
+
+            return int_ChapterDelete;
+        }
     }
 }

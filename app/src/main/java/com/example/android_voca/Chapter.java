@@ -27,6 +27,9 @@ public class Chapter {
     @SerializedName("VocaNoteName")
     String VocaNoteName;
 
+    @SerializedName("Check")
+    private int value; //챕터 삭제//
+
     // 단어장 체크박스 유무 //
 
     boolean isSelected;
@@ -42,6 +45,12 @@ public class Chapter {
     public Chapter(String ChapterName, String VocaCount) {
         this.ChapterName = ChapterName;
         this.VocaCount = VocaCount;
+    }
+
+    public Chapter(String userid, String VocaNoteName, String ChapterName) {
+        this.userid = userid;
+        this.VocaNoteName = VocaNoteName;
+        this.ChapterName = ChapterName;
     }
 
     public int getPage_NO() {
@@ -106,5 +115,13 @@ public class Chapter {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }

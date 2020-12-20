@@ -95,5 +95,9 @@ public interface POSTApi {
 
     //단어장 삭제
     @POST("DeleteVocaNote")
-    Call<VocaNote> DeleteVocaNote(@Body VocaNote VocaNotedelete);
+    Call<VocaNote> DeleteVocaNote(@Body VocaNote VocaNoteDelete);
+
+    //챕터 삭제
+    @POST("DeleteChapter")
+    Call<Chapter> DeleteChapter(@Body Chapter ChapterDelete);
 }

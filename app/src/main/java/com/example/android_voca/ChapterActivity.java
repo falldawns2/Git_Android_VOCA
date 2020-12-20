@@ -122,6 +122,12 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
     //툴바 타이틀 = 챕터
     TextView Toolbar_subTitle;
 
+    //챕터 삭제
+    Chapter chapter;
+    Call<Chapter> delete_Call;
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //MenuInflater menuInflater = getMenuInflater();
@@ -811,14 +817,49 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
                 sb.append(model.getChapterName()).append("/");
             }
 
-            showToast(sb.toString());
+            //showToast(sb.toString());
 
-            //retrofit = new Retrofit(postApi);
-            //postApi = retrofit.setRetrofitInit(svcName);
+            retrofit = new Retrofit(postApi);
+            postApi = retrofit.setRetrofitInit(svcName);
+
+            chapter = new Chapter(MainActivity.Session_ID, VocaNoteName, sb.toString());
+
+            delete_Call = postApi.DeleteChapter(chapter);
+            delete_Call.enqueue(new Callback<Chapter>() {
+                @Override
+                public void onResponse(Call<Chapter> call, Response<Chapter> response) {
+                    if(!response.isSuccessful()) {
+                        Log.e(TAG, "onResponse: " + response.code() );
+                        return;
+                    }
+
+                    Chapter postResponse = response.body();
+
+                    if (postResponse.getValue() == 0) { //성공
+                        //챕터 삭제 성공
+                        Log.e(TAG, "챕터 삭제 성공" );
+
+                        Snackbar snackbar = Snackbar.make(linearLayout,"챕터를 삭제했어요.", Snackbar.LENGTH_LONG);
+                        View view = snackbar.getView();
+                        TextView tv = (TextView) view.findViewById(com.google.android.material.R.id.snackbar_text);
+                        tv.setTextColor(ContextCompat.getColor(ChapterActivity.this, R.color.White));
+                        view.setBackgroundColor(ContextCompat.getColor(ChapterActivity.this, R.color.snack_Background_Success));
+                        snackbar.show();
+
+                        onRefresh();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Chapter> call, Throwable t) {
+                    Log.e(TAG, "onFailure: " + t.getMessage() );
+                }
+            });
+
 
             //여기에 챕터 관련을 삭제를 구현한다.
         } else {
-            showToast("체크 안됨");
+            showToast("삭제할 단어장을 선택하세요");
         }
     }
 

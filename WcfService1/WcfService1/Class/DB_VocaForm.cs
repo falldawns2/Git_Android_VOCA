@@ -370,5 +370,20 @@ namespace WcfService1
             myReader.Close();
             return result; // 존재 하지 않을때 true 보냄.
         }
+        //챕터 삭제
+        public bool DeleteChapter(string userid, string VocaNoteName, string ChapterName)
+        {
+
+            bool result = true;
+
+            string mysql = "delete From VocaNote where userid ='" + userid + "' and VocaNoteName = '" + VocaNoteName + "' and ChapterName = '" + ChapterName + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false; //해당 단어장 이미 존재
+
+            myReader.Close();
+            return result; // 존재 하지 않을때 true 보냄.
+        }
     }
 }
