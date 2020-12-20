@@ -113,11 +113,35 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
 
     SwipeRefreshLayout mSwipeRefreshLayout_Chapter;
 
+    //메뉴 휴지통 등 변경을 위해 사용
+    private Menu menu;
+
+    //기본 메뉴 = 0, 삭제 메뉴 = 1
+    static int menu_num = 0;
+
+    //툴바 타이틀 = 챕터
+    TextView Toolbar_subTitle;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //MenuInflater menuInflater = getMenuInflater();
         //menuInflater.inflate(R.menu.note_edit_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        menu.clear();
+        getMenuInflater().inflate(R.menu.activity_main_delete_menu, menu); //편집 - > 삭제 버튼 생성
+        MenuItem menuItem = menu.findItem(R.id.Trash_icon);
+
+        if(menu_num == 0) {
+            menuItem.setVisible(false); //편집 버튼 안보이게
+            Toolbar_subTitle.setVisibility(View.VISIBLE);
+        }
+
+        else {
+            menuItem.setVisible(true);
+            Toolbar_subTitle.setVisibility(View.INVISIBLE);
+        }
+
+        this.menu = menu;
+        return true; //super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -133,9 +157,15 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);*/
                 onBackPressed();
-                break;
+                //break;
+                return true;
+            case R.id.Trash_icon:
+                selectedClick();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+        //return
     }
 
     @Override
@@ -163,6 +193,8 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
         // 타이틀 컬러를 처음과 마지막 색상을 동일하게 했다. //
         toolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         toolbarLayout.setExpandedTitleColor(Color.WHITE);
+
+        Toolbar_subTitle = findViewById(R.id.Toolbar_subTitle);
 
         //toolbar.setNavigationIcon(R.drawable.button_hamburger_size);
 
@@ -515,10 +547,17 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        MainActivity.save = 0;
-        MainActivity.tag = "single";
-        MainActivity.PageNum = 0;
+
+        //MainActivity.save = 0;
+        //MainActivity.PageNum = 0; //MainActivity 로 넘어감
+
+        if(MainActivity.tag == "multi") {
+            MainActivity.tag = "single";
+            reDefault();
+        } else {
+            MainActivity.PageNum = 0;
+            super.onBackPressed();
+        }
 
         /*Intent intent = new Intent(ChapterActivity.this, MainActivity.class);
         intent.putExtra("Session_ID",MainActivity.Session_ID);
@@ -768,11 +807,16 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
         if (list.size() > 0) {
             StringBuilder sb = new StringBuilder();
             for (int index = 0; index < list.size(); index++) {
-                VocaNote model = (VocaNote) list.get(index);
-                //sb.append(model.getChapterName()).append("\n");
+                Chapter model = (Chapter) list.get(index);
+                sb.append(model.getChapterName()).append("/");
             }
+
             showToast(sb.toString());
 
+            //retrofit = new Retrofit(postApi);
+            //postApi = retrofit.setRetrofitInit(svcName);
+
+            //여기에 챕터 관련을 삭제를 구현한다.
         } else {
             showToast("체크 안됨");
         }
@@ -783,7 +827,23 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     protected void restart() {
-        Toast.makeText(context_Chapter, "test", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context_Chapter, "Chapter_restart()", Toast.LENGTH_SHORT).show();
+        MainActivity.Edit_Activation = true;
+        menu_num = 1; //편집 메뉴 (삭제)
+        onCreateOptionsMenu(menu);
+
+        initAdapter();
+    }
+
+    protected void reDefault() {
+        menu_num = 0; //기본 메뉴 (휴지통 없앰)
+        onCreateOptionsMenu(menu);
+        MainActivity.Edit_Activation = false;
+
+        RefreshAdapter();
+        initAdapter();
+        handler_count = 1;
+        QUERY_Chapter_ONE(handler_count, MainActivity.Session_ID, VocaNoteName, postApi);
     }
 
 }

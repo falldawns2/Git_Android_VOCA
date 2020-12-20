@@ -37,7 +37,6 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     static int positions;
 
 
-
     public ChapterAdapter(Context context, List<Chapter> itemModels) {
         this.context = context;
         this.items = itemModels;
@@ -168,6 +167,8 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         holder.textview_VocaCount.setText(String.valueOf(item.getVocaCount()));
 
+        //!! 여기서 한번 null 줘서 체크박스가 이사하게 체크되는 것 방지
+        holder.main_checkbox.setOnCheckedChangeListener(null);
         holder.main_checkbox.setChecked(item.isSelected());
         holder.main_checkbox.setTag(position);
 
@@ -189,11 +190,11 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(holder.main_checkbox.isChecked()) {
                         int ClickedPosition = (Integer) holder.main_checkbox.getTag();
-                        items.get(ClickedPosition).setSelected(holder.main_checkbox.isChecked());
+                        items.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
                         //notifyDataSetChanged();
                     } else {
                         int ClickedPosition = (Integer) holder.main_checkbox.getTag();
-                        items.get(ClickedPosition).setSelected(holder.main_checkbox.isChecked());
+                        items.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
 
                         //notifyDataSetChanged();
                     }
@@ -293,7 +294,6 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         int position = getAdapterPosition();
 
                         if(listener != null) {
-                            //listener.onItemClick(ViewHolder.this, view, position);
 
                             if(main_checkbox.isChecked()) {
                                 main_checkbox.setChecked(false);
