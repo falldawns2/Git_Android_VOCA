@@ -39,6 +39,9 @@ public class Voca {
 
     boolean isComplete;
 
+    @SerializedName("Check")
+    private int value; //단어 삭제//
+
     public Voca(int page_NO, int page_SIZE, String userid, String vocaNoteName, String chapterName, String orderBy) {
         Page_NO = page_NO;
         Page_SIZE = page_SIZE;
@@ -53,6 +56,14 @@ public class Voca {
         Mean = mean;
         Sentence = sentence;
         Interpretation = interpretation;
+    }
+
+    //단어 삭제
+    public Voca(String userid, String VocaNoteName, String ChapterName, String voca, int a) {
+        this.userid = userid;
+        this.VocaNoteName = VocaNoteName;
+        this.ChapterName = ChapterName;
+        this.Voca = voca;
     }
 
     // get set //
@@ -143,5 +154,13 @@ public class Voca {
 
     public void setComplete(boolean complete) {
         isComplete = complete;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }

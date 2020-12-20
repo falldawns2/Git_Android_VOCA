@@ -385,5 +385,50 @@ namespace WcfService1
             myReader.Close();
             return result; // 존재 하지 않을때 true 보냄.
         }
+
+        //단어 삭제
+        public bool DeleteVoca(string userid, string VocaNoteName, string ChapterName, string voca)
+        {
+
+            bool result = true;
+
+            string mysql = "delete From Voca where userid ='" + userid + "' and VocaNoteName = '" + VocaNoteName + "'" +
+                "  and ChapterName = '" + ChapterName + "' and Voca = '" + voca + "'";
+
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false; //해당 단어장 이미 존재
+
+            myReader.Close();
+            return result; // 존재 하지 않을때 true 보냄.
+        }
+        //챕터내 존재하는 단어 수를 가져온다.
+        public int GetVocaCount(string uid, string VocaNoteName, string ChapterName)
+        {
+            int result = 0;
+            string mySql = "SELECT VocaCount FROM VocaNote WHERE userid = '" + uid + "' and VocaNoteName = '" + VocaNoteName + "' and ChapterName = '" + ChapterName + "'";
+            SqlDataReader myReader = this.ExecuteReader(mySql);
+
+            if (myReader.Read())
+            {
+                result = int.Parse(myReader[0].ToString()); //VocaCount의 문자열을 숫자로 바꿈.
+            }
+            myReader.Close();
+
+            return result;
+        }
+        //단어 수를 수정하여 데이터베이스에 넣는다.
+        public bool UpdateVocaCount(string userid, string VocaNoteName, string ChapterName, string VocaCount)
+        {
+            bool result = true;
+
+            string mysql = "UPDATE VocaNote SET VocaCount = " + VocaCount + " WHERE userid = '" + userid + "' and VocaNoteName = '" + VocaNoteName + "'  and ChapterName = '" + ChapterName + "'";
+            SqlDataReader myReader = this.ExecuteReader(mysql);
+
+            if (myReader.Read()) result = false;
+
+            myReader.Close();
+            return result;
+        }
     }
 }

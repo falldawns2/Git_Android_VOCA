@@ -100,4 +100,8 @@ public interface POSTApi {
     //챕터 삭제
     @POST("DeleteChapter")
     Call<Chapter> DeleteChapter(@Body Chapter ChapterDelete);
+
+    //단어 삭제
+    @POST("DeleteVoca")
+    Call<Voca> DeleteVoca(@Body Voca VocaDelete);
 }

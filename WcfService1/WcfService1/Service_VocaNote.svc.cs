@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using System.ServiceModel;
+using System.ServiceModel.Security;
 using System.Text;
 
 namespace WcfService1
@@ -366,6 +367,41 @@ namespace WcfService1
             DB_VOCAFORM.Close();
 
             return int_ChapterDelete;
+        }
+
+        //단어 삭제
+        public Int_VocaDelete DeleteVoca(string userid, string VocaNoteName, string ChapterName, string Voca)
+        {
+            DB_VOCAFORM = new DB_VocaForm();
+            bool a = false;
+            Int_VocaDelete int_VocaDelete = new Int_VocaDelete();
+
+            //처음에 단어 수 저장
+            int VocaCount = DB_VOCAFORM.GetVocaCount(userid, VocaNoteName, ChapterName);
+
+            //긴 문자열 여기서 자른다.
+            string s = Voca.ToString();
+            char sp = '/';
+            string[] asd = s.Split(sp);
+            int i;
+            for (i = 0; i < asd.Length - 1; i++)
+            {
+                a = DB_VOCAFORM.DeleteVoca(userid, VocaNoteName,ChapterName, asd[i]);
+            }
+
+            int check = 0; //기본 값성공
+            if (a)
+            {
+                //단어 수 - 1
+                VocaCount -= asd.Length - 1;
+                DB_VOCAFORM.UpdateVocaCount(userid, VocaNoteName, ChapterName, VocaCount.ToString());
+            }
+            else check = 1; //실패           
+
+            int_VocaDelete.Check = check;
+            DB_VOCAFORM.Close();
+
+            return int_VocaDelete;
         }
     }
 }
