@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -139,6 +140,26 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
         if(menu_num == 0) {
             menuItem.setVisible(false); //편집 버튼 안보이게
             Toolbar_subTitle.setVisibility(View.VISIBLE);
+
+            MainActivity.searchView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            MainActivity.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    //글씨 들어가면 mainActivity 에서 메모지 불러옴.
+
+                    return false;
+                }
+            });
         }
 
         else {

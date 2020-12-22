@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     public static int save = 0;  //이 값은 편집 모드 판단한다.
     public static int PageNum = 0; //단어장 : 0, 챕터 : 1, 단어 : 2;
 
-    SearchView searchView;
+    public static SearchView searchView;
 
     //커스텀 다이얼로그
     CustomDialog_VocaNote CustomDialog;
@@ -694,10 +694,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onQueryTextChange(String s) {
                     //글씨 들어가면 mainActivity 에서 메모지 불러옴.
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    return true;
+                    //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    //Fragment_VocaNote.adapter.getFilter().filter(s);
+                    fragment_vocaNote.adapter.getFilter().filter(s);
+                    //TODO:검색
+                    return false;
                 }
             });
+            return super.onCreateOptionsMenu(menu);
         } else { //menu_num == 1
             menuItem.setVisible(false);
             menuItem1.setVisible(true);

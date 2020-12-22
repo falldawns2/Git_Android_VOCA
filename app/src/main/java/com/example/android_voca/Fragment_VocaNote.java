@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -37,7 +39,7 @@ import retrofit2.internal.EverythingIsNonNull;
 public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     RecyclerView recyclerView;
-    VocaNoteAdapter adapter;
+    public static VocaNoteAdapter adapter;
     //Note_MultiSelectionAdapter multi_adapter;
 
     boolean isLoading = false; //핸들러
@@ -172,6 +174,8 @@ public class Fragment_VocaNote extends Fragment implements SwipeRefreshLayout.On
         initAdapter(); //리싸이클러 뷰 어댑터 생성
 
         initScrollListener(); //리싸이클러뷰 이벤트 발생
+
+
 
         return v;
     }

@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,12 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener { //VocaNoteAdapter.ViewHolder
+public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener, Filterable { //VocaNoteAdapter.ViewHolder
 
     private final int VIEW_TYPE_ITEM = 0; //단어장
     private final int VIEW_TYPE_LOADING = 1; //로딩
 
     //ArrayList<Note> items = new ArrayList<>();
+    private List<VocaNote> mDataList;
     private List<VocaNote> items;
     private Fragment fragment;
 
@@ -53,7 +56,9 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public VocaNoteAdapter(Fragment fragment, List<VocaNote> itemModels) {
-        this.items = itemModels;
+        //this.items = itemModels;
+        this.items = new ArrayList<>(itemModels);
+        this.mDataList = itemModels;
         this.fragment = fragment;
     }
     
@@ -117,7 +122,8 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) { //ViewHolder
 
         if(holder instanceof ItemViewHolder) { //단어장 관련 뷰홀더
-            VocaNote item = items.get(position);
+            //VocaNote item = items.get(position);
+            VocaNote item = mDataList.get(position);
             /*if(MainActivity.tag == "single")
                 holder.setItem(item);
                 else if (MainActivity.tag == "multi")
@@ -134,15 +140,53 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         //return items.size();
-        return items == null ? 0 : items.size();
+        //return items == null ? 0 : items.size();
+        return mDataList == null ? 0 : mDataList.size();
     }
 
     //새로 추가한거
 
 
     @Override
+    public Filter getFilter() {
+        return VocaNoteFilter;
+    }
+
+    private Filter VocaNoteFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<VocaNote> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(items);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (VocaNote item : items) {
+                    //filter 대상 setting
+                    if (item.getVocaNoteName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            //items.clear();
+            //items.addAll((List) results.values);
+            mDataList.clear();
+            mDataList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
+    @Override
     public int getItemViewType(int position) {
-        return items.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM; //로딩, 단어장
+        //return items.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM; //로딩, 단어장
+        return mDataList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM; //로딩, 단어장
     }
 
     private void initializeViews(final VocaNote item, final VocaNoteAdapter.ItemViewHolder holder, int position) {
@@ -183,11 +227,13 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                     if(holder.main_checkbox.isChecked()) {
                         int ClickedPosition = (Integer) holder.main_checkbox.getTag();
-                        items.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
+                        //items.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
+                        mDataList.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
                         //notifyDataSetChanged();
                     } else {
                         int ClickedPosition = (Integer) holder.main_checkbox.getTag();
-                        items.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
+                        //items.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
+                        mDataList.get(ClickedPosition).setSelected(b); //holder.main_checkbox.isChecked()
 
                         //notifyDataSetChanged();
                     }
@@ -204,8 +250,8 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public List<VocaNote> getSelectedItem() {
         List<VocaNote> itemModelList = new ArrayList<>();
         int i;
-        for (i = 0; i< items.size(); i++) {
-            VocaNote item = items.get(i);
+        for (i = 0; i< mDataList.size(); i++) {//items
+            VocaNote item = mDataList.get(i);//items
 
             if(item.isSelected()) {
                 itemModelList.add(item);
