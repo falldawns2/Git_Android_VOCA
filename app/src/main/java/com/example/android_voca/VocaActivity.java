@@ -836,7 +836,7 @@ public class VocaActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     protected void restart() {
-        Toast.makeText(context_Voca, "VocaActivity_restart()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context_Voca, "VocaActivity_restart()", Toast.LENGTH_SHORT).show();
         MainActivity.Edit_Activation = true;
         menu_num = 1; //편집 메뉴 (삭제)
         onCreateOptionsMenu(menu);

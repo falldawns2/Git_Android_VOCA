@@ -889,7 +889,7 @@ public class ChapterActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     protected void restart() {
-        Toast.makeText(context_Chapter, "Chapter_restart()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context_Chapter, "Chapter_restart()", Toast.LENGTH_SHORT).show();
         MainActivity.Edit_Activation = true;
         menu_num = 1; //편집 메뉴 (삭제)
         onCreateOptionsMenu(menu);
