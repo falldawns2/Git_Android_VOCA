@@ -696,12 +696,17 @@ public class MainActivity extends AppCompatActivity {
                     //글씨 들어가면 mainActivity 에서 메모지 불러옴.
                     //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                     //Fragment_VocaNote.adapter.getFilter().filter(s);
+
+
                     fragment_vocaNote.adapter.getFilter().filter(s);
+
+
                     //TODO:검색
+                    //return true;
                     return false;
                 }
             });
-            return super.onCreateOptionsMenu(menu);
+            //return super.onCreateOptionsMenu(menu);
         } else { //menu_num == 1
             menuItem.setVisible(false);
             menuItem1.setVisible(true);

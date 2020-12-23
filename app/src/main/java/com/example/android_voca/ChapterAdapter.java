@@ -22,13 +22,13 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener, Filterable { //VocaNoteAdapter.ViewHolder
+public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener { //VocaNoteAdapter.ViewHolder, , Filterable
 
     private final int VIEW_TYPE_ITEM = 0; //단어장
     private final int VIEW_TYPE_LOADING = 1; //로딩
 
     //ArrayList<Note> items = new ArrayList<>();
-    private List<Chapter> mDataList;
+    //private List<Chapter> mDataList;
     private List<Chapter> items;
     private Fragment fragment;
 
@@ -43,9 +43,9 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public ChapterAdapter(Context context, List<Chapter> itemModels) {
         this.context = context;
-        //this.items = itemModels;
-        this.items = new ArrayList<>(itemModels);
-        this.mDataList = itemModels;
+        this.items = itemModels;
+        //this.items = new ArrayList<>(itemModels);
+        //this.mDataList = itemModels;
     }
 
     public void addItem(Chapter item) {
@@ -137,8 +137,8 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         //final int Position = position;
 
         if(holder instanceof ItemViewHolder) { //단어장 관련 뷰홀더
-            //Chapter item = items.get(position);
-            Chapter item = mDataList.get(position);
+            Chapter item = items.get(position);
+            //Chapter item = mDataList.get(position);
             /*if(MainActivity.tag == "single")
                 holder.setItem(item);
                 else if (MainActivity.tag == "multi")
@@ -155,14 +155,13 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemCount() {
         //return items.size();
-        //return items == null ? 0 : items.size();
-        return mDataList == null ? 0 : mDataList.size();
+        return items == null ? 0 : items.size();
+        //return mDataList == null ? 0 : mDataList.size();
     }
 
     //새로 추가한거
 
-
-    @Override
+    /*@Override
     public Filter getFilter() {
         return ChapterFilter;
     }
@@ -196,7 +195,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mDataList.addAll((List) results.values);
             notifyDataSetChanged();
         }
-    };
+    };*/
 
     @Override
     public int getItemViewType(int position) {

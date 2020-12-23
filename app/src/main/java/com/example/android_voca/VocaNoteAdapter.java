@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener, Filterable { //VocaNoteAdapter.ViewHolder
+public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnVocaNoteItemClickListener, Filterable { //VocaNoteAdapter.ViewHolder,
 
     private final int VIEW_TYPE_ITEM = 0; //단어장
     private final int VIEW_TYPE_LOADING = 1; //로딩
@@ -40,15 +40,18 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     public void addItem(VocaNote item) {
-        items.add(item);
+        //items.add(item);
+        mDataList.add(item);
     }
 
     public void setItems(ArrayList<VocaNote> items) {
-        this.items = items;
+        //this.items = items;
+        this.mDataList = items;
     }
 
     public VocaNote getItem(int position) {
-        return items.get(position);
+        //return items.get(position);
+        return mDataList.get(position);
     }
 
     public void setItem(int position, VocaNote item) {
@@ -250,8 +253,8 @@ public class VocaNoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public List<VocaNote> getSelectedItem() {
         List<VocaNote> itemModelList = new ArrayList<>();
         int i;
-        for (i = 0; i< mDataList.size(); i++) {//items
-            VocaNote item = mDataList.get(i);//items
+        for (i = 0; i< mDataList.size(); i++) {//items, mDataList
+            VocaNote item = mDataList.get(i);//items, mDataList
 
             if(item.isSelected()) {
                 itemModelList.add(item);
